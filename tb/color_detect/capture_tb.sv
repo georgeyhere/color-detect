@@ -11,8 +11,6 @@ module capture_tb();
 	logic        href;
 	logic [7:0]  data;
 
-	logic        full = 0;
-
 	logic        o_wr;
 	logic [11:0] o_wdata;
 
@@ -21,7 +19,7 @@ module capture_tb();
 // DUT Instantiation
 //
 	capture DUT(
-    .i_clk   (clk),
+    .i_pclk  (clk),
     .i_rstn  (rstn),
 
     .i_vsync (vsync),
@@ -30,7 +28,6 @@ module capture_tb();
 
     .o_wr    (o_wr),
     .o_wdata (o_wdata),
-    .i_full  (full),
 
     .o_sof   ()
 	);
@@ -38,10 +35,11 @@ module capture_tb();
 
 // Testbench Setup
 //
-	localparam TESTRUNS  = 5;
-	localparam ROWCOUNT  = 5;
-	localparam ROWLENGTH = 10;
+	localparam TESTRUNS  = 3;
+	localparam ROWCOUNT  = 480;
+	localparam ROWLENGTH = 640;
 
+	integer k;
 	logic [11:0] test_queue[$];
 	logic [11:0] test_expected;
 
@@ -69,10 +67,6 @@ module capture_tb();
         
         rstn  = 1;
 
-        @(posedge clk) vsync = 1;
-        repeat(3) @(posedge clk);
-        @(posedge clk) vsync = 0;
-
         repeat(17) @(posedge clk);
 
         // repeat for # of frames
@@ -84,17 +78,23 @@ module capture_tb();
         		$display("Frame: %0h, Row: %0h", i,j);
 
         		// send a row of data
-        	    for(int k=0; k<ROWLENGTH; k++) begin
+        	    for(k=0; k<(ROWLENGTH*2-1); k++) begin
         	    	@(negedge clk) begin
-        	    		if(k==0) href = 1;
         	    		//
-        	    		if(k%2 == 0) begin
+        	    		if(k==0) begin
+        	    			href = 1;
         	    			test_data = $urandom;
         	    			data      = { {4{1'b1}}, test_data[11:8]};
         	    		end
-        	    		else begin
+        	    		else if(k%2 == 0) begin
         	    			data = test_data[7:0];
-        	    			test_queue.push_front(test_data);
+        	    			if(k>=319) begin
+        	    				test_queue.push_front(test_data);
+        	    			end
+        	    		end
+        	    		else begin
+        	    			test_data = $urandom;
+        	    			data      = { {4{1'b1}}, test_data[11:8]};
         	    		end
         	    	end
         	    end
@@ -103,6 +103,7 @@ module capture_tb();
         	end
         end
         #1us
+        $display("Test passed for given parameters!");
         $finish;
 	end
 
@@ -110,10 +111,44 @@ module capture_tb();
 	always@(posedge clk) begin
 		if(o_wr) begin
 			test_expected = test_queue.pop_back();
-			$display("Expected data: %h, Actual data: %h", test_expected, o_wdata);
 			assert(o_wdata == test_expected)
-			else $error("Checking failed: Expected data = %h, Actual data = %h", test_expected, o_wdata);
+			else begin
+				$error("Checking failed: Expected data = %h, Actual data = %h", test_expected, o_wdata);
+				$stop;
+			end 
 		end
 	end
+
+// check that the correct number of pixels is being written to obuf
+	integer t_rowCount = 0;
+	logic   t_valid = 0;
+	always@(posedge clk) begin
+		if($rose(href)) begin
+			t_valid <= 1;
+		end
+	end
+
+	always@(posedge clk) begin
+		if($rose(href)&&t_valid) begin
+			assert(t_rowCount == 480) 
+			else begin
+				$error("Incorrect number of pixels written!");
+				@(negedge clk);
+				$stop;
+			end
+			t_rowCount = 0;
+		end
+		else if(o_wr) begin
+			t_rowCount = t_rowCount+1;
+		end
+
+		assert(t_rowCount <= 480)
+		else begin
+			$error("Excess pixels written!");
+			@(negedge clk);
+			$stop;
+		end
+	end
+	
 
 endmodule
