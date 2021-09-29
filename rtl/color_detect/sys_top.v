@@ -54,14 +54,14 @@ module sys_top
 	wire        o_scl, o_sda;
 	wire        sof;
 	wire        cam_obuf_rd;
-	wire [11:0] cam_obuf_rdata;
+	wire [15:0] cam_obuf_rdata;
 	wire        cam_obuf_almostempty;
 	wire        cfg_done;
 
 
 // Display Interface
 	wire [18:0] framebuf_raddr;
-	wire [11:0] framebuf_rdata;
+	wire [15:0] framebuf_rdata;
 
 // =============================================================
 // 			          Implementation:
@@ -180,8 +180,8 @@ module sys_top
     //                 Memory Interface:
     //---------------------------------------------------
 	mem_interface 
-	#(.DATA_WIDTH (12),
-	  .BRAM_DEPTH (307200) 
+	#(.DATA_WIDTH (16),
+	  .BRAM_DEPTH (230400) 
 	 )
 	mem_i(
 	.i_clk         (i_sysclk               ), // 125 MHz board clock

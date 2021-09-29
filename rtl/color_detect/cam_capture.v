@@ -23,13 +23,13 @@ module capture
     
 	// FIFO write interface   
 	output reg         o_wr,       // fifo write enable
-	output reg  [11:0] o_wdata,    // fifo write data; {red, green, blue}
+	output reg  [15:0] o_wdata,    // fifo write data; {red, green, blue}
 
 	output wire        o_sof       // start of frame flag
 	);
 
 	reg        nxt_wr;
-	reg [11:0] nxt_wdata;
+	reg [15:0] nxt_wdata;
 	reg [7:0]  byte1_data, nxt_byte1_data;
 
 	reg        pixel_half, nxt_pixel_half;
@@ -108,12 +108,12 @@ module capture
 
 						// pixel capture: byte 2
 						nxt_wr    = (counterX >= 160);
-						nxt_wdata = {byte1_data[3:0], i_data};
+						nxt_wdata = {byte1_data, i_data};
 					end
 					else begin           
 						// pixel capture: byte 1
 						nxt_wr              = 0;
-						nxt_byte1_data[3:0] = i_data[3:0];
+						nxt_byte1_data      = i_data;
 					end       
 				end
 				else begin
@@ -134,7 +134,12 @@ module capture
 			pixel_half   <= 0;
 			counterX     <= 0;
 			counterY     <= 0;
-			STATE        <= STATE_INITIAL;
+
+			`ifdef XILINX_SIMULATOR
+				STATE <= STATE_ACTIVE;
+			`elsif 
+				STATE <= STATE_INITIAL;
+			`endif
 		end
 		else begin
 			o_wr         <= nxt_wr;

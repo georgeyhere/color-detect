@@ -30,8 +30,8 @@ module cfg_rom
                 4:  o_data <= 16'h0C_00; // COM3,     default settings
                 5:  o_data <= 16'h3E_00; // COM14,    no scaling, normal pclock
                 6:  o_data <= 16'h04_00; // COM1,     disable CCIR656
-                7:  o_data <= 16'h8c_02; // RGB444,   RGB444, {xR} {GB} sequence
-                8:  o_data <= 16'h40_d0; // COM15,    RGB444, full output range
+                7:  o_data <= 16'h69_06; // GFIX,     RGB gain
+                8:  o_data <= 16'h40_d0; // COM15,    RGB565, full output range
                 9:  o_data <= 16'h3a_04; // TSLB      set correct output data sequence (magic)
                 10: o_data <= 16'h14_18; // COM9      MAX AGC value x4
                 11: o_data <= 16'h4F_B3; // MTX1      all of these are magical matrix coefficients
@@ -101,10 +101,7 @@ module cfg_rom
                 72: o_data <= 16'ha9_90; // HAECC6
                 73: o_data <= 16'haa_94; // HAECC7
                 74: o_data <= 16'h13_a7; // COM8, enable AGC / AEC
-                75: o_data <= 16'h1E_23; // mirror image
-                //76: o_data <= 16'h70_80; // test pattern enable x
-                //77: o_data <= 16'h71_FF; // test pattern enable y
-                76: o_data <= 16'h69_06;
+                75: o_data <= 16'h1E_23; // MFVP, mirror image
                 default: o_data <= 16'hFF_FF;  //mark end of ROM
 			endcase
 		end

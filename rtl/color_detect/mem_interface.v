@@ -91,7 +91,7 @@ module mem_interface
 			WSTATE_ACTIVE: begin
 				nxt_rd        = (!i_almostempty);
 				nxt_mem_wr    = (!i_almostempty);
-				nxt_mem_waddr = (mem_waddr == 307199) ? 0:mem_waddr+1;
+				nxt_mem_waddr = (mem_waddr == BRAM_DEPTH-1) ? 0:mem_waddr+1;
 				if(i_almostempty) begin
 					NEXT_WSTATE = WSTATE_IDLE;
 				end

@@ -12,9 +12,9 @@ module capture_tb();
 	logic [7:0]  data;
 
 	logic        o_wr;
-	logic [11:0] o_wdata;
+	logic [15:0] o_wdata;
 
-	logic [11:0] test_data;
+	
 
 // DUT Instantiation
 //
@@ -40,8 +40,9 @@ module capture_tb();
 	localparam ROWLENGTH = 640;
 
 	integer k;
-	logic [11:0] test_queue[$];
-	logic [11:0] test_expected;
+	logic [15:0] test_data;
+	logic [15:0] test_queue[$];
+	logic [15:0] test_expected;
 
 	always#(21) clk = ~clk;
 
@@ -84,7 +85,7 @@ module capture_tb();
         	    		if(k==0) begin
         	    			href = 1;
         	    			test_data = $urandom;
-        	    			data      = { {4{1'b1}}, test_data[11:8]};
+        	    			data      = test_data[15:8];
         	    		end
         	    		else if(k%2 == 0) begin
         	    			data = test_data[7:0];
@@ -94,7 +95,7 @@ module capture_tb();
         	    		end
         	    		else begin
         	    			test_data = $urandom;
-        	    			data      = { {4{1'b1}}, test_data[11:8]};
+        	    			data      = test_data[15:8];
         	    		end
         	    	end
         	    end
