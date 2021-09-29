@@ -1,4 +1,5 @@
 module display_interface 
+	#(parameter FBUF_DEPTH = 307200)
 	(
 	input  wire        i_p_clk,
 	input  wire        i_tmds_clk,
@@ -6,8 +7,8 @@ module display_interface
 	input  wire        i_mode,
 
 	// frame buffer interface
-    output reg  [18:0] o_raddr,
-    input  wire [11:0] i_rdata,
+    output reg  [17:0] o_raddr,
+    input  wire [15:0] i_rdata,
 
 	// TMDS out
 	output wire [3:0]  o_TMDS_P,
@@ -27,8 +28,8 @@ module display_interface
 	reg  [1:0]  STATE, NEXT_STATE;
 	localparam  STATE_INITIAL = 0,
 	            STATE_DELAY   = 1,
-	            STATE_IDLE    = 3,
-	            STATE_ACTIVE  = 2;
+	            STATE_IDLE    = 2,
+	            STATE_ACTIVE  = 3;
 
 
 // =============================================================
@@ -41,15 +42,21 @@ module display_interface
 
 	// assign rgb based on mode; rgb or greyscale
 	always@* begin
+		red   = 8'hFF;
+		green = 8'hFF;
+		blue  = 8'hFF;
 		if(i_mode) begin
-			red   = {i_rdata[11:4], 4'b0};
-			green = {i_rdata[11:4], 4'b0};
-			blue  = {i_rdata[11:4], 4'b0};
+			red   = i_rdata;
+			green = i_rdata;
+			blue  = i_rdata;
 		end
 		else begin
-			red   = {i_rdata[11:8], {4'b1} };
-			green = {i_rdata[7:4],  {4'b1} }; 
-			blue  = {i_rdata[3:0],  {4'b1} }; 
+			// read from frame buffer
+			if((counterX>=159)&&(counterX<640)&&(counterY<480)) begin
+				red   = {i_rdata[15:11], 3'b111 }; // 5 bits of red
+				green = {i_rdata[10:5],  2'b11 }; // 6 bits of green
+				blue  = {i_rdata[4:0],   3'b111 }; // 5 bits of blue
+			end
 		end
 	end
 
@@ -59,7 +66,7 @@ module display_interface
 		NEXT_STATE = STATE;
 		case(STATE)
 
-			// wait 2 frames for camera configuration on reset/startup
+		// wait 2 frames for camera configuration on reset/startup
 			STATE_INITIAL: begin
 				NEXT_STATE = ((counterX == 640) && (counterY == 480)) ? STATE_DELAY:STATE_INITIAL;
 			end
@@ -68,8 +75,9 @@ module display_interface
 				NEXT_STATE = ((counterX == 640) && (counterY == 480)) ? STATE_ACTIVE:STATE_DELAY;
 			end
 
+		// Idle state
 			STATE_IDLE: begin
-				if((counterX == 799)&&((counterY==524)||(counterY<480))) begin
+				if((counterX == 159)&&(counterY<480)) begin
 					nxt_raddr  = o_raddr + 1;
 					NEXT_STATE = STATE_ACTIVE;
 				end
@@ -78,17 +86,15 @@ module display_interface
 				end
 			end
 
-			// normal operation: begin reading from frame buffer at start of frame
+		// Read frame buffer state
 			STATE_ACTIVE: begin
 				if(active && (counterX < 639)) begin
-					nxt_raddr = (o_raddr == 307199) ? 0:o_raddr+1;
+					nxt_raddr = (o_raddr == FBUF_DEPTH-1) ? 0:o_raddr+1;
 				end
 				else begin
 					NEXT_STATE = STATE_IDLE;
 				end
 			end
-
-
 		endcase
 	end
 
@@ -96,8 +102,12 @@ module display_interface
 	always@(posedge i_p_clk) begin
 		if(!i_rstn) begin
 			o_raddr <= 0;
-			//STATE   <= STATE_INITIAL;
-			STATE <= STATE_DELAY;
+
+			`ifdef XILINX_SIMULATOR
+			    STATE <= STATE_IDLE;
+			`elsif 
+				STATE <= STATE_INITIAL;
+			`endif
 		end
 		else begin
 			o_raddr <= nxt_raddr;

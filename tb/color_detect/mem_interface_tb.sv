@@ -8,19 +8,20 @@ module mem_interface_tb ();
 	logic i_req;
 
 	logic o_rd;
-	logic [11:0] i_rdata;
+	logic [15:0] i_rdata;
     logic i_almostempty;
 
-    logic [18:0] i_raddr;
-    logic [11:0] o_rdata;
+    logic [17:0] i_raddr;
+    logic [15:0] o_rdata;
 
-	mem_interface DUT
+	mem_interface 
+	#(.DATA_WIDTH(16),
+	  .BRAM_DEPTH(230400))
+	DUT
 	(
     .i_clk        (i_clk),
     .i_rstn       (i_rstn),
     .i_flush      (i_flush),
-     
-    .i_req        (i_req),
      
     .o_rd         (o_rd),
     .i_rdata      (i_rdata),
@@ -32,9 +33,9 @@ module mem_interface_tb ();
 	);
 
 	integer i, j, k;
-	logic [11:0] test_queue[$];
-	logic [11:0] test_expected;
-	logic [18:0] test_counter;
+	logic [15:0] test_queue[$];
+	logic [15:0] test_expected;
+	logic [17:0] test_counter;
 	logic        v_past1_almostfull;
 	logic        v_past2_almostfull;
 
@@ -62,7 +63,7 @@ module mem_interface_tb ();
 		#100;
 
 		// write to entire frame buffer in 10-pixel bursts
-		for(i=0; i<30720; i=i+1) begin
+		for(i=0; i<23040; i=i+1) begin
 			@(posedge i_clk) i_almostempty <= 0;
 			repeat(9) @(posedge i_clk);
 			@(posedge i_clk) i_almostempty <= 1;
@@ -73,7 +74,7 @@ module mem_interface_tb ();
 
 		// read back the frame buffer and check that data matches
 		//@(posedge disp_clk) i_raddr <= i_raddr+1;
-		for(i=0; i<307199; i=i+1) begin
+		for(i=0; i<230399; i=i+1) begin
 			@(posedge disp_clk) begin
 				i_raddr <= i_raddr + 1;
 			end
@@ -107,11 +108,11 @@ module mem_interface_tb ();
 	A_mem_wr_chk: assert property(mem_wr_chk);
 	
 // check that no write addresses are skipped
-	logic [18:0] t_prev_waddr;
+	logic [17:0] t_prev_waddr;
 	always@(posedge i_clk) begin
 		if(DUT.mem_wr) t_prev_waddr <= DUT.mem_waddr;
 		if(i_rstn) begin
-			if(DUT.mem_wr && (t_prev_waddr!=0) && (t_prev_waddr != 307199)) begin
+			if(DUT.mem_wr && (t_prev_waddr!=0) && (t_prev_waddr != 230399)) begin
 				assert(DUT.mem_waddr == t_prev_waddr+1)
 				else $error("Write address skipped!");
 			end
@@ -121,8 +122,9 @@ module mem_interface_tb ();
 // block ram write address should never exceed bounds
 	property mem_wraddrBounds_chk;
 		@(posedge i_clk) disable iff(!i_rstn)
-			DUT.mem_waddr < 307200;
+			DUT.mem_waddr < 230400;
 	endproperty
-	A_mem_wraddrBounds_chk: assert property(mem_wraddrBounds_chk);
+	A_mem_wraddrBounds_chk: assert property(mem_wraddrBounds_chk)
+		else $stop;
 
 endmodule

@@ -3,24 +3,23 @@
 //
 module mem_interface
 	#(
-    parameter DATA_WIDTH = 12,
-    parameter FILL_WIDTH = 10,
-	parameter BRAM_DEPTH = 307200
+    parameter DATA_WIDTH = 16,
+	parameter BRAM_DEPTH = 230400
 	)
 	(
-	input wire                   i_clk,        // 125 MHz board clock
-	input wire                   i_rstn,       // sync active low reset
-    input wire                   i_flush,      
+	input wire                           i_clk,        // 125 MHz board clock
+	input wire                           i_rstn,       // sync active low reset
+    input wire                           i_flush,      
 
 	// Input interface
-	output reg                   o_rd,
-	input  wire [DATA_WIDTH-1:0] i_rdata,
-	input  wire                  i_almostempty,
+	output reg                           o_rd,
+	input  wire [DATA_WIDTH-1:0]         i_rdata,
+	input  wire                          i_almostempty,
  
 	// Frame buffer output interface
-	input  wire                  i_rclk,
-	input  wire [18:0]           i_raddr,
-	output wire [DATA_WIDTH-1:0] o_rdata    
+	input  wire                          i_rclk,
+	input  wire [$clog2(BRAM_DEPTH)-1:0] i_raddr,
+	output wire [DATA_WIDTH-1:0]         o_rdata    
 	);
 
 
@@ -49,7 +48,8 @@ module mem_interface
 // 			         Submodule Instantiation:
 // =============================================================
 	mem_bram
-	#(.BRAM_DEPTH(BRAM_DEPTH))
+	#(.BRAM_WIDTH(DATA_WIDTH),
+	  .BRAM_DEPTH(BRAM_DEPTH))
 	mem_bram_i (
 	.i_wclk     (i_clk     ),
     .i_wportEn  (1'b1      ),  

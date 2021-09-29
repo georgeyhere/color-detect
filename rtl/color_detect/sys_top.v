@@ -35,6 +35,10 @@ module sys_top
 // =============================================================
 // 			    Parameters, Registers, and Wires
 // =============================================================
+	localparam PIXEL_WIDTH       = 16;
+	localparam FRAMEBUFFER_DEPTH = 230400;
+
+
 // DCM
 	wire        clk_25MHz;
 	wire        clk_250MHz;
@@ -60,7 +64,7 @@ module sys_top
 
 
 // Display Interface
-	wire [18:0] framebuf_raddr;
+	wire [17:0] framebuf_raddr;
 	wire [15:0] framebuf_rdata;
 
 // =============================================================
@@ -73,8 +77,8 @@ module sys_top
 // **** Debounce Reset button ****
 // -> debounced in camera pclk domain (24MHz)
 	debounce 
-	//#(.DB_COUNT(476190))    // 20ms debounce period
-	#(.DB_COUNT(1))    // 20ms debounce period
+	#(.DB_COUNT(476190))    // 20ms debounce period
+	//#(.DB_COUNT(1))    
 	db_inst (
 	.i_clk   (i_cam_pclk ),
 	.i_input (~i_rst     ),
@@ -180,8 +184,8 @@ module sys_top
     //                 Memory Interface:
     //---------------------------------------------------
 	mem_interface 
-	#(.DATA_WIDTH (16),
-	  .BRAM_DEPTH (230400) 
+	#(.DATA_WIDTH (PIXEL_WIDTH),
+	  .BRAM_DEPTH (FRAMEBUFFER_DEPTH) 
 	 )
 	mem_i(
 	.i_clk         (i_sysclk               ), // 125 MHz board clock
@@ -205,6 +209,7 @@ module sys_top
     //                 Display Interface:
     //---------------------------------------------------
 	display_interface 
+	#(.FBUF_DEPTH(FRAMEBUFFER_DEPTH))
 	display_i(
     .i_p_clk       (clk_25MHz       ), // 25 MHz display clock
     .i_tmds_clk    (clk_250MHz      ), // 250 MHz TMDS clock
