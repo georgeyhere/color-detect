@@ -88,14 +88,14 @@ module capture_tb();
         	    			data      = test_data[15:8];
         	    		end
         	    		else if(k%2 == 0) begin
-        	    			data = test_data[7:0];
-        	    			if(k>=319) begin
-        	    				test_queue.push_front(test_data);
-        	    			end
-        	    		end
-        	    		else begin
         	    			test_data = $urandom;
         	    			data      = test_data[15:8];
+        	    		end
+        	    		else begin
+        	    			data = test_data[7:0];
+        	    			if(k>=320) begin
+        	    				test_queue.push_front(test_data);
+        	    			end
         	    		end
         	    	end
         	    end

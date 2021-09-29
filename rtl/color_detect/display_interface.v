@@ -40,26 +40,6 @@ module display_interface
 		STATE = STATE_INITIAL;
 	end
 
-	// assign rgb based on mode; rgb or greyscale
-	always@* begin
-		red   = 8'hFF;
-		green = 8'hFF;
-		blue  = 8'hFF;
-		if(i_mode) begin
-			red   = i_rdata;
-			green = i_rdata;
-			blue  = i_rdata;
-		end
-		else begin
-			// read from frame buffer
-			if((counterX>=159)&&(counterX<640)&&(counterY<480)) begin
-				red   = {i_rdata[15:11], 3'b111 }; // 5 bits of red
-				green = {i_rdata[10:5],  2'b11 }; // 6 bits of green
-				blue  = {i_rdata[4:0],   3'b111 }; // 5 bits of blue
-			end
-		end
-	end
-
 	// next state combo logic
 	always@* begin
 		nxt_raddr  = o_raddr;
@@ -102,18 +82,47 @@ module display_interface
 	always@(posedge i_p_clk) begin
 		if(!i_rstn) begin
 			o_raddr <= 0;
-
-			`ifdef XILINX_SIMULATOR
-			    STATE <= STATE_IDLE;
-			`elsif 
-				STATE <= STATE_INITIAL;
-			`endif
+			STATE   <= STATE_INITIAL;
 		end
 		else begin
 			o_raddr <= nxt_raddr;
 			STATE   <= NEXT_STATE;
 		end
 	end
+
+// 
+	// assign rgb based on mode; rgb or greyscale
+	always@* begin
+		red   = 8'h0;
+		green = 8'h0;
+		blue  = 8'h0;
+		if(i_mode) begin
+			red   = i_rdata;
+			green = i_rdata;
+			blue  = i_rdata;
+		end
+		else begin
+			// read from frame buffer
+			if((counterX>=159)&&(counterX<640)&&(counterY<480)) begin
+				red   = {i_rdata[15:11], 3'b111 }; // 5 bits of red
+				green = {i_rdata[10:5],  2'b11 }; // 6 bits of green
+				blue  = {i_rdata[4:0],   3'b111 }; // 5 bits of blue
+			end
+			else if((counterX==60)&&(counterY>153)&&(counterY<278)) begin
+				{red, green, blue} = 24'hffffff;
+			end
+			else if((counterX==100)&&(counterY>153)&&(counterY<278)) begin
+				{red, green, blue} = 24'hffffff;
+			end
+			else if((counterY==195)&&(counterX>19)&&(counterX<141)) begin
+				{red, green, blue} = 24'hffffff;
+			end
+			else if((counterY==236)&&(counterX>19)&&(counterX<141)) begin
+				{red, green, blue} = 24'hffffff;
+			end
+		end
+	end
+
 
 //
 //

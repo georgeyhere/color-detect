@@ -84,7 +84,7 @@ module capture
 			// camera not outputting 
 			STATE_IDLE: begin
 				nxt_wr         = 0;
-				nxt_pixel_half = 1;
+				nxt_pixel_half = 0;
 				nxt_byte1_data = 0;
 				nxt_wdata      = 0;
 				nxt_counterX   = 0;
@@ -99,7 +99,6 @@ module capture
 					nxt_pixel_half = ~nxt_pixel_half;
 
 					if(pixel_half) begin 
-
 						// pixel coordinate counter
 						nxt_counterX = (counterX == 639) ? 0:counterX+1;   
 						if(counterX == 639) begin
@@ -116,10 +115,6 @@ module capture
 						nxt_byte1_data      = i_data;
 					end       
 				end
-				else begin
-					nxt_pixel_half = 1;
-					nxt_byte1_data = 0;
-				end
 				NEXT_STATE = (vsync_posedge) ? STATE_IDLE : STATE_ACTIVE;
 			end
 
@@ -134,12 +129,7 @@ module capture
 			pixel_half   <= 0;
 			counterX     <= 0;
 			counterY     <= 0;
-
-			`ifdef XILINX_SIMULATOR
-				STATE <= STATE_ACTIVE;
-			`elsif 
-				STATE <= STATE_INITIAL;
-			`endif
+			STATE        <= STATE_INITIAL;
 		end
 		else begin
 			o_wr         <= nxt_wr;
