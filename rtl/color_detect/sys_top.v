@@ -1,6 +1,7 @@
 `default_nettype none
 //
 module sys_top 
+	`include "colorDetect_definitions.vh"
 	(
     input  wire       i_sysclk,    // 125 MHz board clock
     input  wire       i_rst,       // active-high board button
@@ -214,11 +215,21 @@ module sys_top
     .i_p_clk       (clk_25MHz       ), // 25 MHz display clock
     .i_tmds_clk    (clk_250MHz      ), // 250 MHz TMDS clock
     .i_rstn        (db_rstn         ), 
-    .i_mode        (sys_mode        ), // mode; color or greyscale
  	
  	// frame buffer read interface
    	.o_raddr       (framebuf_raddr  ),
    	.i_rdata       (framebuf_rdata  ),
+
+   	// color detection interface
+   	.i_color0      (`DT_RED   ),
+   	.i_color1      (`DT_ORNGE ),
+   	.i_color2      (`DT_YLLW  ),
+   	.i_color3      (`DT_GRN   ),
+   	.i_color4      (`DT_BLU   ),
+   	.i_color5      (`DT_WHT   ),
+   	.i_color6      (`DT_RED   ),
+   	.i_color7      (`DT_RED   ),
+   	.i_color8      (`DT_GRN   ),
 
     // TMDS out   
     .o_TMDS_P      (o_TMDS_P        ), // HDMI outputs

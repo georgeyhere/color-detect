@@ -95,16 +95,12 @@ module capture
 			// camera outputting display data
 			STATE_ACTIVE: begin
 				if(i_href) begin
-
-					nxt_pixel_half = ~nxt_pixel_half;
+					nxt_pixel_half = ~pixel_half;
 
 					if(pixel_half) begin 
 						// pixel coordinate counter
 						nxt_counterX = (counterX == 639) ? 0:counterX+1;   
-						if(counterX == 639) begin
-							nxt_counterY = (counterY == 479) ? 0:counterY+1;
-						end
-
+						
 						// pixel capture: byte 2
 						nxt_wr    = (counterX >= 160);
 						nxt_wdata = {byte1_data, i_data};
@@ -128,7 +124,6 @@ module capture
 			byte1_data   <= 0;
 			pixel_half   <= 0;
 			counterX     <= 0;
-			counterY     <= 0;
 			STATE        <= STATE_INITIAL;
 		end
 		else begin
@@ -137,7 +132,6 @@ module capture
 			byte1_data   <= nxt_byte1_data;
 			pixel_half   <= nxt_pixel_half;
 			counterX     <= nxt_counterX;
-			counterY     <= nxt_counterY;
 			STATE        <= NEXT_STATE;
 		end
 	end

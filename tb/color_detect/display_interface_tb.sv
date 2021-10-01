@@ -24,6 +24,16 @@ module display_interface_tb();
     .o_raddr    (o_raddr),
     .i_rdata    (i_rdata),
 
+    .i_color0   (),
+   	.i_color1   (),
+   	.i_color2   (),
+   	.i_color3   (),
+   	.i_color4   (),
+   	.i_color5   (),
+   	.i_color6   (),
+   	.i_color7   (),
+   	.i_color8   (),
+
     .o_TMDS_P   (o_TMDS_P),
     .o_TMDS_N   (o_TMDS_N)
 	);
