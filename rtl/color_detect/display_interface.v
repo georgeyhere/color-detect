@@ -110,17 +110,18 @@ module display_interface
 	always@* begin
 		{red, green, blue} = `RGB_BLK;
 
-	// Video Overlay
+	// Video Overlay Outline
 		if( ((counterX>158)&&(counterX<640)&&(counterY==0))   ||
 			     ((counterX>158)&&(counterX<640)&&(counterY==479)) ||
 			     ((counterX==159)&&(counterY<480)) ||
 			     ((counterX==639)&&(counterY<480)) ) begin
 			{red, green, blue} = `RGB_WHT;
 		end
-		else if( ((counterX>158)&&(counterX<640)&&(counterY>156)&&(counterY<164)) ||
-			((counterX>158)&&(counterX<640)&&(counterY>316)&&(counterY<324)) ||
-			((counterX>316)&&(counterX<324)) ||
-			((counterX>476)&&(counterX<484)) ) begin
+	// Video Overlay Reticle
+		else if( ((counterX>158)&&(counterX<640)&&(counterY>157)&&(counterY<163)) ||
+			     ((counterX>158)&&(counterX<640)&&(counterY>317)&&(counterY<323)) ||
+			     ((counterX>315)&&(counterX<323)) ||
+			     ((counterX>475)&&(counterX<483)) ) begin
 			{red, green, blue} = `RGB_WHT;
 		end
 		
