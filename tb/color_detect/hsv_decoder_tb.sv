@@ -7,6 +7,7 @@ module hsv_decoder_tb();
 	logic [15:0] i_data;
 	logic        i_valid;
 
+	logic [8:0] o_hsv_value;
 	logic [8:0] o_dividend, o_divisor;
 	logic       o_valid;
 	logic [1:0] o_function;
@@ -18,11 +19,12 @@ module hsv_decoder_tb();
     .i_data           (i_data),
     .i_valid          (i_valid),
 
+    .o_hsv_value      (o_hsv_value),
+
     .o_dividend       (o_dividend),
-    .o_dividend_valid (o_dividend_valid),
-    .o_divisor        (o_divisor),
-    .o_divisor_valid  (o_divisor_valid),
-    .o_function       (o_function)
+    .o_delta          (o_divisor),
+    .o_function       (o_function),
+    .o_valid          (o_valid)
 	);
 
 	always#(4) clk = ~clk;

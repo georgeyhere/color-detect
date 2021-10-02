@@ -3,8 +3,10 @@ module hsv_top_tb ();
 	logic        i_clk, i_rstn;
 	logic [15:0] i_data;
 	logic        i_valid;
-	logic [15:0] o_data;
+	logic [15:0] o_hue;
 	logic        o_valid;
+	logic [15:0] o_sat;
+	logic [7:0]  o_value;
 
 	hsv_top DUT
 	(
@@ -12,7 +14,9 @@ module hsv_top_tb ();
     .i_rstn  (i_rstn),
     .i_data  (i_data),
     .i_valid (i_valid),
-    .o_data  (o_data),
+    .o_hue   (o_hue),
+    .o_sat   (o_sat),
+    .o_value (o_value),
     .o_valid (o_valid)
 	);
 

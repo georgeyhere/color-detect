@@ -3,6 +3,10 @@
 // This module divides the dividend by the divisor generated 
 // by hue_stage0 and propagates the sign bit down the pipeline.
 //
+// It uses 16-bit fixed point with 6 bits of fractional remainder.
+// The divide is unsigned, but the sign bit is appended onto the
+// output of the module.
+//
 module hue_stage0 
 	#(parameter DIVIDE_LATENCY = 16)
 	(
@@ -87,7 +91,7 @@ module hue_stage0
 
 
 // 
-	div_gen_0 DUT(
+	div_gen_0 hue_divider(
 	.s_axis_dividend_tdata  (dividend),
     .s_axis_dividend_tvalid (i_valid),
 
