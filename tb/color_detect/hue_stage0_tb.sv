@@ -1,141 +1,72 @@
 //
 //
+//
 module hue_stage0_tb();
 
-	logic clk, rstn;
 
-	logic [15:0] i_data;
+	logic        i_clk, i_rstn;
+	logic [8:0]  i_dividend, i_divisor;
+	logic [1:0]  i_function;
 	logic        i_valid;
 
-	logic [8:0] o_dividend, o_divisor;
-	logic       o_valid;
-	logic [1:0] o_function;
+	logic [15:0] o_data;
+	logic        o_valid;
 
-	hue_stage0 DUT(
-    .i_clk            (clk),
-    .i_rstn           (rstn),
-         
-    .i_data           (i_data),
-    .i_valid          (i_valid),
+	always#(4) i_clk = ~i_clk;
 
-    .o_dividend       (o_dividend),
-    .o_dividend_valid (o_dividend_valid),
-    .o_divisor        (o_divisor),
-    .o_divisor_valid  (o_divisor_valid),
-    .o_function       (o_function)
+	hue_stage0
+	#(.DIVIDE_LATENCY(16))
+	DUT
+	(
+    .i_clk      (i_clk),
+    .i_rstn     (i_rstn),
+
+    .i_dividend (i_dividend),
+    .i_divisor  (i_divisor),
+    .i_function (i_function),
+    .i_valid    (i_valid),
+
+    .o_data     (o_data),
+    .o_valid    (o_valid)
 	);
 
-	always#(4) clk = ~clk;
-
-	logic [15:0] test_data;
-	logic [7:0] test_red_queue [$];
-	logic [7:0] test_grn_queue [$];
-	logic [7:0] test_blu_queue [$];
-	logic [7:0] t_red, t_grn, t_blu;
-	integer i;
-
-	task genData;
+	task divide;
+		input [8:0] t_dividend;
+		input [8:0] t_divisor;
 		begin
-			@(posedge clk) begin
-				test_data  = $urandom;
-				i_data     <= test_data;
+			@(posedge i_clk) begin
+				i_dividend <= t_dividend;
+				i_divisor  <= t_divisor;
+				i_function <= $urandom_range(1,3);
 				i_valid    <= 1;
-				test_red_queue.push_front({test_data[4:0],  3'b0});
-				test_grn_queue.push_front({test_data[10:5], 2'b0});
-				test_blu_queue.push_front({test_data[15:11],3'b0});
-			end
-			@(posedge clk) begin
-				i_data  <= 0;
-				i_valid <= 0;
+			end			
+			@(posedge i_clk) begin
+				i_dividend <= 0;
+				i_divisor  <= 0;
+				i_function <= 0;
+				i_valid    <= 0;
 			end
 		end
 	endtask
 
-	always@(negedge clk) begin
-		if(o_valid) begin
-			t_red = test_red_queue.pop_back();
-			t_grn = test_grn_queue.pop_back();
-			t_blu = test_blu_queue.pop_back();
-			$display("Inputs: |Red: %d |Green: %d |Blue: %d", t_red, t_grn, t_blu);
-			$display("Outputs: |Dividend: %d |Divisor: %d", $signed(o_dividend), $signed(o_divisor));
-			$display("Function: %d", o_function);
-			if(o_function == 1) begin
-				assert((t_red>=t_grn)&&(t_red>=t_blu))
-				else $stop;
-			end
-			if(o_function == 2) begin
-				assert((t_grn>=t_red)&&(t_grn>=t_blu))
-				else $stop;
-			end
-			if(o_function == 3) begin
-				assert((t_blu>=t_red)&&(t_blu>=t_grn))
-				else $stop;
-			end
-			#1;
-			case(o_function)
-				0: begin
-					assert(-1);
-					$stop;
-				end
-
-				1: begin
-					assert(o_dividend == t_grn-t_blu)
-					else $stop;
-					if(t_grn > t_blu) begin
-						assert(o_divisor == t_red-t_blu)
-						else $stop;
-					end
-					else begin
-						assert(o_divisor == t_red-t_grn)
-						else $stop;
-					end
-				end
-
-				2: begin
-					assert(o_dividend == t_blu-t_red)
-					else $stop;
-					if(t_blu > t_red) begin
-						assert(o_divisor == t_grn-t_red)
-						else $stop;
-					end
-					else begin
-						assert(o_divisor == t_grn-t_blu)
-						else $stop;
-					end
-				end
-
-				3: begin
-					assert(o_dividend == t_red-t_grn)
-					else $stop;
-					if(t_grn > t_red) begin
-						assert(o_divisor == t_blu-t_red)
-						else $stop;
-					end
-					else begin
-						assert(o_divisor == t_blu-t_grn)
-						else $stop;
-					end
-				end
-			endcase
-		end
-	end
-
 	initial begin
-		clk     = 0;
-		rstn    = 0;
+		i_clk = 0;
+		i_rstn = 0;
+		i_dividend = 0;
+		i_divisor = 0;
 		i_valid = 0;
-		i_data  = 0;		
+
 		#100;
-
-		rstn = 1;
-
-		for(i=0; i<20; i++) begin
-			genData();
-		end
-
-		repeat(3) @(posedge clk);
-		$display("Test Passed!");
-		$stop;
+		i_rstn = 1;
+		#100;
+		divide(-5, 2);
+		divide(1,3);
+		divide(0,3);
+		divide(25,0);
+		divide(-42,0);
+		divide(3,2);
+		repeat(16) @(posedge i_clk);
+		divide(-10,3);
 	end
 
 

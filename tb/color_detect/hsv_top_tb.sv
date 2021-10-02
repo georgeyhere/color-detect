@@ -1,4 +1,4 @@
-module hue_top_tb ();
+module hsv_top_tb ();
 
 	logic        i_clk, i_rstn;
 	logic [15:0] i_data;
@@ -6,7 +6,7 @@ module hue_top_tb ();
 	logic [15:0] o_data;
 	logic        o_valid;
 
-	hue_top DUT
+	hsv_top DUT
 	(
     .i_clk   (i_clk),
     .i_rstn  (i_rstn),

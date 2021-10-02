@@ -2,7 +2,7 @@
 //
 //
 //
-module hue_top
+module hsv_top
 	(
     input  wire        i_clk,   // 
     input  wire        i_rstn,  // sync active-low reset
@@ -25,8 +25,8 @@ module hue_top
 	wire [1:0]  stg1_function;
 	wire        stg1_valid;
 
-// PIPELINE STAGE 0
-	hue_stage0 hue0_i (
+// DECODER
+	hsv_decoder hsv_decode_i (
     .i_clk      (i_clk),
     .i_rstn     (i_rstn),
  	
@@ -41,7 +41,7 @@ module hue_top
     .o_function (stg0_function)
 	);
 
-// PIPELINE STAGE 1
+// PIPELINE STAGE 0
 	hue_stage1 hue1_i (
 	.i_clk      (i_clk),
 	.i_rstn     (i_rstn),
@@ -58,7 +58,7 @@ module hue_top
 	.o_valid    (stg1_valid)
 	);
 
-// PIPELINE STAGE 2
+// PIPELINE STAGE 1
 	hue_stage2 hue2_i (
     .i_clk      (i_clk),
     .i_rstn     (i_rstn),

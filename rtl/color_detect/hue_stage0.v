@@ -1,92 +1,105 @@
 // module: hue_stage0
 //
-// This module compares RGB values and selects the correct function
-// depending on which is the greatest, then generates the divisor
-// and dividend for the next stage.
+// This module divides the dividend by the divisor generated 
+// by hue_stage0 and propagates the sign bit down the pipeline.
 //
-module hue_stage0
+module hue_stage0 
+	#(parameter DIVIDE_LATENCY = 16)
 	(
-    input  wire        i_clk,
-    input  wire        i_rstn, 
+	input  wire        i_clk,
+	input  wire        i_rstn,
 
-    // data input interface
-    input  wire [15:0] i_data,           // input RGB565 data
-    input  wire        i_valid,          // input data valid
+	// pipeline in
+	input  wire [8:0]  i_dividend, 
+	input  wire [8:0]  i_divisor,  
+    input  wire [1:0]  i_function, // chooses constants in stage 2
+    input  wire        i_valid,    // input valid flag
 
-    // output to divider generator IP
-    output reg  [8:0]  o_dividend,       // dividend
-    output reg  [8:0]  o_divisor,        // divisor 
-    output reg         o_valid,          // valid flag
-    output reg  [1:0]  o_function        // indicates greatest RGB value
+	// pipeline out
+	output reg  [15:0] o_data,     // quotient + fractional remainder
+    output reg  [1:0]  o_function, // i_function with 16 cycle delay
+	output wire        o_valid     // output valid flag
 	);
 
-// 
+//
+	reg  [7:0]  dividend, divisor;
+	wire [15:0] result;
+	wire        dbz;
 
-/*
-	wire [8:0] red   = {1'b0, i_data[4:0],   3'b0}; // insert sign bit, pad 
-	wire [8:0] green = {1'b0, i_data[10:5],  2'b0};
-	wire [8:0] blue  = {1'b0, i_data[15:11], 3'b0};
-*/
-	wire [8:0] red   = {1'b0, i_data[15:11],   3'b0}; // insert sign bit, pad 
-	wire [8:0] green = {1'b0, i_data[10:5],  2'b0};
-	wire [8:0] blue  = {1'b0, i_data[4:0], 3'b0};
+	integer i;
+	reg [0:DIVIDE_LATENCY-1] SR_SIGNBIT;
+	reg [1:0] SR_FUNCTION [0:DIVIDE_LATENCY-1];
 
-	reg [8:0] nxt_dividend, nxt_divisor;
-	reg       nxt_valid;
-	reg [1:0] nxt_function;
-
-
-// Next-State Logic
-	always@* begin
-		nxt_valid    = 0;
-		nxt_dividend = o_dividend;
-		nxt_divisor  = o_divisor;
-		nxt_function = 0;
-
-		if(i_valid) begin
-			nxt_valid = 1;
-
-		// Greatest: Red
-			if((red >= green)&&(red >= blue)) begin
-				nxt_function = 1;
-				nxt_dividend = $signed(green)-$signed(blue);
-				if(green > blue) nxt_divisor = $signed(red)-$signed(blue);
-				else             nxt_divisor = $signed(red)-$signed(green);
-			end
-
-		// Greatest: Green
-			else if((green >= red)&&(green >= blue)) begin
-				nxt_function = 2;
-				nxt_dividend = $signed(blue) - $signed(red);
-				if(blue > red) nxt_divisor = $signed(green)-$signed(red);
-				else           nxt_divisor = $signed(green)-$signed(blue);
-			end
-
-		// Greatest: Blue
-			else begin
-				nxt_function = 3;
-				nxt_dividend = $signed(red) - $signed(green);
-				if(red > green) nxt_divisor = $signed(blue)-$signed(green);
-				else            nxt_divisor = $signed(blue)-$signed(red);
-			end
-		end
-	end
-
-// Registered Logic
+// Sign Bit Shift Register
 	always@(posedge i_clk) begin
 		if(!i_rstn) begin
-			o_valid    <= 0;
-			o_dividend <= 0;
-			o_divisor  <= 0;
-			o_function <= 0;
+			SR_SIGNBIT <= {DIVIDE_LATENCY{1'b0}};
 		end
 		else begin
-			o_valid    <= nxt_valid;
-			o_dividend <= nxt_dividend;
-			o_divisor  <= nxt_divisor;
-			o_function <= nxt_function;
+			SR_SIGNBIT <= {i_dividend[8], SR_SIGNBIT[0:DIVIDE_LATENCY-2]};
 		end
 	end
 
+// Function Input Shift Register
+	always@(posedge i_clk) begin
+		if(!i_rstn) begin
+			for(i=0; i<DIVIDE_LATENCY; i=i+1) begin
+				SR_FUNCTION[i] <= 2'b0;
+			end
+		end
+		else begin
+			SR_FUNCTION[0] <= i_function;
+			for(i=1; i<DIVIDE_LATENCY; i=i+1) begin
+				SR_FUNCTION[i] <= SR_FUNCTION[i-1];
+			end
+		end
+	end
+
+	always@* begin
+		if(o_valid) o_function = SR_FUNCTION[DIVIDE_LATENCY-1];
+		else        o_function = 0;
+	end
+
+// Input Logic: Remove sign bit
+	always@* begin
+		dividend = 0;
+		divisor  = 0;
+		if(i_valid) begin
+			dividend = (i_dividend[8]) ? ~i_dividend+1'b1 : i_dividend[7:0]; 
+			divisor  = i_divisor[7:0];
+		end
+	end
+
+// Output Logic: Reapply sign bit if needed
+	always@* begin
+		if(o_valid && !dbz) begin
+			if(SR_SIGNBIT[DIVIDE_LATENCY-1]) begin
+				o_data = {SR_SIGNBIT[DIVIDE_LATENCY-1], (~result[14:0]+1'b1)};
+			end
+			else begin
+				o_data = result;
+			end
+		end
+		else begin
+			o_data = 0;
+		end
+	end
+
+
+// 
+	div_gen_0 DUT(
+	.s_axis_dividend_tdata  (dividend),
+    .s_axis_dividend_tvalid (i_valid),
+
+    .s_axis_divisor_tdata   (divisor),
+    .s_axis_divisor_tvalid  (i_valid),
+
+    .m_axis_dout_tdata      (result),
+    .m_axis_dout_tvalid     (o_valid),
+    .m_axis_dout_tuser      (dbz),
+
+    .aclk                   (i_clk),
+    .aresetn                (i_rstn)
+	); 
 
 endmodule
