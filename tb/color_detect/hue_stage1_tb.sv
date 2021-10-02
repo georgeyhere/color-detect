@@ -6,6 +6,7 @@ module hue_stage1_tb();
 
 	logic        i_clk, i_rstn;
 	logic [8:0]  i_dividend, i_divisor;
+	logic [1:0]  i_function;
 	logic        i_valid;
 
 	logic [15:0] o_data;
@@ -22,6 +23,7 @@ module hue_stage1_tb();
 
     .i_dividend (i_dividend),
     .i_divisor  (i_divisor),
+    .i_function (i_function),
     .i_valid    (i_valid),
 
     .o_data     (o_data),
@@ -35,11 +37,13 @@ module hue_stage1_tb();
 			@(posedge i_clk) begin
 				i_dividend <= t_dividend;
 				i_divisor  <= t_divisor;
+				i_function <= $urandom_range(1,3);
 				i_valid    <= 1;
 			end			
 			@(posedge i_clk) begin
 				i_dividend <= 0;
 				i_divisor  <= 0;
+				i_function <= 0;
 				i_valid    <= 0;
 			end
 		end

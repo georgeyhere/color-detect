@@ -9,13 +9,15 @@ module hue_stage1
 	input  wire        i_clk,
 	input  wire        i_rstn,
 
-	// dividend and divisor
+	// pipeline in
 	input  wire [8:0]  i_dividend,
 	input  wire [8:0]  i_divisor,
+    input  wire [1:0]  i_function,
 	input  wire        i_valid,
 
-	// output 
+	// pipeline out
 	output reg  [15:0] o_data,
+    output reg  [1:0]  o_function,
 	output wire        o_valid
 	);
 
@@ -26,20 +28,32 @@ module hue_stage1
 	
 
 	integer i;
-	reg [0:DIVIDE_LATENCY-1] SHIFTREG;
+	reg [0:DIVIDE_LATENCY-1] SR_SIGNBIT;
+	reg [1:0] SR_FUNCTION [0:DIVIDE_LATENCY-1];
+
 	always@(posedge i_clk) begin
 		if(!i_rstn) begin
-			SHIFTREG <= {DIVIDE_LATENCY{1'b0}};
+			SR_SIGNBIT <= {DIVIDE_LATENCY{1'b0}};
 		end
 		else begin
-			if(i_valid) begin
-				SHIFTREG <= {i_dividend[8], SHIFTREG[0:DIVIDE_LATENCY-2]};
+			SR_SIGNBIT <= {i_dividend[8], SR_SIGNBIT[0:DIVIDE_LATENCY-2]};
+		end
+	end
+
+	always@(posedge i_clk) begin
+		if(!i_rstn) begin
+			for(i=0; i<DIVIDE_LATENCY; i=i+1) begin
+				SR_FUNCTION[i] <= 2'b0;
 			end
-			else begin
-				SHIFTREG <= {1'b0, SHIFTREG[0:DIVIDE_LATENCY-2]};
+		end
+		else begin
+			SR_FUNCTION[0] <= i_function;
+			for(i=1; i<DIVIDE_LATENCY; i=i+1) begin
+				SR_FUNCTION[i] <= SR_FUNCTION[i-1];
 			end
 		end
 	end
+
 
 	always@* begin
 		dividend = 0;
@@ -52,11 +66,16 @@ module hue_stage1
 
 	always@* begin
 		if(o_valid && !dbz) begin
-			o_data = {SHIFTREG[DIVIDE_LATENCY-1], (~result[14:0]+1'b1)};
+			o_data = {SR_SIGNBIT[DIVIDE_LATENCY-1], (~result[14:0]+1'b1)};
 		end
 		else begin
 			o_data = 0;
 		end
+	end
+
+	always@* begin
+		if(o_valid) o_function = SR_FUNCTION[DIVIDE_LATENCY-1];
+		else        o_function = 0;
 	end
 
 	div_gen_0 DUT(
