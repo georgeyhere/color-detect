@@ -22,10 +22,14 @@ module hue_stage0
 
 // 
 
+/*
 	wire [8:0] red   = {1'b0, i_data[4:0],   3'b0}; // insert sign bit, pad 
 	wire [8:0] green = {1'b0, i_data[10:5],  2'b0};
 	wire [8:0] blue  = {1'b0, i_data[15:11], 3'b0};
-
+*/
+	wire [8:0] red   = {1'b0, i_data[15:11],   3'b0}; // insert sign bit, pad 
+	wire [8:0] green = {1'b0, i_data[10:5],  2'b0};
+	wire [8:0] blue  = {1'b0, i_data[4:0], 3'b0};
 
 	reg [8:0] nxt_dividend, nxt_divisor;
 	reg       nxt_valid;

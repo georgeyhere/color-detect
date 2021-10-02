@@ -10,27 +10,27 @@ module hue_stage1
 	input  wire        i_rstn,
 
 	// pipeline in
-	input  wire [8:0]  i_dividend,
-	input  wire [8:0]  i_divisor,
-    input  wire [1:0]  i_function,
-	input  wire        i_valid,
+	input  wire [8:0]  i_dividend, 
+	input  wire [8:0]  i_divisor,  
+    input  wire [1:0]  i_function, // chooses constants in stage 2
+    input  wire        i_valid,    // input valid flag
 
 	// pipeline out
-	output reg  [15:0] o_data,
-    output reg  [1:0]  o_function,
-	output wire        o_valid
+	output reg  [15:0] o_data,     // quotient + fractional remainder
+    output reg  [1:0]  o_function, // i_function with 16 cycle delay
+	output wire        o_valid     // output valid flag
 	);
 
+//
 	reg  [7:0]  dividend, divisor;
 	wire [15:0] result;
 	wire        dbz;
-
-	
 
 	integer i;
 	reg [0:DIVIDE_LATENCY-1] SR_SIGNBIT;
 	reg [1:0] SR_FUNCTION [0:DIVIDE_LATENCY-1];
 
+// Sign Bit Shift Register
 	always@(posedge i_clk) begin
 		if(!i_rstn) begin
 			SR_SIGNBIT <= {DIVIDE_LATENCY{1'b0}};
@@ -40,6 +40,7 @@ module hue_stage1
 		end
 	end
 
+// Function Input Shift Register
 	always@(posedge i_clk) begin
 		if(!i_rstn) begin
 			for(i=0; i<DIVIDE_LATENCY; i=i+1) begin
@@ -54,7 +55,12 @@ module hue_stage1
 		end
 	end
 
+	always@* begin
+		if(o_valid) o_function = SR_FUNCTION[DIVIDE_LATENCY-1];
+		else        o_function = 0;
+	end
 
+// Input Logic: Remove sign bit
 	always@* begin
 		dividend = 0;
 		divisor  = 0;
@@ -64,20 +70,23 @@ module hue_stage1
 		end
 	end
 
+// Output Logic: Reapply sign bit if needed
 	always@* begin
 		if(o_valid && !dbz) begin
-			o_data = {SR_SIGNBIT[DIVIDE_LATENCY-1], (~result[14:0]+1'b1)};
+			if(SR_SIGNBIT[DIVIDE_LATENCY-1]) begin
+				o_data = {SR_SIGNBIT[DIVIDE_LATENCY-1], (~result[14:0]+1'b1)};
+			end
+			else begin
+				o_data = result;
+			end
 		end
 		else begin
 			o_data = 0;
 		end
 	end
 
-	always@* begin
-		if(o_valid) o_function = SR_FUNCTION[DIVIDE_LATENCY-1];
-		else        o_function = 0;
-	end
 
+// 
 	div_gen_0 DUT(
 	.s_axis_dividend_tdata  (dividend),
     .s_axis_dividend_tvalid (i_valid),
