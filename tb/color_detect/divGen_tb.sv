@@ -4,6 +4,7 @@ module divGen_tb();
 	logic        divisor_valid, dividend_valid;
 	logic [15:0] result;
 	logic        result_valid;
+	logic        dbz;
 	logic        clk, rstn;
 
 
@@ -16,6 +17,7 @@ module divGen_tb();
 
     .m_axis_dout_tdata      (result),
     .m_axis_dout_tvalid     (result_valid),
+    .m_axis_dout_tuser      (dbz),
 
     .aclk                   (clk),
     .aresetn                (rstn)
@@ -58,6 +60,10 @@ module divGen_tb();
 		divide(1,1);
 		divide(1,2);
 		divide(1,3);
+		divide(3,0);
+		divide(5,2);
+		divide(0,3);
+		divide(2,10);
 
 		#100;
 		@(posedge clk) begin

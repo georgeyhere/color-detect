@@ -62,6 +62,7 @@ div_gen_0 your_instance_name (
   .s_axis_dividend_tvalid(s_axis_dividend_tvalid),  // input wire s_axis_dividend_tvalid
   .s_axis_dividend_tdata(s_axis_dividend_tdata),    // input wire [7 : 0] s_axis_dividend_tdata
   .m_axis_dout_tvalid(m_axis_dout_tvalid),          // output wire m_axis_dout_tvalid
+  .m_axis_dout_tuser(m_axis_dout_tuser),            // output wire [0 : 0] m_axis_dout_tuser
   .m_axis_dout_tdata(m_axis_dout_tdata)            // output wire [15 : 0] m_axis_dout_tdata
 );
 // INST_TAG_END ------ End INSTANTIATION Template ---------

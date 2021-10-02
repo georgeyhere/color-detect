@@ -83,7 +83,7 @@
         </spirit:parameter>
         <spirit:parameter>
           <spirit:name>TUSER_WIDTH</spirit:name>
-          <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.M_AXIS_DOUT.TUSER_WIDTH">0</spirit:value>
+          <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.M_AXIS_DOUT.TUSER_WIDTH">1</spirit:value>
           <spirit:vendorExtensions>
             <xilinx:parameterInfo>
               <xilinx:parameterUsage>none</xilinx:parameterUsage>
@@ -647,11 +647,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Fri Oct 01 20:30:18 UTC 2021</spirit:value>
+            <spirit:value>Fri Oct 01 21:28:35 UTC 2021</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:88d08e29</spirit:value>
+            <spirit:value>9:0dcf2d45</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -697,11 +697,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Fri Oct 01 20:30:18 UTC 2021</spirit:value>
+            <spirit:value>Fri Oct 01 21:28:35 UTC 2021</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:88d08e29</spirit:value>
+            <spirit:value>9:0dcf2d45</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -715,11 +715,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Fri Oct 01 20:30:18 UTC 2021</spirit:value>
+            <spirit:value>Fri Oct 01 21:28:35 UTC 2021</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:88d08e29</spirit:value>
+            <spirit:value>9:0dcf2d45</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -735,11 +735,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Fri Oct 01 20:30:18 UTC 2021</spirit:value>
+            <spirit:value>Fri Oct 01 21:28:35 UTC 2021</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:88d08e29</spirit:value>
+            <spirit:value>9:0dcf2d45</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -785,11 +785,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Fri Oct 01 20:30:18 UTC 2021</spirit:value>
+            <spirit:value>Fri Oct 01 21:28:35 UTC 2021</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:1a7c468a</spirit:value>
+            <spirit:value>9:6595cada</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -805,11 +805,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Fri Oct 01 20:30:18 UTC 2021</spirit:value>
+            <spirit:value>Fri Oct 01 21:28:35 UTC 2021</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:1a7c468a</spirit:value>
+            <spirit:value>9:6595cada</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -824,11 +824,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Fri Oct 01 20:30:18 UTC 2021</spirit:value>
+            <spirit:value>Fri Oct 01 21:28:35 UTC 2021</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:88d08e29</spirit:value>
+            <spirit:value>9:0dcf2d45</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -844,11 +844,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Fri Oct 01 20:30:18 UTC 2021</spirit:value>
+            <spirit:value>Fri Oct 01 21:28:35 UTC 2021</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:88d08e29</spirit:value>
+            <spirit:value>9:0dcf2d45</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -862,11 +862,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Fri Oct 01 20:30:18 UTC 2021</spirit:value>
+            <spirit:value>Fri Oct 01 21:28:35 UTC 2021</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:88d08e29</spirit:value>
+            <spirit:value>9:0dcf2d45</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -880,11 +880,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Fri Oct 01 20:31:24 UTC 2021</spirit:value>
+            <spirit:value>Fri Oct 01 21:29:42 UTC 2021</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:88d08e29</spirit:value>
+            <spirit:value>9:0dcf2d45</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1238,7 +1238,7 @@
         <spirit:vendorExtensions>
           <xilinx:portInfo>
             <xilinx:enablement>
-              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.m_axis_dout_tuser" xilinx:dependency="spirit:decode(id(&apos;MODELPARAM_VALUE.C_HAS_S_AXIS_DIVIDEND_TUSER&apos;)) != 0 or spirit:decode(id(&apos;MODELPARAM_VALUE.C_HAS_S_AXIS_DIVISOR_TUSER&apos;)) != 0 or spirit:decode(id(&apos;MODELPARAM_VALUE.C_HAS_DIV_BY_ZERO&apos;)) !=0">false</xilinx:isEnabled>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.m_axis_dout_tuser" xilinx:dependency="spirit:decode(id(&apos;MODELPARAM_VALUE.C_HAS_S_AXIS_DIVIDEND_TUSER&apos;)) != 0 or spirit:decode(id(&apos;MODELPARAM_VALUE.C_HAS_S_AXIS_DIVISOR_TUSER&apos;)) != 0 or spirit:decode(id(&apos;MODELPARAM_VALUE.C_HAS_DIV_BY_ZERO&apos;)) !=0">true</xilinx:isEnabled>
             </xilinx:enablement>
           </xilinx:portInfo>
         </spirit:vendorExtensions>
@@ -1334,7 +1334,7 @@
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>C_HAS_DIV_BY_ZERO</spirit:name>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_HAS_DIV_BY_ZERO">0</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_HAS_DIV_BY_ZERO">1</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>C_THROTTLE_SCHEME</spirit:name>
@@ -1917,7 +1917,7 @@
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>divide_by_zero_detect</spirit:name>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.divide_by_zero_detect" spirit:order="15">false</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.divide_by_zero_detect" spirit:order="15">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>FlowControl</spirit:name>
@@ -1963,6 +1963,7 @@
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.M_AXIS_DOUT.TDATA_NUM_BYTES" xilinx:valueSource="auto"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.M_AXIS_DOUT.TDEST_WIDTH" xilinx:valueSource="constant"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.M_AXIS_DOUT.TID_WIDTH" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.M_AXIS_DOUT.TUSER_WIDTH" xilinx:valueSource="auto"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S_AXIS_DIVIDEND.HAS_TKEEP" xilinx:valueSource="constant"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S_AXIS_DIVIDEND.HAS_TREADY" xilinx:valueSource="auto"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S_AXIS_DIVIDEND.HAS_TSTRB" xilinx:valueSource="constant"/>
@@ -1977,6 +1978,7 @@
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S_AXIS_DIVISOR.TID_WIDTH" xilinx:valueSource="constant"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.ARESETN" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.algorithm_type" xilinx:valueSource="user"/>
+        <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.divide_by_zero_detect" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.dividend_and_quotient_width" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.divisor_width" xilinx:valueSource="user"/>
         <xilinx:configElementInfo xilinx:referenceId="PARAM_VALUE.fractional_width" xilinx:valueSource="user"/>

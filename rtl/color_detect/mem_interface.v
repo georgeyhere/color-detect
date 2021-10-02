@@ -7,9 +7,11 @@ module mem_interface
 	parameter BRAM_DEPTH = 230400
 	)
 	(
-	input wire                           i_clk,        // 125 MHz board clock
-	input wire                           i_rstn,       // sync active low reset
-    input wire                           i_flush,      
+	input  wire                          i_clk,     // 125 MHz board clock
+	input  wire                          i_rstn,    // sync active low reset
+    input  wire                          i_flush,      
+
+    output wire                          o_fbuf_wr, // framebuffer write flag
 
 	// Input interface
 	output reg                           o_rd,
@@ -62,6 +64,7 @@ module mem_interface
 	.i_raddr    (i_raddr   ), // read address
 	.o_rdata    (o_rdata   )  // read data
 	);
+	assign o_fbuf_wr = mem_wr;
 
 // =============================================================
 // 			            Implementation:

@@ -5,7 +5,7 @@ module mem_interface_tb ();
 	logic disp_clk;
 	logic i_flush = 0;
 
-	logic i_req;
+	logic o_fbuf_wr;
 
 	logic o_rd;
 	logic [15:0] i_rdata;
@@ -22,6 +22,8 @@ module mem_interface_tb ();
     .i_clk        (i_clk),
     .i_rstn       (i_rstn),
     .i_flush      (i_flush),
+
+    .o_fbuf_wr    (o_fbuf_wr),
      
     .o_rd         (o_rd),
     .i_rdata      (i_rdata),
