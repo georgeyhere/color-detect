@@ -41,8 +41,8 @@ module hsv_top
     .o_function (stg0_function)
 	);
 
-// PIPELINE STAGE 0
-	hue_stage1 hue1_i (
+// HUE PIPELINE STAGE 0
+	hue_stage0 hue0_i (
 	.i_clk      (i_clk),
 	.i_rstn     (i_rstn),
 
@@ -58,8 +58,8 @@ module hsv_top
 	.o_valid    (stg1_valid)
 	);
 
-// PIPELINE STAGE 1
-	hue_stage2 hue2_i (
+// HUE PIPELINE STAGE 1
+	hue_stage1 hue1_i (
     .i_clk      (i_clk),
     .i_rstn     (i_rstn),
 

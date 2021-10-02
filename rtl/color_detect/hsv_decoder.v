@@ -1,10 +1,12 @@
-// module: hue_stage0
+// module: hsv_decoder
 //
 // This module compares RGB values and selects the correct function
 // depending on which is the greatest, then generates the divisor
-// and dividend for the next stage.
+// and dividend for the hue algorithm.
 //
-module hue_stage0
+// It also outputs the V component based on the greatest RGB value.
+//
+module hsv_decoder
 	(
     input  wire        i_clk,
     input  wire        i_rstn, 
