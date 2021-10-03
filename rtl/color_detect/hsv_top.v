@@ -1,6 +1,7 @@
+// module: hsv_top
 //
-//
-//
+// Converts RGB565 to HSV. 
+// 16-bit fixed point w/ 6 fractional bits.
 //
 module hsv_top
 	(
@@ -13,8 +14,8 @@ module hsv_top
 
     // Hue Output
     output wire [15:0] o_hue,   // Hue (0-360 degrees)
-    output wire [15:0] o_sat,   //
-    output wire [15:0] o_value,
+    output wire [15:0] o_sat,   // Saturation (0-100%)
+    output wire [15:0] o_value, // Value (0-100%)
     output wire        o_valid  // output valid flag
 	);
 
