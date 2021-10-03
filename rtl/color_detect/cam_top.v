@@ -24,7 +24,7 @@ module cam_top
 	input  wire        i_obuf_rclk,
 	input  wire        i_obuf_rstn,
 	input  wire        i_obuf_rd,
-	output wire [11:0] o_obuf_data,
+	output wire [15:0] o_obuf_data,
 	output wire        o_obuf_empty,
 	output wire        o_obuf_almostempty,
 	output wire [3:0]  o_obuf_fill,
@@ -41,7 +41,7 @@ module cam_top
 // 			    Parameters, Registers, and Wires
 // =============================================================
 	wire        obuf_wr;
-	wire [11:0] obuf_wdata;
+	wire [15:0] obuf_wdata;
 		 
 
 //==============================================================
@@ -81,7 +81,7 @@ module cam_top
 	
 	// 24MHz to 125MHz FIFO Write interface
 	.o_wr       (obuf_wr          ), // FIFO write enable
-	.o_wdata    (obuf_wdata       ), // 12-bit RGB data
+	.o_wdata    (obuf_wdata       ), // 16-bit RGB data
 
 	.o_sof      (o_sof            )
 	); 
@@ -90,7 +90,7 @@ module cam_top
 //                  Output FIFO:
 //---------------------------------------------------
 	fifo_async
-	#(.DATA_WIDTH         (12),
+	#(.DATA_WIDTH         (16),
 	  .PTR_WIDTH          (4),
 	  .ALMOSTFULL_OFFSET  (2),
 	  .ALMOSTEMPTY_OFFSET (2) 

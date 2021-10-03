@@ -1,6 +1,7 @@
 `default_nettype none
 //
 module sys_top 
+	`include "colorDetect_definitions.vh"
 	(
     input  wire       i_sysclk,    // 125 MHz board clock
     input  wire       i_rst,       // active-high board button
@@ -35,6 +36,10 @@ module sys_top
 // =============================================================
 // 			    Parameters, Registers, and Wires
 // =============================================================
+	localparam PIXEL_WIDTH       = 16;
+	localparam FRAMEBUFFER_DEPTH = 230400;
+
+
 // DCM
 	wire        clk_25MHz;
 	wire        clk_250MHz;
@@ -54,14 +59,17 @@ module sys_top
 	wire        o_scl, o_sda;
 	wire        sof;
 	wire        cam_obuf_rd;
-	wire [11:0] cam_obuf_rdata;
+	wire [15:0] cam_obuf_rdata;
 	wire        cam_obuf_almostempty;
 	wire        cfg_done;
 
+// Color Detection
+	wire [2:0]  color0, color1, color2, color3, color4, 
+	            color5, color6, color7, color8;
 
 // Display Interface
-	wire [18:0] framebuf_raddr;
-	wire [11:0] framebuf_rdata;
+	wire [17:0] framebuf_raddr;
+	wire [15:0] framebuf_rdata;
 
 // =============================================================
 // 			          Implementation:
@@ -73,8 +81,8 @@ module sys_top
 // **** Debounce Reset button ****
 // -> debounced in camera pclk domain (24MHz)
 	debounce 
-	//#(.DB_COUNT(476190))    // 20ms debounce period
-	#(.DB_COUNT(1))    // 20ms debounce period
+	#(.DB_COUNT(476190))    // 20ms debounce period
+	//#(.DB_COUNT(1))    
 	db_inst (
 	.i_clk   (i_cam_pclk ),
 	.i_input (~i_rst     ),
@@ -180,8 +188,8 @@ module sys_top
     //                 Memory Interface:
     //---------------------------------------------------
 	mem_interface 
-	#(.DATA_WIDTH (12),
-	  .BRAM_DEPTH (307200) 
+	#(.DATA_WIDTH (PIXEL_WIDTH),
+	  .BRAM_DEPTH (FRAMEBUFFER_DEPTH) 
 	 )
 	mem_i(
 	.i_clk         (i_sysclk               ), // 125 MHz board clock
@@ -200,24 +208,56 @@ module sys_top
 	.o_rdata       (framebuf_rdata         )
 	); 
 
+	//---------------------------------------------------
+    //                 Color Detection:
+    //---------------------------------------------------
+    colorDetect_top colorDetect_i (
+    .i_clk    (i_sysclk),
+    .i_rstn   (sync_rstn_PS),
+  
+    .i_data   (cam_obuf_rdata),
+    .i_valid  (cam_obuf_rd),
+ 
+    .o_color0 (color0),
+    .o_color1 (color1),
+    .o_color2 (color2),
+    .o_color3 (color3),
+    .o_color4 (color4),
+    .o_color5 (color5),
+    .o_color6 (color6),
+    .o_color7 (color7),
+    .o_color8 (color8)
+    );
+
 
 	//---------------------------------------------------
     //                 Display Interface:
     //---------------------------------------------------
 	display_interface 
+	#(.FBUF_DEPTH(FRAMEBUFFER_DEPTH))
 	display_i(
     .i_p_clk       (clk_25MHz       ), // 25 MHz display clock
     .i_tmds_clk    (clk_250MHz      ), // 250 MHz TMDS clock
     .i_rstn        (db_rstn         ), 
-    .i_mode        (sys_mode        ), // mode; color or greyscale
  	
  	// frame buffer read interface
    	.o_raddr       (framebuf_raddr  ),
    	.i_rdata       (framebuf_rdata  ),
 
+   	// color detection interface
+   	.i_color0      (color0   ),
+   	.i_color1      (color1   ),
+   	.i_color2      (color2   ),
+   	.i_color3      (color3   ),
+   	.i_color4      (color4   ),
+   	.i_color5      (color5   ),
+   	.i_color6      (color6   ),
+   	.i_color7      (color7   ),
+   	.i_color8      (color8   ),
+
     // TMDS out   
-    .o_TMDS_P      (o_TMDS_P        ), // HDMI outputs
-    .o_TMDS_N      (o_TMDS_N        )
+    .o_TMDS_P      (o_TMDS_P ), // HDMI outputs
+    .o_TMDS_N      (o_TMDS_N )
 	);
 
 endmodule

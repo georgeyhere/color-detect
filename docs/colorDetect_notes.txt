@@ -1,0 +1,31 @@
+
+-> capture only a 480x480 region of the camera output
+-> RGB 565
+
+Memory Usage: 
+	-> 480*480 = 230400 words
+	-> RGB656  = 16 bits per word
+
+	Total Usage: 3686400 bits
+
+Color Detection:
+    -> Stream Processor
+    -> Determine color using thresholding for each pixel
+    -> Bin the color based on screen coordinate
+-----------------------------------------------------------------------
+
+Goals for 10/1:
+    -> automatic guitar tuner research
+    -> dsp lab
+    -> Sobel edge detection
+
+Goals for 9/30:
+    -> finish rubik's cube indicator
+    -> add display 'reticle'
+    -> fixed point divide
+    -> plan RGB to HSV algorithm
+
+Goals for 9/28:
+    -> display the 480x480 slice on the right side of the screen
+    -> display the rubik's cube indicator on the left side of the screen
+    -> *rgb color thresholds

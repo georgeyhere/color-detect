@@ -3,24 +3,25 @@
 //
 module mem_interface
 	#(
-    parameter DATA_WIDTH = 12,
-    parameter FILL_WIDTH = 10,
-	parameter BRAM_DEPTH = 307200
+    parameter DATA_WIDTH = 16,
+	parameter BRAM_DEPTH = 230400
 	)
 	(
-	input wire                   i_clk,        // 125 MHz board clock
-	input wire                   i_rstn,       // sync active low reset
-    input wire                   i_flush,      
+	input  wire                          i_clk,     // 125 MHz board clock
+	input  wire                          i_rstn,    // sync active low reset
+    input  wire                          i_flush,      
+
+    output wire                          o_fbuf_wr, // framebuffer write flag
 
 	// Input interface
-	output reg                   o_rd,
-	input  wire [DATA_WIDTH-1:0] i_rdata,
-	input  wire                  i_almostempty,
+	output reg                           o_rd,
+	input  wire [DATA_WIDTH-1:0]         i_rdata,
+	input  wire                          i_almostempty,
  
 	// Frame buffer output interface
-	input  wire                  i_rclk,
-	input  wire [18:0]           i_raddr,
-	output wire [DATA_WIDTH-1:0] o_rdata    
+	input  wire                          i_rclk,
+	input  wire [$clog2(BRAM_DEPTH)-1:0] i_raddr,
+	output wire [DATA_WIDTH-1:0]         o_rdata    
 	);
 
 
@@ -49,7 +50,8 @@ module mem_interface
 // 			         Submodule Instantiation:
 // =============================================================
 	mem_bram
-	#(.BRAM_DEPTH(BRAM_DEPTH))
+	#(.BRAM_WIDTH(DATA_WIDTH),
+	  .BRAM_DEPTH(BRAM_DEPTH))
 	mem_bram_i (
 	.i_wclk     (i_clk     ),
     .i_wportEn  (1'b1      ),  
@@ -62,6 +64,7 @@ module mem_interface
 	.i_raddr    (i_raddr   ), // read address
 	.o_rdata    (o_rdata   )  // read data
 	);
+	assign o_fbuf_wr = mem_wr;
 
 // =============================================================
 // 			            Implementation:
@@ -91,7 +94,7 @@ module mem_interface
 			WSTATE_ACTIVE: begin
 				nxt_rd        = (!i_almostempty);
 				nxt_mem_wr    = (!i_almostempty);
-				nxt_mem_waddr = (mem_waddr == 307199) ? 0:mem_waddr+1;
+				nxt_mem_waddr = (mem_waddr == BRAM_DEPTH-1) ? 0:mem_waddr+1;
 				if(i_almostempty) begin
 					NEXT_WSTATE = WSTATE_IDLE;
 				end
