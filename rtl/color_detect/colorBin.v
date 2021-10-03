@@ -71,40 +71,39 @@ module colorBin
 		white  = 0;
 		other  = 0;
 
-		// red
-		if((i_value[15:7]>50)&&
-		   ((i_hue[15:7]>325)||(i_hue[15:7]<5))&&
-		   (i_sat[15:7]>50)) begin
-			red = 1;
+		if((i_value[15:6]>10)&&
+		       ((i_hue[15:6]>140)||(i_hue[15:6]<280))&&
+		       ( i_sat[15:6]>50)) begin
+			blue = 1;
 		end
-		else if((i_value[15:7]>50)&&
-		       ((i_hue[15:7]>15)||(i_hue[15:7]<35))&&
-		       ( i_sat[15:7]>50)) begin
-			orange = 1;
-		end
-		else if((i_value[15:7]>50)&&
-		       ((i_hue[15:7]>65)||(i_hue[15:7]<70))&&
-		       ( i_sat[15:7]>50)) begin
-			yellow = 1;
-		end
-		else if((i_value[15:7]>50)&&
-		       ((i_hue[15:7]>85)||(i_hue[15:7]<165))&&
-		       ( i_sat[15:7]>50)) begin
+
+		else if((i_value[15:6]>10)&&
+		       ((i_hue[15:6]>75)||(i_hue[15:6]<140))&&
+		       ( i_sat[15:6]>50)) begin
 			green = 1;
 		end
-		else if((i_value[15:7]>50)&&
-		       ((i_hue[15:7]>190)||(i_hue[15:7]<260))&&
-		       ( i_sat[15:7]>50)) begin
-			blue = 1;
-		end
-		else if((i_value[15:7]>50)&&
-		       ((i_hue[15:7]>190)||(i_hue[15:7]<260))&&
-		       ( i_sat[15:7]>50)) begin
-			blue = 1;
-		end
-		else if(i_sat[15:7]<25) begin
+
+		else if(i_sat[15:6]<10) begin
 			white = 1;
 		end
+
+		else if((i_value[15:6]>10)&&
+		       ((i_hue[15:6]>15)||(i_hue[15:6]<75))&&
+		       ( i_sat[15:6]>50)) begin
+			yellow = 1;
+		end
+
+		if((i_value[15:6]>10)&&
+		   ((i_hue[15:6]>325)||(i_hue[15:6]<10))&&
+		    (i_sat[15:6]>50)) begin
+			red = 1;
+		end
+		else if((i_value[15:6]>10)&&
+		       ((i_hue[15:6]>10)||(i_hue[15:6]<15))&&
+		       ( i_sat[15:6]>90)) begin
+			orange = 1;
+		end
+
 		else begin
 			other = 1;
 		end
@@ -235,55 +234,480 @@ module colorBin
 		else if((counterX==478)&&(counterY==479)) begin
 			if( (color0[0]>=color0[1]) && (color0[0]>=color0[2]) &&
 			    (color0[0]>=color0[3]) && (color0[0]>=color0[4]) &&
-			    (color0[0]>=color0[5]) && (color0[0]>=color0[6]) &&
-			    (color0[0]>=color0[7]) ) begin
+			    (color0[0]>=color0[5]) && (color0[0]>=color0[6])) begin
 				o_color0 <= `DT_RED;
 			end
 
 			else if( (color0[1]>=color0[0]) && (color0[1]>=color0[2]) &&
 			         (color0[1]>=color0[3]) && (color0[1]>=color0[4]) &&
-			         (color0[1]>=color0[5]) && (color0[1]>=color0[6]) &&
-			         (color0[1]>=color0[7]) ) begin
+			         (color0[1]>=color0[5]) && (color0[1]>=color0[6])) begin
 				o_color0 <= `DT_ORNGE;
 			end
 
 			else if( (color0[2]>=color0[0]) && (color0[2]>=color0[1]) &&
 			         (color0[2]>=color0[3]) && (color0[2]>=color0[4]) &&
-			         (color0[2]>=color0[5]) && (color0[2]>=color0[6]) &&
-			         (color0[2]>=color0[7]) ) begin
+			         (color0[2]>=color0[5]) && (color0[2]>=color0[6])) begin
 				o_color0 <= `DT_YLLW;
 			end
 
 			else if( (color0[3]>=color0[0]) && (color0[3]>=color0[1]) &&
 			         (color0[3]>=color0[2]) && (color0[3]>=color0[4]) &&
-			         (color0[3]>=color0[5]) && (color0[3]>=color0[6]) &&
-			         (color0[3]>=color0[7]) ) begin
+			         (color0[3]>=color0[5]) && (color0[3]>=color0[6])) begin
 				o_color0 <= `DT_GRN;
 			end
 
 			else if( (color0[4]>=color0[0]) && (color0[4]>=color0[1]) &&
 			         (color0[4]>=color0[2]) && (color0[4]>=color0[3]) &&
-			         (color0[4]>=color0[5]) && (color0[4]>=color0[6]) &&
-			         (color0[4]>=color0[7]) ) begin
+			         (color0[4]>=color0[5]) && (color0[4]>=color0[6])) begin
 				o_color0 <= `DT_GRN;
 			end
 
 			else if( (color0[5]>=color0[0]) && (color0[5]>=color0[1]) &&
 			         (color0[5]>=color0[2]) && (color0[5]>=color0[3]) &&
-			         (color0[5]>=color0[4]) && (color0[5]>=color0[6]) &&
-			         (color0[5]>=color0[7]) ) begin
+			         (color0[5]>=color0[4]) && (color0[5]>=color0[6])) begin
 				o_color0 <= `DT_BLU;
 			end
 
 			else if( (color0[6]>=color0[0]) && (color0[6]>=color0[1]) &&
 			         (color0[6]>=color0[2]) && (color0[6]>=color0[3]) &&
-			         (color0[6]>=color0[4]) && (color0[6]>=color0[5]) &&
-			         (color0[6]>=color0[7]) ) begin
+			         (color0[6]>=color0[4]) && (color0[6]>=color0[5])) begin
 				o_color0 <= `DT_WHT;
 			end
 
 			else begin
 				o_color0 <= 0;
+			end
+		end
+	end
+
+//
+	always@(posedge i_clk) begin
+		if(!i_rstn) begin
+			o_color1 <= 0;
+		end
+		else if((counterX==478)&&(counterY==479)) begin
+			if( (color1[0]>=color1[1]) && (color1[0]>=color1[2]) &&
+			    (color1[0]>=color1[3]) && (color1[0]>=color1[4]) &&
+			    (color1[0]>=color1[5]) && (color1[0]>=color1[6])) begin
+				o_color1 <= `DT_RED;
+			end
+
+			else if( (color1[1]>=color1[0]) && (color1[1]>=color1[2]) &&
+			         (color1[1]>=color1[3]) && (color1[1]>=color1[4]) &&
+			         (color1[1]>=color1[5]) && (color1[1]>=color1[6])) begin
+				o_color1 <= `DT_ORNGE;
+			end
+
+			else if( (color1[2]>=color1[0]) && (color1[2]>=color1[1]) &&
+			         (color1[2]>=color1[3]) && (color1[2]>=color1[4]) &&
+			         (color1[2]>=color1[5]) && (color1[2]>=color1[6])) begin
+				o_color1 <= `DT_YLLW;
+			end
+
+			else if( (color1[3]>=color1[0]) && (color1[3]>=color1[1]) &&
+			         (color1[3]>=color1[2]) && (color1[3]>=color1[4]) &&
+			         (color1[3]>=color1[5]) && (color1[3]>=color1[6])) begin
+				o_color1 <= `DT_GRN;
+			end
+
+			else if( (color1[4]>=color1[0]) && (color1[4]>=color1[1]) &&
+			         (color1[4]>=color1[2]) && (color1[4]>=color1[3]) &&
+			         (color1[4]>=color1[5]) && (color1[4]>=color1[6])) begin
+				o_color1 <= `DT_GRN;
+			end
+
+			else if( (color1[5]>=color1[0]) && (color1[5]>=color1[1]) &&
+			         (color1[5]>=color1[2]) && (color1[5]>=color1[3]) &&
+			         (color1[5]>=color1[4]) && (color1[5]>=color1[6])) begin
+				o_color1 <= `DT_BLU;
+			end
+
+			else if( (color1[6]>=color1[0]) && (color1[6]>=color1[1]) &&
+			         (color1[6]>=color1[2]) && (color1[6]>=color1[3]) &&
+			         (color1[6]>=color1[4]) && (color1[6]>=color1[5])) begin
+				o_color1 <= `DT_WHT;
+			end
+
+			else begin
+				o_color1 <= 0;
+			end
+		end
+	end
+
+//
+	always@(posedge i_clk) begin
+		if(!i_rstn) begin
+			o_color2 <= 0;
+		end
+		else if((counterX==478)&&(counterY==479)) begin
+			if( (color2[0]>=color2[1]) && (color2[0]>=color2[2]) &&
+			    (color2[0]>=color2[3]) && (color2[0]>=color2[4]) &&
+			    (color2[0]>=color2[5]) && (color2[0]>=color2[6])) begin
+				o_color2 <= `DT_RED;
+			end
+
+			else if( (color2[1]>=color2[0]) && (color2[1]>=color2[2]) &&
+			         (color2[1]>=color2[3]) && (color2[1]>=color2[4]) &&
+			         (color2[1]>=color2[5]) && (color2[1]>=color2[6])) begin
+				o_color2 <= `DT_ORNGE;
+			end
+
+			else if( (color2[2]>=color2[0]) && (color2[2]>=color2[1]) &&
+			         (color2[2]>=color2[3]) && (color2[2]>=color2[4]) &&
+			         (color2[2]>=color2[5]) && (color2[2]>=color2[6])) begin
+				o_color2 <= `DT_YLLW;
+			end
+
+			else if( (color2[3]>=color2[0]) && (color2[3]>=color2[1]) &&
+			         (color2[3]>=color2[2]) && (color2[3]>=color2[4]) &&
+			         (color2[3]>=color2[5]) && (color2[3]>=color2[6])) begin
+				o_color2 <= `DT_GRN;
+			end
+
+			else if( (color2[4]>=color2[0]) && (color2[4]>=color2[1]) &&
+			         (color2[4]>=color2[2]) && (color2[4]>=color2[3]) &&
+			         (color2[4]>=color2[5]) && (color2[4]>=color2[6])) begin
+				o_color2 <= `DT_GRN;
+			end
+
+			else if( (color2[5]>=color2[0]) && (color2[5]>=color2[1]) &&
+			         (color2[5]>=color2[2]) && (color2[5]>=color2[3]) &&
+			         (color2[5]>=color2[4]) && (color2[5]>=color2[6])) begin
+				o_color2 <= `DT_BLU;
+			end
+
+			else if( (color2[6]>=color2[0]) && (color2[6]>=color2[1]) &&
+			         (color2[6]>=color2[2]) && (color2[6]>=color2[3]) &&
+			         (color2[6]>=color2[4]) && (color2[6]>=color2[5])) begin
+				o_color2 <= `DT_WHT;
+			end
+
+			else begin
+				o_color2 <= 0;
+			end
+		end
+	end
+
+//
+	always@(posedge i_clk) begin
+		if(!i_rstn) begin
+			o_color3 <= 0;
+		end
+		else if((counterX==478)&&(counterY==479)) begin
+			if( (color3[0]>=color3[1]) && (color3[0]>=color3[2]) &&
+			    (color3[0]>=color3[3]) && (color3[0]>=color3[4]) &&
+			    (color3[0]>=color3[5]) && (color3[0]>=color3[6])) begin
+				o_color3 <= `DT_RED;
+			end
+
+			else if( (color3[1]>=color3[0]) && (color3[1]>=color3[2]) &&
+			         (color3[1]>=color3[3]) && (color3[1]>=color3[4]) &&
+			         (color3[1]>=color3[5]) && (color3[1]>=color3[6])) begin
+				o_color3 <= `DT_ORNGE;
+			end
+
+			else if( (color3[2]>=color3[0]) && (color3[2]>=color3[1]) &&
+			         (color3[2]>=color3[3]) && (color3[2]>=color3[4]) &&
+			         (color3[2]>=color3[5]) && (color3[2]>=color3[6])) begin
+				o_color3 <= `DT_YLLW;
+			end
+
+			else if( (color3[3]>=color3[0]) && (color3[3]>=color3[1]) &&
+			         (color3[3]>=color3[2]) && (color3[3]>=color3[4]) &&
+			         (color3[3]>=color3[5]) && (color3[3]>=color3[6])) begin
+				o_color3 <= `DT_GRN;
+			end
+
+			else if( (color3[4]>=color3[0]) && (color3[4]>=color3[1]) &&
+			         (color3[4]>=color3[2]) && (color3[4]>=color3[3]) &&
+			         (color3[4]>=color3[5]) && (color3[4]>=color3[6])) begin
+				o_color3 <= `DT_GRN;
+			end
+
+			else if( (color3[5]>=color3[0]) && (color3[5]>=color3[1]) &&
+			         (color3[5]>=color3[2]) && (color3[5]>=color3[3]) &&
+			         (color3[5]>=color3[4]) && (color3[5]>=color3[6])) begin
+				o_color3 <= `DT_BLU;
+			end
+
+			else if( (color3[6]>=color3[0]) && (color3[6]>=color3[1]) &&
+			         (color3[6]>=color3[2]) && (color3[6]>=color3[3]) &&
+			         (color3[6]>=color3[4]) && (color3[6]>=color3[5])) begin
+				o_color3 <= `DT_WHT;
+			end
+
+			else begin
+				o_color3 <= 0;
+			end
+		end
+	end
+
+//
+	always@(posedge i_clk) begin
+		if(!i_rstn) begin
+			o_color4 <= 0;
+		end
+		else if((counterX==478)&&(counterY==479)) begin
+			if( (color4[0]>=color4[1]) && (color4[0]>=color4[2]) &&
+			    (color4[0]>=color4[3]) && (color4[0]>=color4[4]) &&
+			    (color4[0]>=color4[5]) && (color4[0]>=color4[6])) begin
+				o_color4 <= `DT_RED;
+			end
+
+			else if( (color4[1]>=color4[0]) && (color4[1]>=color4[2]) &&
+			         (color4[1]>=color4[3]) && (color4[1]>=color4[4]) &&
+			         (color4[1]>=color4[5]) && (color4[1]>=color4[6])) begin
+				o_color4 <= `DT_ORNGE;
+			end
+
+			else if( (color4[2]>=color4[0]) && (color4[2]>=color4[1]) &&
+			         (color4[2]>=color4[3]) && (color4[2]>=color4[4]) &&
+			         (color4[2]>=color4[5]) && (color4[2]>=color4[6])) begin
+				o_color4 <= `DT_YLLW;
+			end
+
+			else if( (color4[3]>=color4[0]) && (color4[3]>=color4[1]) &&
+			         (color4[3]>=color4[2]) && (color4[3]>=color4[4]) &&
+			         (color4[3]>=color4[5]) && (color4[3]>=color4[6])) begin
+				o_color4 <= `DT_GRN;
+			end
+
+			else if( (color4[4]>=color4[0]) && (color4[4]>=color4[1]) &&
+			         (color4[4]>=color4[2]) && (color4[4]>=color4[3]) &&
+			         (color4[4]>=color4[5]) && (color4[4]>=color4[6])) begin
+				o_color4 <= `DT_GRN;
+			end
+
+			else if( (color4[5]>=color4[0]) && (color4[5]>=color4[1]) &&
+			         (color4[5]>=color4[2]) && (color4[5]>=color4[3]) &&
+			         (color4[5]>=color4[4]) && (color4[5]>=color4[6])) begin
+				o_color4 <= `DT_BLU;
+			end
+
+			else if( (color4[6]>=color4[0]) && (color4[6]>=color4[1]) &&
+			         (color4[6]>=color4[2]) && (color4[6]>=color4[3]) &&
+			         (color4[6]>=color4[4]) && (color4[6]>=color4[5])) begin
+				o_color4 <= `DT_WHT;
+			end
+
+			else begin
+				o_color4 <= 0;
+			end
+		end
+	end
+
+//
+	always@(posedge i_clk) begin
+		if(!i_rstn) begin
+			o_color5 <= 0;
+		end
+		else if((counterX==478)&&(counterY==479)) begin
+			if( (color5[0]>=color5[1]) && (color5[0]>=color5[2]) &&
+			    (color5[0]>=color5[3]) && (color5[0]>=color5[4]) &&
+			    (color5[0]>=color5[5]) && (color5[0]>=color5[6])) begin
+				o_color5 <= `DT_RED;
+			end
+
+			else if( (color5[1]>=color5[0]) && (color5[1]>=color5[2]) &&
+			         (color5[1]>=color5[3]) && (color5[1]>=color5[4]) &&
+			         (color5[1]>=color5[5]) && (color5[1]>=color5[6])) begin
+				o_color5 <= `DT_ORNGE;
+			end
+
+			else if( (color5[2]>=color5[0]) && (color5[2]>=color5[1]) &&
+			         (color5[2]>=color5[3]) && (color5[2]>=color5[4]) &&
+			         (color5[2]>=color5[5]) && (color5[2]>=color5[6])) begin
+				o_color5 <= `DT_YLLW;
+			end
+
+			else if( (color5[3]>=color5[0]) && (color5[3]>=color5[1]) &&
+			         (color5[3]>=color5[2]) && (color5[3]>=color5[4]) &&
+			         (color5[3]>=color5[5]) && (color5[3]>=color5[6])) begin
+				o_color5 <= `DT_GRN;
+			end
+
+			else if( (color5[4]>=color5[0]) && (color5[4]>=color5[1]) &&
+			         (color5[4]>=color5[2]) && (color5[4]>=color5[3]) &&
+			         (color5[4]>=color5[5]) && (color5[4]>=color5[6])) begin
+				o_color5 <= `DT_GRN;
+			end
+
+			else if( (color5[5]>=color5[0]) && (color5[5]>=color5[1]) &&
+			         (color5[5]>=color5[2]) && (color5[5]>=color5[3]) &&
+			         (color5[5]>=color5[4]) && (color5[5]>=color5[6])) begin
+				o_color5 <= `DT_BLU;
+			end
+
+			else if( (color5[6]>=color5[0]) && (color5[6]>=color5[1]) &&
+			         (color5[6]>=color5[2]) && (color5[6]>=color5[3]) &&
+			         (color5[6]>=color5[4]) && (color5[6]>=color5[5])) begin
+				o_color5 <= `DT_WHT;
+			end
+
+			else begin
+				o_color5 <= 0;
+			end
+		end
+	end
+
+//
+	always@(posedge i_clk) begin
+		if(!i_rstn) begin
+			o_color6 <= 0;
+		end
+		else if((counterX==478)&&(counterY==479)) begin
+			if( (color6[0]>=color6[1]) && (color6[0]>=color6[2]) &&
+			    (color6[0]>=color6[3]) && (color6[0]>=color6[4]) &&
+			    (color6[0]>=color6[5]) && (color6[0]>=color6[6])) begin
+				o_color6 <= `DT_RED;
+			end
+
+			else if( (color6[1]>=color6[0]) && (color6[1]>=color6[2]) &&
+			         (color6[1]>=color6[3]) && (color6[1]>=color6[4]) &&
+			         (color6[1]>=color6[5]) && (color6[1]>=color6[6])) begin
+				o_color6 <= `DT_ORNGE;
+			end
+
+			else if( (color6[2]>=color6[0]) && (color6[2]>=color6[1]) &&
+			         (color6[2]>=color6[3]) && (color6[2]>=color6[4]) &&
+			         (color6[2]>=color6[5]) && (color6[2]>=color6[6])) begin
+				o_color6 <= `DT_YLLW;
+			end
+
+			else if( (color6[3]>=color6[0]) && (color6[3]>=color6[1]) &&
+			         (color6[3]>=color6[2]) && (color6[3]>=color6[4]) &&
+			         (color6[3]>=color6[5]) && (color6[3]>=color6[6])) begin
+				o_color6 <= `DT_GRN;
+			end
+
+			else if( (color6[4]>=color6[0]) && (color6[4]>=color6[1]) &&
+			         (color6[4]>=color6[2]) && (color6[4]>=color6[3]) &&
+			         (color6[4]>=color6[5]) && (color6[4]>=color6[6])) begin
+				o_color6 <= `DT_GRN;
+			end
+
+			else if( (color6[5]>=color6[0]) && (color6[5]>=color6[1]) &&
+			         (color6[5]>=color6[2]) && (color6[5]>=color6[3]) &&
+			         (color6[5]>=color6[4]) && (color6[5]>=color6[6])) begin
+				o_color6 <= `DT_BLU;
+			end
+
+			else if( (color6[6]>=color6[0]) && (color6[6]>=color6[1]) &&
+			         (color6[6]>=color6[2]) && (color6[6]>=color6[3]) &&
+			         (color6[6]>=color6[4]) && (color6[6]>=color6[5])) begin
+				o_color6 <= `DT_WHT;
+			end
+
+			else begin
+				o_color6 <= 0;
+			end
+		end
+	end
+
+//
+	always@(posedge i_clk) begin
+		if(!i_rstn) begin
+			o_color7 <= 0;
+		end
+		else if((counterX==478)&&(counterY==479)) begin
+			if( (color7[0]>=color7[1]) && (color7[0]>=color7[2]) &&
+			    (color7[0]>=color7[3]) && (color7[0]>=color7[4]) &&
+			    (color7[0]>=color7[5]) && (color7[0]>=color7[6])) begin
+				o_color7 <= `DT_RED;
+			end
+
+			else if( (color7[1]>=color7[0]) && (color7[1]>=color7[2]) &&
+			         (color7[1]>=color7[3]) && (color7[1]>=color7[4]) &&
+			         (color7[1]>=color7[5]) && (color7[1]>=color7[6])) begin
+				o_color7 <= `DT_ORNGE;
+			end
+
+			else if( (color7[2]>=color7[0]) && (color7[2]>=color7[1]) &&
+			         (color7[2]>=color7[3]) && (color7[2]>=color7[4]) &&
+			         (color7[2]>=color7[5]) && (color7[2]>=color7[6])) begin
+				o_color7 <= `DT_YLLW;
+			end
+
+			else if( (color7[3]>=color7[0]) && (color7[3]>=color7[1]) &&
+			         (color7[3]>=color7[2]) && (color7[3]>=color7[4]) &&
+			         (color7[3]>=color7[5]) && (color7[3]>=color7[6])) begin
+				o_color7 <= `DT_GRN;
+			end
+
+			else if( (color7[4]>=color7[0]) && (color7[4]>=color7[1]) &&
+			         (color7[4]>=color7[2]) && (color7[4]>=color7[3]) &&
+			         (color7[4]>=color7[5]) && (color7[4]>=color7[6])) begin
+				o_color7 <= `DT_GRN;
+			end
+
+			else if( (color7[5]>=color7[0]) && (color7[5]>=color7[1]) &&
+			         (color7[5]>=color7[2]) && (color7[5]>=color7[3]) &&
+			         (color7[5]>=color7[4]) && (color7[5]>=color7[6])) begin
+				o_color7 <= `DT_BLU;
+			end
+
+			else if( (color7[6]>=color7[0]) && (color7[6]>=color7[1]) &&
+			         (color7[6]>=color7[2]) && (color7[6]>=color7[3]) &&
+			         (color7[6]>=color7[4]) && (color7[6]>=color7[5])) begin
+				o_color7 <= `DT_WHT;
+			end
+
+			else begin
+				o_color7 <= 0;
+			end
+		end
+	end
+
+//
+	always@(posedge i_clk) begin
+		if(!i_rstn) begin
+			o_color8 <= 0;
+		end
+		else if((counterX==478)&&(counterY==479)) begin
+			if( (color8[0]>=color8[1]) && (color8[0]>=color8[2]) &&
+			    (color8[0]>=color8[3]) && (color8[0]>=color8[4]) &&
+			    (color8[0]>=color8[5]) && (color8[0]>=color8[6])) begin
+				o_color8 <= `DT_RED;
+			end
+
+			else if( (color8[1]>=color8[0]) && (color8[1]>=color8[2]) &&
+			         (color8[1]>=color8[3]) && (color8[1]>=color8[4]) &&
+			         (color8[1]>=color8[5]) && (color8[1]>=color8[6])) begin
+				o_color8 <= `DT_ORNGE;
+			end
+
+			else if( (color8[2]>=color8[0]) && (color8[2]>=color8[1]) &&
+			         (color8[2]>=color8[3]) && (color8[2]>=color8[4]) &&
+			         (color8[2]>=color8[5]) && (color8[2]>=color8[6])) begin
+				o_color8 <= `DT_YLLW;
+			end
+
+			else if( (color8[3]>=color8[0]) && (color8[3]>=color8[1]) &&
+			         (color8[3]>=color8[2]) && (color8[3]>=color8[4]) &&
+			         (color8[3]>=color8[5]) && (color8[3]>=color8[6])) begin
+				o_color8 <= `DT_GRN;
+			end
+
+			else if( (color8[4]>=color8[0]) && (color8[4]>=color8[1]) &&
+			         (color8[4]>=color8[2]) && (color8[4]>=color8[3]) &&
+			         (color8[4]>=color8[5]) && (color8[4]>=color8[6])) begin
+				o_color8 <= `DT_GRN;
+			end
+
+			else if( (color8[5]>=color8[0]) && (color8[5]>=color8[1]) &&
+			         (color8[5]>=color8[2]) && (color8[5]>=color8[3]) &&
+			         (color8[5]>=color8[4]) && (color8[5]>=color8[6])) begin
+				o_color8 <= `DT_BLU;
+			end
+
+			else if( (color8[6]>=color8[0]) && (color8[6]>=color8[1]) &&
+			         (color8[6]>=color8[2]) && (color8[6]>=color8[3]) &&
+			         (color8[6]>=color8[4]) && (color8[6]>=color8[5])) begin
+				o_color8 <= `DT_WHT;
+			end
+
+			else begin
+				o_color8 <= 0;
 			end
 		end
 	end

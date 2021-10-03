@@ -245,19 +245,19 @@ module sys_top
    	.i_rdata       (framebuf_rdata  ),
 
    	// color detection interface
-   	.i_color0      (color0    ),
-   	.i_color1      (`DT_ORNGE ),
-   	.i_color2      (`DT_YLLW  ),
-   	.i_color3      (`DT_GRN   ),
-   	.i_color4      (`DT_BLU   ),
-   	.i_color5      (`DT_WHT   ),
-   	.i_color6      (`DT_RED   ),
-   	.i_color7      (`DT_RED   ),
-   	.i_color8      (`DT_GRN   ),
+   	.i_color0      (color0   ),
+   	.i_color1      (color1   ),
+   	.i_color2      (color2   ),
+   	.i_color3      (color3   ),
+   	.i_color4      (color4   ),
+   	.i_color5      (color5   ),
+   	.i_color6      (color6   ),
+   	.i_color7      (color7   ),
+   	.i_color8      (color8   ),
 
     // TMDS out   
-    .o_TMDS_P      (o_TMDS_P        ), // HDMI outputs
-    .o_TMDS_N      (o_TMDS_N        )
+    .o_TMDS_P      (o_TMDS_P ), // HDMI outputs
+    .o_TMDS_N      (o_TMDS_N )
 	);
 
 endmodule
