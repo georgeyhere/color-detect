@@ -12,6 +12,27 @@ Color Detection:
     -> Stream Processor
     -> Determine color using thresholding for each pixel
     -> Bin the color based on screen coordinate
+
+Todo:
+    -> add control and status registers
+        - control register:
+            - HSV thresholds for each color
+        - status register:
+            - show the color of each grid
+            - show the average HSV values for each grid
+
+Using Zynq for HSV Calibration:
+    1) User enters calibration mode via board button or serial port
+    2) User enters what color a grid currently is
+    3) MCU reads status register for average HSV values in the grid
+    4) MCU updates control register for the specified color with average HSV values
+    5) Repeat for each color
+
+Zynq Milestones:
+    1) Blink LEDs using serial port commands
+    2) Build a simple custom AXI-lite slave to blink LEDs
+    3) Add AXI-lite interface to color detection block
+
 -----------------------------------------------------------------------
 
 Goals for 10/1:
