@@ -25,7 +25,6 @@ module sys_top
     output wire [3:0] o_TMDS_N,
 
     // controls
-    input  wire       btn_mode,
     input  wire       sw_gaussian,
 
     // status
@@ -62,6 +61,11 @@ module sys_top
 	wire [15:0] cam_obuf_rdata;
 	wire        cam_obuf_almostempty;
 	wire        cfg_done;
+
+// Gaussian
+	wire        lpf_obuf_rd;
+	wire [15:0] lpf_obuf_rdata;
+	wire        lpf_obuf_almostempty;
 
 // Color Detection
 	wire [2:0]  color0, color1, color2, color3, color4, 
@@ -132,12 +136,10 @@ module sys_top
 	
 		.i_sof             (sof             ),
 	
-		.i_btn_mode        (btn_mode        ), // board button 
 		.i_sw_gaussian     (sw_gaussian     ),
 	
 		.o_cfg_start       (cfg_start       ), // config module start
 		.o_gaussian_enable (gaussian_enable ),
-		.o_mode            (sys_mode        ),
 		.o_pipe_flush      (pipe_flush      ),
 	
 		.o_status_leds     ()                   
@@ -183,6 +185,30 @@ module sys_top
 	.o_obuf_fill        ()
 
 	);
+	//---------------------------------------------------
+    //                Gaussian Filter:
+    //---------------------------------------------------
+    lpf lpf_i 
+    (
+    .i_clk              (i_sysclk),
+    .i_rstn             (sync_rstn_PS),
+          
+    .i_enable           (gaussian_enable),
+    .i_flush            (pipe_flush),
+
+    .i_data             (cam_obuf_rdata),
+    .i_almostempty      (cam_obuf_almostempty),
+    .o_rd               (cam_obuf_rd),
+
+    .i_obuf_rd          (lpf_obuf_rd),
+    .o_obuf_data        (lpf_obuf_rdata),
+    .o_obuf_fill        (),
+    .o_obuf_full        (),
+    .o_obuf_almostfull  (),
+    .o_obuf_empty       (),
+    .o_obuf_almostempty (lpf_obuf_almostempty)
+    );
+
 
     //---------------------------------------------------
     //                 Memory Interface:
@@ -197,9 +223,9 @@ module sys_top
 	.i_flush       (pipe_flush             ),
 
 	// Input FIFO read interface
-	.o_rd          (cam_obuf_rd            ),
-	.i_rdata       (cam_obuf_rdata         ),
-	.i_almostempty (cam_obuf_almostempty   ),
+	.o_rd          (lpf_obuf_rd),
+	.i_rdata       (lpf_obuf_rdata),
+	.i_almostempty (lpf_obuf_almostempty),
 
 
 	// frame buffer read interface
@@ -215,8 +241,8 @@ module sys_top
     .i_clk    (i_sysclk),
     .i_rstn   (sync_rstn_PS),
   
-    .i_data   (cam_obuf_rdata),
-    .i_valid  (cam_obuf_rd),
+    .i_data   (lpf_obuf_rdata),
+    .i_valid  (lpf_obuf_rd),
  
     .o_color0 (color0),
     .o_color1 (color1),

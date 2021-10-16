@@ -27,7 +27,7 @@ module cam_top
 	output wire [15:0] o_obuf_data,
 	output wire        o_obuf_empty,
 	output wire        o_obuf_almostempty,
-	output wire [3:0]  o_obuf_fill,
+	output wire [9:0]  o_obuf_fill,
 
 	// Configuration Control
 	input  wire        i_cfg_init, // initialize cam registers to ROM
@@ -91,7 +91,7 @@ module cam_top
 //---------------------------------------------------
 	fifo_async
 	#(.DATA_WIDTH         (16),
-	  .PTR_WIDTH          (4),
+	  .PTR_WIDTH          (10),
 	  .ALMOSTFULL_OFFSET  (2),
 	  .ALMOSTEMPTY_OFFSET (2) 
 	 )

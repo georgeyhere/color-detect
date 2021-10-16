@@ -35,6 +35,27 @@ Zynq Milestones:
 
 -----------------------------------------------------------------------
 
+10/11:
+- I'm thinking that a good way to increase the accuracy of the color
+  detection would be to add a gaussian filter. 
+- The problem is that the guassian filter would have to applied in RGB
+  color space.
+- RGB color space has three channels, so the implementation would require
+  a total of 16 line buffers. 
+- Block memory is tight enough as it is with just the HSV conversion
+  and color binning. 
+
+Possible workarounds:
+
+1) Easiest way: Reduce the resolution of the captured video. Right now, 
+   it's 480x480. Could possibly drop that down to 360x360.
+   Need to figure out how that affects accuracy of color detection.
+
+2) Harder way: Use DMA to store camera data to external memory. Add an
+   interrupt to the color detection block that requests a DMA read.
+
+
+
 Goals for 10/1:
     -> automatic guitar tuner research
     -> dsp lab
