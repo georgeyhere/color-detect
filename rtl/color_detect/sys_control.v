@@ -14,6 +14,7 @@ module sys_control
 	input  wire       i_rstn,
 
 	input  wire       i_sof,
+	input  wire       i_cfg_done,
 
 	input  wire       i_sw_gaussian,
 
@@ -35,9 +36,10 @@ module sys_control
 	reg        btn1, btn2;
 	wire       db_btn_posedge;
 
-	reg        FLUSH_STATE;
-	localparam FLUSH_IDLE   = 0, 
-	           FLUSH_ACTIVE = 1;
+	reg [1:0]  FLUSH_STATE;
+	localparam FLUSH_INITIAL = 0,
+			   FLUSH_IDLE    = 1, 
+	           FLUSH_ACTIVE  = 2;
 
     reg        sw_gaussian_q1, sw_gaussian_q2;
 	wire       delta_sw_gaussian;
@@ -96,9 +98,15 @@ module sys_control
 		end
 		else begin
 			case(FLUSH_STATE)
+
+				FLUSH_INITIAL: begin
+					o_pipe_flush <= 1;
+					FLUSH_STATE  <= (i_cfg_done && i_sof) ? FLUSH_IDLE:FLUSH_INITIAL;
+				end
+
 				FLUSH_IDLE: begin
 					o_pipe_flush <= 0;
-					FLUSH_STATE  <= (delta_sw_gaussian && !o_cfg_start) ? FLUSH_ACTIVE:FLUSH_IDLE;
+					FLUSH_STATE  <= (delta_sw_gaussian && i_cfg_done) ? FLUSH_ACTIVE:FLUSH_IDLE;
 				end
 	
 				FLUSH_ACTIVE: begin

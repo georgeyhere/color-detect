@@ -24,7 +24,7 @@ module kp_linebuffer
 	);
 
 // 
-	reg [7:0]  mem [LINE_LENGTH-1:0];
+	(* ram_style = "distributed" *) reg [7:0]  mem [LINE_LENGTH-1:0];
 	reg [23:0] rdata;
 
 	reg [$clog2(LINE_LENGTH)-1:0] wptr, rptr;

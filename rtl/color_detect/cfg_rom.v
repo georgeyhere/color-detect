@@ -81,7 +81,7 @@ module cfg_rom
                 53: o_data <= 16'h88_d7;
                 54: o_data <= 16'h89_e8;
                 //AGC and AEC
-                55: o_data <= 16'h13_e0; //COM8, disable AGC / AEC
+                55: o_data <= 16'h13_e5; //COM8, enable AGC / AEC
                 56: o_data <= 16'h00_00; //set gain reg to 0 for AGC
                 57: o_data <= 16'h10_00; //set ARCJ reg to 0
                 58: o_data <= 16'h0d_40; //magic reserved bit for COM4
@@ -99,10 +99,9 @@ module cfg_rom
                 70: o_data <= 16'ha8_f0; //HAECC5
                 71: o_data <= 16'ha9_90; //HAECC6
                 72: o_data <= 16'haa_94; //HAECC7
-                73: o_data <= 16'h13_e5; //COM8, enable AGC / AEC
-                74: o_data <= 16'h69_06; // GFIX,     RGB gain
-                75: o_data <= 16'h1E_23; // MFVP, mirror image
-                76: o_data <= 16'h41_10; // COM16, denoise
+                73: o_data <= 16'h69_06; // GFIX,     RGB gain
+                74: o_data <= 16'h1E_23; // MFVP, mirror image
+                75: o_data <= 16'h41_10; // COM16, denoise
                 default: o_data <= 16'hFF_FF;  //mark end of ROM
 			endcase
 		end

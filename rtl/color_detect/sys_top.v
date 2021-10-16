@@ -135,6 +135,7 @@ module sys_top
 		.i_rstn            (sync_rstn_PS    ), // active-low sync reset
 	
 		.i_sof             (sof             ),
+		.i_cfg_done        (cfg_done        ),
 	
 		.i_sw_gaussian     (sw_gaussian     ),
 	
@@ -174,6 +175,7 @@ module sys_top
 	// Controls
 	.i_cfg_init         (cfg_start       ),
 	.o_cfg_done         (cfg_done        ),
+	.o_sof              (sof             ),
 
 	// output buffer read interface
 	.i_obuf_rclk        (i_sysclk        ),

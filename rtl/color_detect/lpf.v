@@ -27,7 +27,7 @@ module lpf
 	wire        red_obuf_empty, green_obuf_empty, blue_obuf_empty;
 	wire        red_obuf_almostempty, green_obuf_almostempty, blue_obuf_almostempty;
 
-	assign o_rd = red_rd;
+	assign o_rd = red_rd || green_rd || blue_rd;
 
 	assign o_obuf_data = {red_obuf_data  [7:3],
 	                      green_obuf_data[7:2],
