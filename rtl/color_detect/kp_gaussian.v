@@ -1,41 +1,48 @@
+// module: kp_gaussian
+//
+// Applies a 3x3 Gaussian low pass filter kernel.
+//
 module kp_gaussian 
+	#(
+    parameter DATA_WIDTH = 8
+	)
 	(
-	input  wire        i_clk,     // input clock
-	input  wire        i_rstn,    // sync active-low reset
+	input  wire                      i_clk,     // input clock
+	input  wire                      i_rstn,    // sync active-low reset
  	
- 	// kernel control interface 
-	input  wire [23:0] i_r0_data, // three greyscale pixels from each row
-	input  wire [23:0] i_r1_data, 
-	input  wire [23:0] i_r2_data,
-	input  wire        i_valid,
+ 	// kernel control interface; 3 pixels from each row
+	input  wire [(3*DATA_WIDTH-1):0] i_r0_data, 
+	input  wire [(3*DATA_WIDTH-1):0] i_r1_data, 
+	input  wire [(3*DATA_WIDTH-1):0] i_r2_data,
+	input  wire                      i_valid,
 
 	// output interface
-	output reg  [7:0]  o_data,    // 8-bit result 
-	output reg         o_valid    // valid flag
+	output reg  [DATA_WIDTH-1:0]     o_data,    // 8-bit result 
+	output reg                       o_valid    // valid flag
 	);
 
 	integer i;
 
 //  3x3 kernel
-	reg  [7:0]  kernel [8:0];
+	reg  [DATA_WIDTH-1:0]     kernel [8:0];
 
-// stage 1: multiply
-    wire [71:0] rowdata;
-	reg  [10:0] stage1_data [8:0];
-	reg         stage1_valid;
-
-	reg         stage1_reg_valid;
-	reg  [10:0] stage1_data_reg [8:0];
+// stage 1: multiply (2 cycles)
+    wire [(9*DATA_WIDTH-1):0] rowdata;
+	reg  [DATA_WIDTH+2:0]     stage1_data [8:0];
+	reg                       stage1_valid;
+	//
+	reg                       stage1_reg_valid;
+	reg  [DATA_WIDTH+2:0]     stage1_data_reg [8:0];
 	
 
-// stage 2: accumulate
-	reg  [10:0] stage2_accumulator;
-	reg  [10:0] stage2_data;
-	reg         stage2_valid;
+// stage 2: accumulate (1 cycle)
+	reg  [DATA_WIDTH+2:0] stage2_accumulator;
+	reg  [DATA_WIDTH+2:0] stage2_data;
+	reg                   stage2_valid;
 
-// stage 3: divide by 16
-	reg  [10:0] stage3_data;
-	reg         stage3_valid;
+// stage 3: divide by 16 (1 cycle)
+	reg  [DATA_WIDTH+2:0] stage3_data;
+	reg                   stage3_valid;
 
 
 // KERNEL DEFINITION: 3X3 GAUSSIAN BLUR
@@ -67,7 +74,7 @@ module kp_gaussian
 			stage1_valid <= i_valid;
 			for(i=0; i<9; i=i+1) begin
 				stage1_data[i] <= $signed(kernel[i]) * 
-				                  $signed({1'b0, rowdata[i*8+:8]});
+				                  $signed({1'b0, rowdata[i*DATA_WIDTH+:DATA_WIDTH]});
 			end
 		end
 	end
@@ -121,7 +128,7 @@ module kp_gaussian
 		end
 		else begin
 			o_valid <= stage2_valid;
-			o_data  <= stage2_data >> 4; // stage2 is 11 bits, output is 8 bits
+			o_data  <= stage2_data >> 4; // do da divide
 		end
 	end
 

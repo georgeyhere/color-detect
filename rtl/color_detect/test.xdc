@@ -18,16 +18,16 @@ set_property -dict { PACKAGE_PIN G15   IOSTANDARD LVCMOS33 } [get_ports { sw_gau
 
 ##Buttons
 set_property -dict {PACKAGE_PIN K18 IOSTANDARD LVCMOS33} [get_ports i_rst]
-set_property -dict {PACKAGE_PIN P16 IOSTANDARD LVCMOS33} [get_ports btn_mode]
+#set_property -dict {PACKAGE_PIN P16 IOSTANDARD LVCMOS33} [get_ports btn_mode]
 #set_property -dict { PACKAGE_PIN K19   IOSTANDARD LVCMOS33 } [get_ports { btn[2] }]; #IO_L10P_T1_AD11P_35 Sch=btn[2]
 #set_property -dict { PACKAGE_PIN Y16   IOSTANDARD LVCMOS33 } [get_ports { btn[3] }]; #IO_L7P_T1_34 Sch=btn[3]
 
 
 ##LEDs
-set_property -dict {PACKAGE_PIN M14 IOSTANDARD LVCMOS33} [get_ports {led_cfg}]
-#set_property -dict {PACKAGE_PIN M15 IOSTANDARD LVCMOS33} [get_ports {led_capture}]
-#set_property -dict { PACKAGE_PIN G14   IOSTANDARD LVCMOS33 } [get_ports { led_gssn }]; #IO_0_35 Sch=led[2]
-#set_property -dict { PACKAGE_PIN D18   IOSTANDARD LVCMOS33 } [get_ports { led[3] }]; #IO_L3N_T0_DQS_AD1N_35 Sch=led[3]
+set_property -dict {PACKAGE_PIN M14 IOSTANDARD LVCMOS33} [get_ports {led_error[0]}]
+set_property -dict {PACKAGE_PIN M15 IOSTANDARD LVCMOS33} [get_ports {led_error[1]}]
+set_property -dict { PACKAGE_PIN G14   IOSTANDARD LVCMOS33 } [get_ports { led_error[2] }]; #IO_0_35 Sch=led[2]
+set_property -dict { PACKAGE_PIN D18   IOSTANDARD LVCMOS33 } [get_ports { led_error[3] }]; #IO_L3N_T0_DQS_AD1N_35 Sch=led[3]
 
 
 ##RGB LED 5 (Zybo Z7-20 only)
@@ -202,19 +202,6 @@ set_property -dict {PACKAGE_PIN V18 IOSTANDARD LVCMOS33} [get_ports SDA]
 
 create_clock -period 41.167 -name cam_pclk -waveform {0.000 20.584} -add [get_ports i_cam_pclk]
 
-
-set_false_path -from [get_clocks cam_pclk] -to [get_clocks -of_objects [get_pins dcm_i/inst/mmcm_adv_inst/CLKOUT0]]
-set_false_path -from [get_clocks cam_pclk] -to [get_clocks -of_objects [get_pins dcm_i/inst/mmcm_adv_inst/CLKOUT3]]
-
-
-
-set_max_delay -from [get_clocks cam_pclk] -to [get_clocks -of_objects [get_pins dcm_i/inst/mmcm_adv_inst/CLKOUT1]] 42.000
-set_max_delay -from [get_clocks cam_pclk] -to [get_clocks -of_objects [get_pins dcm_i/inst/mmcm_adv_inst/CLKOUT2]] 14.000
+set_false_path -from [get_clocks cam_pclk] -to [get_clocks -of_objects [get_pins dcm_i/inst/mmcm_adv_inst/CLKOUT2]]
 
 set_false_path -from [get_clocks cam_pclk] -to [get_clocks -of_objects [get_pins dcm_i/inst/mmcm_adv_inst/CLKOUT1]]
-set_false_path -from [get_clocks cam_pclk] -to [get_clocks -of_objects [get_pins dcm_i/inst/mmcm_adv_inst/CLKOUT2]]
-set_max_delay -from [get_clocks -of_objects [get_pins dcm_i/inst/mmcm_adv_inst/CLKOUT2]] -to [get_clocks cam_pclk] 13.000
-
-
-
-set_max_delay -from [get_clocks -of_objects [get_pins dcm_i/inst/mmcm_adv_inst/CLKOUT3]] -to [get_clocks cam_pclk] 6.667

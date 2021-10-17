@@ -3,29 +3,30 @@
 // This is pretty much just a FIFO that outputs three
 // words per read. 
 //
-// Should be synthesized as distributed ram w/ an output
+// Synthesized as distributed ram w/ an output
 // buffer for better performance -> 1 cycle read latency
 //
 module kp_linebuffer
 	#(
-    parameter LINE_LENGTH = 640
+    parameter LINE_LENGTH = 640,
+    parameter DATA_WIDTH  = 8
 	) 
 	(
-	input  wire        i_clk,
-	input  wire        i_rstn,
-
-	// Write Interface
-	input  wire        i_wr,
-	input  wire [7:0]  i_wdata,
+	input  wire                      i_clk,
+	input  wire                      i_rstn,
+    
+	// Write Interface    
+	input  wire                      i_wr,
+	input  wire [DATA_WIDTH-1:0]     i_wdata,
 	
 	// Read Interface
-	input  wire        i_rd,
-	output reg  [23:0] o_rdata
+	input  wire                      i_rd,
+	output reg  [(3*DATA_WIDTH-1):0] o_rdata
 	);
 
 // 
-	(* ram_style = "distributed" *) reg [7:0]  mem [LINE_LENGTH-1:0];
-	reg [23:0] rdata;
+	(* ram_style = "distributed" *) reg [DATA_WIDTH-1:0]  mem [LINE_LENGTH-1:0];
+	reg [(3*DATA_WIDTH-1):0] rdata;
 
 	reg [$clog2(LINE_LENGTH)-1:0] wptr, rptr;
 
@@ -75,7 +76,8 @@ endmodule
 /*
 INSTANTIATION TEMPLATE
 ps_linebuffer
-#(.LINE_LENGTH(640)) 
+#(.LINE_LENGTH(640),
+  .DATA_WIDTH(8)) 
 LINEBUF0_i (
 .i_clk   (), 
 .i_rstn  (), // sync active low reset

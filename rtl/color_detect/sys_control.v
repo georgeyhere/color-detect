@@ -94,7 +94,7 @@ module sys_control
 	always@(posedge i_sysclk) begin
 		if(!i_rstn) begin
 			o_pipe_flush <= 0;
-			FLUSH_STATE  <= FLUSH_IDLE;
+			FLUSH_STATE  <= FLUSH_INITIAL;
 		end
 		else begin
 			case(FLUSH_STATE)
@@ -106,7 +106,7 @@ module sys_control
 
 				FLUSH_IDLE: begin
 					o_pipe_flush <= 0;
-					FLUSH_STATE  <= (delta_sw_gaussian && i_cfg_done) ? FLUSH_ACTIVE:FLUSH_IDLE;
+					FLUSH_STATE  <= (delta_sw_gaussian) ? FLUSH_ACTIVE:FLUSH_IDLE;
 				end
 	
 				FLUSH_ACTIVE: begin

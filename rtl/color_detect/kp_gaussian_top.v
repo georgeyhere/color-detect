@@ -5,37 +5,42 @@
 // Contains passthrough logic for when gaussian filter is disabled.
 //
 module kp_gaussian_top 
+	#(parameter LINE_LENGTH    = 640,
+	  parameter LINE_COUNT     = 480,
+      parameter DATA_WIDTH     = 8,
+      parameter OBUF_PTR_WIDTH = 4)
 	(
-	input  wire        i_clk,    // input clock
-	input  wire        i_rstn,   // active low sync reset
-	input  wire        i_enable, // filter enable
-	input  wire        i_flush,
- 
-	input  wire [7:0]  i_data,   // input data, 8 bits of R,G, or B
-	input  wire        i_almostempty, 
-	output reg         o_rd,     // 
-
-	input  wire        i_obuf_rd,
-	output wire [7:0]  o_obuf_data,
-	output wire [4:0]  o_obuf_fill,
-	output wire        o_obuf_full,
-	output wire        o_obuf_almostfull,
-	output wire        o_obuf_empty,
-	output wire        o_obuf_almostempty
+	input  wire                    i_clk,    // input clock
+	input  wire                    i_rstn,   // active low sync reset
+	input  wire                    i_enable, // filter enable
+	input  wire                    i_flush,
+  
+	input  wire [DATA_WIDTH-1:0]   i_data,   // input data, 8 bits of R,G, or B
+	input  wire                    i_almostempty, 
+	output reg                     o_rd,     // 
+     
+    // output buffer interface 
+	input  wire                    i_obuf_rd,
+	output wire [DATA_WIDTH-1:0]   o_obuf_data,
+	output wire [OBUF_PTR_WIDTH:0] o_obuf_fill,
+	output wire                    o_obuf_full,
+	output wire                    o_obuf_almostfull,
+	output wire                    o_obuf_empty,
+	output wire                    o_obuf_almostempty
 	);
 
-	wire [23:0] r0_data, r1_data, r2_data;
-	wire        valid;
-	wire        req;
-	wire [7:0]  gaussian_dout;
-	wire        gaussian_valid;
-
-	reg         nxt_rd;
-	reg         nxt_din_valid, din_valid;
-	reg  [9:0]  nxt_rdCounter, rdCounter;
-
-	reg  [7:0]  obuf_wdata;
-	reg         obuf_wr;
+	wire [(3*DATA_WIDTH-1):0]    r0_data, r1_data, r2_data;
+	wire                         valid;
+	wire                         req;
+	wire [DATA_WIDTH-1:0]        gaussian_dout;
+	wire                         gaussian_valid;
+      
+	reg                          nxt_rd;
+	reg                          nxt_din_valid, din_valid;
+	reg  [$clog2(LINE_LENGTH):0] nxt_rdCounter, rdCounter;
+   
+	reg  [DATA_WIDTH-1:0]        obuf_wdata;
+	reg                          obuf_wr;
 
 	reg         STATE, NEXT_STATE;
 	localparam  STATE_IDLE   = 0,
@@ -51,8 +56,10 @@ module kp_gaussian_top
 
 		case(STATE)
 			
+			// Input FIFO almost-empty flag is asserted
 			STATE_IDLE: begin
 				case(i_enable)
+					// Filter not enabled
 					0: begin
 						if(!i_almostempty) begin
 							nxt_rd        = 1;
@@ -61,6 +68,7 @@ module kp_gaussian_top
 						end
 					end
 
+					// Filter enabled
 					1: begin
 						if(!i_almostempty && req) begin
 							nxt_rd        = 1;
@@ -71,14 +79,17 @@ module kp_gaussian_top
 				endcase	
 			end
 
+			// Input FIFO has data; almost-empty is not asserted
 			STATE_ACTIVE: begin
 				case(i_enable)
+					// Filter not enabled	
 					0: begin
 						nxt_rd        = (!i_almostempty);
 						nxt_din_valid = (!i_almostempty);
 						NEXT_STATE    = (i_almostempty) ? STATE_IDLE : STATE_ACTIVE;
 					end
-
+			
+					// Filter enabled
 					1: begin
 						nxt_rd        = (!i_almostempty && req);
 						nxt_din_valid = (!i_almostempty && req);
@@ -86,11 +97,10 @@ module kp_gaussian_top
 					end
 				endcase
 			end
-
 		endcase
 	end
 
-// FSM sync process
+// FSM registers
 //
 	always@(posedge i_clk) begin
 		if(!i_rstn) begin
@@ -107,7 +117,7 @@ module kp_gaussian_top
 		end
 	end
 
-	// passthrough logic
+// passthrough logic for if filter is not enabled
 	always@* begin
 		if(i_enable) begin
 			obuf_wdata = gaussian_dout;
@@ -119,7 +129,11 @@ module kp_gaussian_top
 		end
 	end
 
+// Submodule instantiation
 	kp_kernel_control 
+	#(.LINE_LENGTH (LINE_LENGTH),
+	  .LINE_COUNT  (LINE_COUNT),
+	  .DATA_WIDTH  (DATA_WIDTH))
 	gaus_ctrl_i (
 	.i_clk     (i_clk              ),
 	.i_rstn    (i_rstn&&(~i_flush) ),
@@ -134,7 +148,8 @@ module kp_gaussian_top
 	.o_valid   (valid              )
 	);
 
-	kp_gaussian 
+	kp_gaussian
+	#(.DATA_WIDTH (DATA_WIDTH)) 
 	gaus_i (
 	.i_clk     (i_clk              ),
 	.i_rstn    (i_rstn&&(~i_flush) ),
@@ -149,8 +164,8 @@ module kp_gaussian_top
 	);
 
 	fifo_sync 
-	#(.DATA_WIDTH        (8),
-	  .ADDR_WIDTH        (4),
+	#(.DATA_WIDTH        (DATA_WIDTH),
+	  .ADDR_WIDTH        (OBUF_PTR_WIDTH),
 	  .ALMOSTFULL_OFFSET (2),
 	  .ALMOSTEMPTY_OFFSET(1))
 	ps_obuf_i (

@@ -28,7 +28,7 @@ module sys_top
     input  wire       sw_gaussian,
 
     // status
-    output wire       led_cfg
+    output wire [3:0] led_error
 	);
 
 
@@ -60,12 +60,15 @@ module sys_top
 	wire        cam_obuf_rd;
 	wire [15:0] cam_obuf_rdata;
 	wire        cam_obuf_almostempty;
+	wire        cam_obuf_empty;
 	wire        cfg_done;
 
 // Gaussian
 	wire        lpf_obuf_rd;
 	wire [15:0] lpf_obuf_rdata;
 	wire        lpf_obuf_almostempty;
+	wire        lpf_obuf_empty;
+	wire        lpf_error;
 
 // Color Detection
 	wire [2:0]  color0, color1, color2, color3, color4, 
@@ -80,7 +83,12 @@ module sys_top
 // =============================================================
 	assign o_cam_rstn = 1'b1; // sw reset instead
 	assign o_cam_pwdn = 1'b0;  
-	assign led_cfg    = cfg_done;
+
+	assign led_error[0] = gaussian_enable;
+	assign led_error[1] = (lpf_obuf_empty&&lpf_obuf_rd);
+	assign led_error[2] = lpf_error;
+	assign led_error[3] = pipe_flush;
+
 	
 // **** Debounce Reset button ****
 // -> debounced in camera pclk domain (24MHz)
@@ -182,7 +190,7 @@ module sys_top
 	.i_obuf_rstn        (sync_rstn_PS    ),
 	.i_obuf_rd          (cam_obuf_rd     ),
 	.o_obuf_data        (cam_obuf_rdata  ),
-	.o_obuf_empty       (),  
+	.o_obuf_empty       (cam_obuf_empty  ),  
 	.o_obuf_almostempty (cam_obuf_almostempty ),  
 	.o_obuf_fill        ()
 
@@ -190,7 +198,11 @@ module sys_top
 	//---------------------------------------------------
     //                Gaussian Filter:
     //---------------------------------------------------
-    lpf lpf_i 
+    lpf 
+    #(.LINE_LENGTH(480),
+      .LINE_COUNT (480),
+      .OBUF_PTR_WIDTH(4))
+    lpf_i 
     (
     .i_clk              (i_sysclk),
     .i_rstn             (sync_rstn_PS),
@@ -207,10 +219,32 @@ module sys_top
     .o_obuf_fill        (),
     .o_obuf_full        (),
     .o_obuf_almostfull  (),
-    .o_obuf_empty       (),
-    .o_obuf_almostempty (lpf_obuf_almostempty)
+    .o_obuf_empty       (lpf_obuf_empty),
+    .o_obuf_almostempty (lpf_obuf_almostempty),
+
+    .o_error            (lpf_error)
     );
 
+    //---------------------------------------------------
+    //                 Color Detection:
+    //---------------------------------------------------
+    colorDetect_top colorDetect_i (
+    .i_clk    (i_sysclk),
+    .i_rstn   (sync_rstn_PS),
+  
+    .i_data   (lpf_obuf_rdata),
+    .i_valid  (lpf_obuf_rd),
+ 
+    .o_color0 (color0),
+    .o_color1 (color1),
+    .o_color2 (color2),
+    .o_color3 (color3),
+    .o_color4 (color4),
+    .o_color5 (color5),
+    .o_color6 (color6),
+    .o_color7 (color7),
+    .o_color8 (color8)
+    );
 
     //---------------------------------------------------
     //                 Memory Interface:
@@ -237,28 +271,6 @@ module sys_top
 	); 
 
 	//---------------------------------------------------
-    //                 Color Detection:
-    //---------------------------------------------------
-    colorDetect_top colorDetect_i (
-    .i_clk    (i_sysclk),
-    .i_rstn   (sync_rstn_PS),
-  
-    .i_data   (lpf_obuf_rdata),
-    .i_valid  (lpf_obuf_rd),
- 
-    .o_color0 (color0),
-    .o_color1 (color1),
-    .o_color2 (color2),
-    .o_color3 (color3),
-    .o_color4 (color4),
-    .o_color5 (color5),
-    .o_color6 (color6),
-    .o_color7 (color7),
-    .o_color8 (color8)
-    );
-
-
-	//---------------------------------------------------
     //                 Display Interface:
     //---------------------------------------------------
 	display_interface 
@@ -266,7 +278,7 @@ module sys_top
 	display_i(
     .i_p_clk       (clk_25MHz       ), // 25 MHz display clock
     .i_tmds_clk    (clk_250MHz      ), // 250 MHz TMDS clock
-    .i_rstn        (db_rstn         ), 
+    .i_rstn        (sync_rstn_25    ), 
  	
  	// frame buffer read interface
    	.o_raddr       (framebuf_raddr  ),
