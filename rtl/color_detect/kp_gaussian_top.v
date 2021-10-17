@@ -5,9 +5,9 @@
 // Contains passthrough logic for when gaussian filter is disabled.
 //
 module kp_gaussian_top 
-	#(parameter LINE_LENGTH    = 640,
+	#(parameter LINE_LENGTH    = 480,
 	  parameter LINE_COUNT     = 480,
-      parameter DATA_WIDTH     = 8,
+      parameter DATA_WIDTH     = 16,
       parameter OBUF_PTR_WIDTH = 4)
 	(
 	input  wire                    i_clk,    // input clock
@@ -26,15 +26,16 @@ module kp_gaussian_top
 	output wire                    o_obuf_full,
 	output wire                    o_obuf_almostfull,
 	output wire                    o_obuf_empty,
-	output wire                    o_obuf_almostempty
+	output wire                    o_obuf_almostempty,
+
+	output wire                    o_error
 	);
 
+//
 	wire [(3*DATA_WIDTH-1):0]    r0_data, r1_data, r2_data;
-	wire                         valid;
+	wire                         control_valid;
 	wire                         req;
-	wire [DATA_WIDTH-1:0]        gaussian_dout;
-	wire                         gaussian_valid;
-      
+	
 	reg                          nxt_rd;
 	reg                          nxt_din_valid, din_valid;
 	reg  [$clog2(LINE_LENGTH):0] nxt_rdCounter, rdCounter;
@@ -45,7 +46,10 @@ module kp_gaussian_top
 	reg         STATE, NEXT_STATE;
 	localparam  STATE_IDLE   = 0,
 	            STATE_ACTIVE = 1;
-
+//
+	wire       red_valid, green_valid, blue_valid;
+	wire [4:0] red_dout, blue_dout;
+	wire [5:0] green_dout;
 
 // FSM next state logic for FIFO reads
 //
@@ -120,8 +124,8 @@ module kp_gaussian_top
 // passthrough logic for if filter is not enabled
 	always@* begin
 		if(i_enable) begin
-			obuf_wdata = gaussian_dout;
-			obuf_wr    = gaussian_valid;
+			obuf_wdata = {red_dout, green_dout, blue_dout};
+			obuf_wr    = red_valid && green_valid && blue_valid;
 		end
 		else begin
 			obuf_wdata = i_data;
@@ -129,11 +133,16 @@ module kp_gaussian_top
 		end
 	end
 
+// error signal
+	assign o_error = (red_valid != green_valid) || 
+	                 (red_valid != blue_valid)  ||
+	                 (i_enable && !control_valid);
+
 // Submodule instantiation
 	kp_kernel_control 
 	#(.LINE_LENGTH (LINE_LENGTH),
 	  .LINE_COUNT  (LINE_COUNT),
-	  .DATA_WIDTH  (DATA_WIDTH))
+	  .DATA_WIDTH  (16))
 	gaus_ctrl_i (
 	.i_clk     (i_clk              ),
 	.i_rstn    (i_rstn&&(~i_flush) ),
@@ -145,22 +154,52 @@ module kp_gaussian_top
 	.o_r0_data (r0_data            ),
 	.o_r1_data (r1_data            ),
 	.o_r2_data (r2_data            ),
-	.o_valid   (valid              )
+	.o_valid   (control_valid      )
 	);
 
 	kp_gaussian
-	#(.DATA_WIDTH (DATA_WIDTH)) 
-	gaus_i (
+	#(.DATA_WIDTH (5)) 
+	gaus_red_i (
 	.i_clk     (i_clk              ),
 	.i_rstn    (i_rstn&&(~i_flush) ),
 
-	.i_r0_data (r0_data            ),
-	.i_r1_data (r1_data            ),
-	.i_r2_data (r2_data            ),
-	.i_valid   (valid              ),
+	.i_r0_data ({r0_data[47:43], r0_data[31:27], r0_data[15:11]}),
+	.i_r1_data ({r1_data[47:43], r1_data[31:27], r1_data[15:11]}),
+	.i_r2_data ({r2_data[47:43], r2_data[31:27], r2_data[15:11]}),
+	.i_valid   (control_valid ),
     
-	.o_data    (gaussian_dout      ),
-	.o_valid   (gaussian_valid     )
+	.o_data    (red_dout      ),
+	.o_valid   (red_valid     )
+	);
+
+	kp_gaussian
+	#(.DATA_WIDTH (6)) 
+	gaus_green_i (
+	.i_clk     (i_clk              ),
+	.i_rstn    (i_rstn&&(~i_flush) ),
+
+	.i_r0_data ({r0_data[42:37], r0_data[26:21], r0_data[10:5]}),
+	.i_r1_data ({r1_data[42:37], r1_data[26:21], r1_data[10:5]}),
+	.i_r2_data ({r2_data[42:37], r2_data[26:21], r2_data[10:5]}),
+	.i_valid   (control_valid   ),
+    
+	.o_data    (green_dout      ),
+	.o_valid   (green_valid     )
+	);
+
+	kp_gaussian
+	#(.DATA_WIDTH (5)) 
+	gaus_blue_i (
+	.i_clk     (i_clk              ),
+	.i_rstn    (i_rstn&&(~i_flush) ),
+
+	.i_r0_data ({r0_data[36:32], r0_data[20:16], r0_data[4:0]}),
+	.i_r1_data ({r1_data[36:32], r1_data[20:16], r1_data[4:0]}),
+	.i_r2_data ({r2_data[36:32], r2_data[20:16], r2_data[4:0]}),
+	.i_valid   (control_valid  ),
+    
+	.o_data    (blue_dout      ),
+	.o_valid   (blue_valid     )
 	);
 
 	fifo_sync 
@@ -168,7 +207,7 @@ module kp_gaussian_top
 	  .ADDR_WIDTH        (OBUF_PTR_WIDTH),
 	  .ALMOSTFULL_OFFSET (2),
 	  .ALMOSTEMPTY_OFFSET(1))
-	ps_obuf_i (
+	kp_obuf_i (
 	.i_clk         (i_clk),
 	.i_rstn        (i_rstn&&(~i_flush) ),
             

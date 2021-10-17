@@ -198,15 +198,15 @@ module sys_top
 	//---------------------------------------------------
     //                Gaussian Filter:
     //---------------------------------------------------
-    lpf 
+    kp_gaussian_top 
     #(.LINE_LENGTH(480),
       .LINE_COUNT (480),
+      .DATA_WIDTH (16),
       .OBUF_PTR_WIDTH(4))
     lpf_i 
     (
     .i_clk              (i_sysclk),
-    .i_rstn             (sync_rstn_PS),
-          
+    .i_rstn             (sync_rstn_PS),   
     .i_enable           (gaussian_enable),
     .i_flush            (pipe_flush),
 

@@ -22,7 +22,7 @@ module kp_kernel_control
 	input  wire                      i_rstn,  // sync active low reset
  	   
  	// Data in interface   
-	input  wire [DATA_WIDTH-1:0]     i_data,  // 8-bit greyscale data
+	input  wire [DATA_WIDTH-1:0]     i_data,  // 
 	input  wire                      i_valid, //
 	output reg                       o_req,   // asserted when ready for more data
 
@@ -52,7 +52,7 @@ module kp_kernel_control
 
 
 // LINE BUFFER WRITE LOGIC
-	reg  [$clog2(LINE_LENGTH)-1:0]  w_pixelCounter; // counts pixels written to single buffer
+	reg  [$clog2(LINE_LENGTH):0]  w_pixelCounter; // counts pixels written to single buffer
 	reg  [1:0]  w_lineBuffer_sel; // keeps track of buffer to write to
 	 
 // LINE BUFFER READ LOGIC
@@ -60,11 +60,11 @@ module kp_kernel_control
 	reg  [$clog2(LINE_LENGTH):0] r_fill;        
 
 	// counts pixels read from current buffer      
-	reg  [$clog2(LINE_LENGTH)-1:0] r_pixelCounter,      
+	reg  [$clog2(LINE_LENGTH):0] r_pixelCounter,      
 	                               nxt_r_pixelCounter; 
  	
  	// counts # of lines processed
-	reg  [$clog2(LINE_COUNT)-1:0] r_lineCounter,       
+	reg  [$clog2(LINE_COUNT):0] r_lineCounter,       
 	                              nxt_r_lineCounter;
  	
  	// overall buffer read enable
