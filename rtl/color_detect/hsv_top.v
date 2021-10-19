@@ -4,22 +4,25 @@
 // 16-bit fixed point w/ 6 fractional bits.
 //
 module hsv_top
+	#(parameter BRAM_DEPTH = 230400)
 	(
     input  wire        i_clk,   // 
     input  wire        i_rstn,  // sync active-low reset
 
    	// RGB Input Interface
-    input  wire [15:0] i_data,  // RGB 565
-    input  wire        i_valid, // input valid flag
+    input  wire                          i_valid, // input valid flag
+    input  wire [15:0]                   i_data,  // RGB 565 (from Gaussian to BRAM)
+    input  wire [$clog2(BRAM_DEPTH)-1:0] i_addr,  // BRAM address
 
-    // Hue Output
+    // HSV Output
+    output wire [$clog2(BRAM_DEPTH)-1:0] o_addr,
     output wire [15:0] o_hue,   // Hue (0-360 degrees)
     output wire [15:0] o_sat,   // Saturation (0-100%)
     output wire [15:0] o_value, // Value (0-100%)
     output wire        o_valid  // output valid flag
 	);
 
-// INTERMEDIATE WIRES
+// LOCAL WIRES/REGS
 	wire [8:0]  decode_dividend, decode_delta;
 	wire [1:0]  decode_function;
 	wire [7:0]  decode_value;
@@ -31,6 +34,24 @@ module hsv_top
 
 	wire        hue_valid, sat_valid;
 	assign o_valid = (hue_valid && sat_valid);
+
+// MEMORY ADDRESS SHIFT REGISTER
+	reg  [$clog2(BRAM_DEPTH)-1:0] SR_ADDR [0:17]; // 18 cycle shift reg
+	integer i;
+	always@(posedge i_clk) begin
+		if(!i_rstn) begin
+			for(i=0; i<18; i=i+1) begin
+				SR_ADDR[i] <= 0;
+			end
+		end
+		else begin
+			SR_ADDR[0] <= i_addr;
+			for(i=1; i<18; i=i+1) begin
+				SR_ADDR[i] <= SR_ADDR[i-1];
+			end
+		end
+	end
+	assign o_addr = SR_ADDR[17];
 
 // DECODER -> 1 cycle 
 	hsv_decoder hsv_decode_i (

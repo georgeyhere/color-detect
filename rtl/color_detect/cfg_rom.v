@@ -81,27 +81,28 @@ module cfg_rom
                 53: o_data <= 16'h88_d7;
                 54: o_data <= 16'h89_e8;
                 //AGC and AEC
-                54: o_data <= 16'h13_e0; //COM8, disable AGC / AEC
-                55: o_data <= 16'h00_00; //set gain reg to 0 for AGC
-                56: o_data <= 16'h10_00; //set ARCJ reg to 0
-                57: o_data <= 16'h0d_40; //magic reserved bit for COM4
-                58: o_data <= 16'h14_18; //COM9, 4x gain + magic bit
-                59: o_data <= 16'ha5_05; // BD50MAX
-                60: o_data <= 16'hab_07; //DB60MAX
-                61: o_data <= 16'h24_95; //AGC upper limit
-                62: o_data <= 16'h25_33; //AGC lower limit
-                63: o_data <= 16'h26_e3; //AGC/AEC fast mode op region
-                64: o_data <= 16'h9f_78; //HAECC1
-                65: o_data <= 16'ha0_68; //HAECC2
-                66: o_data <= 16'ha1_03; //magic
-                67: o_data <= 16'ha6_d8; //HAECC3
-                68: o_data <= 16'ha7_d8; //HAECC4
-                69: o_data <= 16'ha8_f0; //HAECC5
-                70: o_data <= 16'ha9_90; //HAECC6
-                71: o_data <= 16'haa_94; //HAECC7
-                72: o_data <= 16'h13_e5; //COM8, enable AGC / AEC
+                55: o_data <= 16'h13_e5; //COM8, enable AGC / AEC
+                56: o_data <= 16'h00_00; //set gain reg to 0 for AGC
+                57: o_data <= 16'h10_00; //set ARCJ reg to 0
+                58: o_data <= 16'h0d_40; //magic reserved bit for COM4
+                59: o_data <= 16'h14_18; //COM9, 4x gain + magic bit
+                60: o_data <= 16'ha5_05; // BD50MAX
+                61: o_data <= 16'hab_07; //DB60MAX
+                62: o_data <= 16'h24_95; //AGC upper limit
+                63: o_data <= 16'h25_33; //AGC lower limit
+                64: o_data <= 16'h26_e3; //AGC/AEC fast mode op region
+                65: o_data <= 16'h9f_78; //HAECC1
+                66: o_data <= 16'ha0_68; //HAECC2
+                67: o_data <= 16'ha1_03; //magic
+                68: o_data <= 16'ha6_d8; //HAECC3
+                69: o_data <= 16'ha7_d8; //HAECC4
+                70: o_data <= 16'ha8_f0; //HAECC5
+                71: o_data <= 16'ha9_90; //HAECC6
+                72: o_data <= 16'haa_94; //HAECC7
                 73: o_data <= 16'h69_06; // GFIX,     RGB gain
                 74: o_data <= 16'h1E_23; // MFVP, mirror image
+                75: o_data <= 16'h41_10; // COM16, denoise
+                76: o_data <= 16'h13_a7; // COM8, enable AGC / AEC
                 default: o_data <= 16'hFF_FF;  //mark end of ROM
 			endcase
 		end

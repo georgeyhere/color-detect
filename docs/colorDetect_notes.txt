@@ -12,7 +12,53 @@ Color Detection:
     -> Stream Processor
     -> Determine color using thresholding for each pixel
     -> Bin the color based on screen coordinate
+
+Todo:
+    -> add control and status registers
+        - control register:
+            - HSV thresholds for each color
+        - status register:
+            - show the color of each grid
+            - show the average HSV values for each grid
+
+Using Zynq for HSV Calibration:
+    1) User enters calibration mode via board button or serial port
+    2) User enters what color a grid currently is
+    3) MCU reads status register for average HSV values in the grid
+    4) MCU updates control register for the specified color with average HSV values
+    5) Repeat for each color
+
+Zynq Milestones:
+    1) Blink LEDs using serial port commands
+    2) Build a simple custom AXI-lite slave to blink LEDs
+    3) Add AXI-lite interface to color detection block
+
 -----------------------------------------------------------------------
+
+10/16:
+- After parameterizing, the kernel control module is now requesting, 
+  but the output never goes valid.
+
+10/11:
+- I'm thinking that a good way to increase the accuracy of the color
+  detection would be to add a gaussian filter. 
+- The problem is that the guassian filter would have to applied in RGB
+  color space.
+- RGB color space has three channels, so the implementation would require
+  a total of 16 line buffers. 
+- Block memory is tight enough as it is with just the HSV conversion
+  and color binning. 
+
+Possible workarounds:
+
+1) Easiest way: Reduce the resolution of the captured video. Right now, 
+   it's 480x480. Could possibly drop that down to 360x360.
+   Need to figure out how that affects accuracy of color detection.
+
+2) Harder way: Use DMA to store camera data to external memory. Add an
+   interrupt to the color detection block that requests a DMA read.
+
+
 
 Goals for 10/1:
     -> automatic guitar tuner research

@@ -11,7 +11,9 @@ module mem_interface
 	input  wire                          i_rstn,    // sync active low reset
     input  wire                          i_flush,      
 
+    // Status
     output wire                          o_fbuf_wr, // framebuffer write flag
+    output wire [$clog2(BRAM_DEPTH)-1:0] o_fbuf_waddr,
 
 	// Input interface
 	output reg                           o_rd,
@@ -64,7 +66,8 @@ module mem_interface
 	.i_raddr    (i_raddr   ), // read address
 	.o_rdata    (o_rdata   )  // read data
 	);
-	assign o_fbuf_wr = mem_wr;
+	assign o_fbuf_wr    = mem_wr;
+	assign o_fbuf_waddr = mem_waddr;
 
 // =============================================================
 // 			            Implementation:
