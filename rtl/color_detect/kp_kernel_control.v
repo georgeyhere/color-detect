@@ -35,6 +35,7 @@ module kp_kernel_control
 
 //
 	reg         nxt_req;
+	reg         nxt_o_valid;
 
 // LINE BUFFER I/O 
 	reg  [3:0]  lineBuffer_wr;     // line buffer write enables
@@ -76,9 +77,10 @@ module kp_kernel_control
                 
  	
  	// FSM
-    reg         RSTATE, NEXT_RSTATE;
-    localparam  RSTATE_IDLE   = 0,
-                RSTATE_ACTIVE = 1;
+    reg [1:0]   RSTATE, NEXT_RSTATE;
+    localparam  RSTATE_IDLE     = 0,
+    			RSTATE_PREFETCH = 1,
+                RSTATE_ACTIVE   = 2;
 
 //
 // LINE BUFFER WRITE LOGIC
@@ -145,6 +147,7 @@ module kp_kernel_control
 	// read from line buffers only when three lines are full
 	always@* begin
 		nxt_req                 = o_req;
+		nxt_o_valid             = r_lineBuffer_rd_en;
 		nxt_r_lineBuffer_rd_en  = 0;
 		nxt_r_pixelCounter      = r_pixelCounter;
 		nxt_r_lineCounter       = r_lineCounter;
@@ -160,12 +163,20 @@ module kp_kernel_control
 				if(r_fill == (3*LINE_LENGTH)) begin
 					nxt_req                 = 0;
 					nxt_r_lineBuffer_rd_en  = 1;
-					NEXT_RSTATE             = RSTATE_ACTIVE;
+					NEXT_RSTATE             = RSTATE_PREFETCH;
 				end
 				else begin
 					nxt_req                = 1;
 					nxt_r_lineBuffer_rd_en = 0;
 				end
+			end
+
+		// RSTATE_PREFETCH:
+		// Account for total of 2 cycles of read latency for
+		// the linebuffer reads
+			RSTATE_PREFETCH: begin
+				nxt_r_lineBuffer_rd_en = 1;
+				NEXT_RSTATE            = RSTATE_ACTIVE; 
 			end
 
 		// RSTATE_ACTIVE:
@@ -194,6 +205,7 @@ module kp_kernel_control
 	always@(posedge i_clk) begin
 		if(!i_rstn) begin
 			o_req              <= 0;
+			o_valid            <= 0;
 		 	r_lineBuffer_rd_en <= 0;
 		 	r_pixelCounter     <= 0;
 		 	r_lineCounter      <= 0;
@@ -202,6 +214,7 @@ module kp_kernel_control
 		end 
 		else begin
 			o_req              <= nxt_req;
+			o_valid            <= nxt_o_valid;
 			r_lineBuffer_rd_en <= nxt_r_lineBuffer_rd_en;
 			r_pixelCounter     <= nxt_r_pixelCounter;
 			r_lineCounter      <= nxt_r_lineCounter;
@@ -215,7 +228,6 @@ module kp_kernel_control
 //
 	// assign different data to outputs based on what current row is
 	always@* begin
-		o_valid       = r_lineBuffer_rd_en;
 		lineBuffer_rd = {4{r_lineBuffer_rd_en}};
 		o_r0_data     = 0;
 		o_r1_data     = 0;
