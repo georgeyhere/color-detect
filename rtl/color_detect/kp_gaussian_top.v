@@ -28,7 +28,8 @@ module kp_gaussian_top
 	output wire                    o_obuf_empty,
 	output wire                    o_obuf_almostempty,
 
-	output wire                    o_error
+	output wire                    o_error,
+	output wire                    o_status
 	);
 
 //
@@ -134,9 +135,8 @@ module kp_gaussian_top
 	end
 
 // error signal
-	assign o_error = (red_valid != green_valid) || 
-	                 (red_valid != blue_valid)  ||
-	                 (i_enable && !control_valid);
+	assign o_error = (i_enable && !control_valid); // true when i_enable is on
+	assign o_status = (o_rd);
 
 // Submodule instantiation
 	kp_kernel_control 

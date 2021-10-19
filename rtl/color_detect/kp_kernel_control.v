@@ -57,7 +57,7 @@ module kp_kernel_control
 	 
 // LINE BUFFER READ LOGIC
     // total fill level of all buffers
-	reg  [$clog2(LINE_LENGTH):0] r_fill;        
+	reg  [$clog2(3*LINE_LENGTH):0] r_fill;        
 
 	// counts pixels read from current buffer      
 	reg  [$clog2(LINE_LENGTH):0] r_pixelCounter,      

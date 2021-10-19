@@ -41,12 +41,22 @@ module sys_control
 			   FLUSH_IDLE    = 1, 
 	           FLUSH_ACTIVE  = 2;
 
+	wire       sw_gaussian_db;
     reg        sw_gaussian_q1, sw_gaussian_q2;
 	wire       delta_sw_gaussian;
 
 // =============================================================
 // 			              Implementation:
 // =============================================================
+	debounce 
+	  #(.DB_COUNT(2500000))    // 20ms debounce period
+	  //#(.DB_COUNT(1))    
+	  db_sw_inst (
+	  .i_clk   (i_sysclk       ),
+	  .i_input (i_sw_gaussian  ),
+	  .o_db    (sw_gaussian_db )  
+	  );
+
 
 //
 // Configure camera to ROM values on startup or reset
@@ -74,7 +84,7 @@ module sys_control
 // Gaussian enable
 //
 	always@(posedge i_sysclk) begin
-		o_gaussian_enable <= (i_sw_gaussian);
+		o_gaussian_enable <= (sw_gaussian_db);
 	end
 
 	always@(posedge i_sysclk) begin
@@ -82,7 +92,7 @@ module sys_control
 			{sw_gaussian_q1, sw_gaussian_q2} <= 2'b0;
 		end
 		else begin
-			{sw_gaussian_q1, sw_gaussian_q2} <= {i_sw_gaussian, sw_gaussian_q1};
+			{sw_gaussian_q1, sw_gaussian_q2} <= {sw_gaussian_db, sw_gaussian_q1};
 		end
 	end
 	assign delta_sw_gaussian = (sw_gaussian_q1 != sw_gaussian_q2);

@@ -7,6 +7,7 @@ module colorBin
     input  wire        i_clk,
     input  wire        i_rstn,
 
+    input  wire [17:0] i_addr,
     input  wire [15:0] i_hue,
     input  wire [15:0] i_sat,
     input  wire [15:0] i_value,
@@ -23,6 +24,8 @@ module colorBin
     output reg  [2:0]  o_color8
 	);
 //
+	localparam RES_X = 480;
+	localparam RES_Y = 480;
 	reg [9:0] counterX, counterY;
 	integer i;
 //
@@ -47,7 +50,7 @@ module colorBin
 
 // Coordinate Counters
 	always@(posedge i_clk) begin
-		if(!i_rstn) begin
+		if((!i_rstn)||(i_addr == 230399)) begin
 			counterX <= 0;
 			counterY <= 0;
 		end

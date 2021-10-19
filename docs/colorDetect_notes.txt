@@ -35,6 +35,10 @@ Zynq Milestones:
 
 -----------------------------------------------------------------------
 
+10/16:
+- After parameterizing, the kernel control module is now requesting, 
+  but the output never goes valid.
+
 10/11:
 - I'm thinking that a good way to increase the accuracy of the color
   detection would be to add a gaussian filter. 
