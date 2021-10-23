@@ -2,8 +2,8 @@
 //
 module sys_top 
     //
-	  `include "colorDetect_definitions.vh"
-	  (
+	`include "colorDetect_definitions.vh"
+	(
     input  wire       i_sysclk,    // 125 MHz board clock
     input  wire       i_rst,       // active-high board button
   
@@ -30,7 +30,7 @@ module sys_top
   
     // status
     output wire [3:0] led_error
-	  );
+	);
   
     
 // =============================================================

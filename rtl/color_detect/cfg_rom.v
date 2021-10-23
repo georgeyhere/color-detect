@@ -102,7 +102,6 @@ module cfg_rom
                 73: o_data <= 16'h69_06; // GFIX,     RGB gain
                 74: o_data <= 16'h1E_23; // MFVP, mirror image
                 75: o_data <= 16'h41_10; // COM16, denoise
-                76: o_data <= 16'h13_a7; // COM8, enable AGC / AEC
                 default: o_data <= 16'hFF_FF;  //mark end of ROM
 			endcase
 		end

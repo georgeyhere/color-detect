@@ -34,16 +34,16 @@ package kcontrol_pkg;
 			*  if the DUT is ready. */
 			forever begin
 				pixel_item item = new;
-				$display("T=%t [Driver] waiting for item ...", $time);
+				// $display("T=%t [Driver] waiting for item ...", $time);
 				drv_mbx.get(item);
-				item.print("Driver     ");
+				//item.print("Driver     ");
 				vif.enable <= 1;
 				vif.wvalid <= item.wvalid;
 				vif.wdata  <= item.wdata;
 				//
 				@(posedge vif.clk) begin
 					while(!vif.ready) begin
-						$display("T=%t [Driver] wait until req is high", $time);
+						// $display("T=%t [Driver] wait until req is high", $time);
 						vif.wvalid <= 0;
 						@(posedge vif.clk);
 					end
@@ -84,7 +84,7 @@ package kcontrol_pkg;
 					item.rvalid = vif.rvalid;
 					item.rdata  = vif.rdata;
 				end
-				item.print("Monitor    ");
+				//item.print("Monitor    ");
 				scb_mbx.put(item);
 			end
 		endtask
@@ -97,6 +97,7 @@ package kcontrol_pkg;
 		pixel_item refq[100000];
 		int w=0;
 		int r=0;
+		int c=0;
 		bit [47:0] expected;
 	
 		task run();
@@ -104,41 +105,64 @@ package kcontrol_pkg;
 			forever begin
 				pixel_item item = new;
 				scb_mbx.get(item);
-				item.print("Scoreboard ");
+				//item.print("Scoreboard ");
 	
 				// Store valid writes in consecutive addresses 
 				if(item.wvalid) begin
 					refq[w] = item;
 					$display("T=%t [Scoreboard ] Store i=%0d wvalid=%0d data=0x%0h",
-					      $time, w, item.wvalid, item.wdata);
+					      $time, w, item.wvalid, item.wdata); 
 					w++;
 				end
 				
 				// Checking procedure
 				if(item.rvalid) begin
-					if(r==0) begin
-						expected = {refq[r].wdata, 
-					                refq[r].wdata, 
-					                refq[r+1].wdata};
-					end
-					else if(r==47) begin
-						expected = {refq[r-1].wdata, 
-					                refq[r].wdata, 
-					                refq[r].wdata};
+					if(r<2) begin
+							if(c==0) begin
+							expected = {refq[c].wdata, 
+						                refq[c].wdata, 
+						                refq[c+1].wdata};
+						end
+						else if(c==47) begin
+							expected = {refq[c-1].wdata, 
+						                refq[c].wdata, 
+						                refq[c].wdata};
+						end
+						else begin
+							expected = {refq[c-1].wdata, 
+						                refq[c].wdata, 
+						                refq[c+1].wdata};
+						end
 					end
 					else begin
-						expected = {refq[r-1].wdata, 
-					                refq[r].wdata, 
-					                refq[r+1].wdata};
+						if(c==0) begin
+							expected = {refq[c+((r-1)*48)].wdata, 
+						                refq[c+((r-1)*48)].wdata, 
+						                refq[c+((r-1)*48)+1].wdata};
+						end
+						else if(c==47) begin
+							expected = {refq[c+((r-1)*48)-1].wdata, 
+						                refq[c+((r-1)*48)].wdata, 
+						                refq[c+((r-1)*48)].wdata};
+						end
+						else begin
+							expected = {refq[c+((r-1)*48)-1].wdata, 
+						                refq[c+((r-1)*48)].wdata, 
+						                refq[c+((r-1)*48)+1].wdata};
+						end
 					end
-					
+
 					if(item.rdata != expected)
-						$display("T=%t [Scoreboard] ERROR! r=%0d exp=0x%0h act=0x%0h",
-							        $time, r, expected, item.rdata);
+						$display("T=%t [Scoreboard] ERROR! r=%0d c=%0d exp=0x%0h act=0x%0h",
+							        $time, r, c, expected, item.rdata);
 					else 
-						$display("T=%t [Scoreboard] PASS! r=%0d exp=0x%0h act=0x%0h",
-							        $time, r, expected, item.rdata);
-					r++;
+						$display("T=%t [Scoreboard] PASS! r=%0d c=%0d exp=0x%0h act=0x%0h",
+							        $time, r, c, expected, item.rdata);
+					if(c<47) c++;
+					else begin
+						c=0;
+						r++;
+					end    
 				end
 			end
 		endtask
