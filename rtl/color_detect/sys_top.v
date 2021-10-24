@@ -172,6 +172,7 @@ module sys_top
 	  cam_i (
 	  .i_cfg_clk          (i_sysclk        ),
 	  .i_rstn             (sync_rstn_PS    ),
+	  .i_flush            (pipe_flush      ),
     
     // OV7670 external inputs    
 	  .i_cam_pclk         (i_cam_pclk      ),
