@@ -19,3 +19,9 @@ __RGB to HSV Algorithm__
 
 - Fixed-point format:
 ![](docs/images/fixedpoint.jpg)
+
+__Demos__
+- These demos reflect a work in progress until no longer noted here.
+- Click the images below to view Youtube videos.
+
+[![Color Detection v0: no AXI interface](https://img.youtube.com/vi/edkLfNpG_Xs/0.jpg)](https://www.youtube.com/watch?v=edkLfNpG_Xs)
