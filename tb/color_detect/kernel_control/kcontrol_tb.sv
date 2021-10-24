@@ -45,8 +45,10 @@ module kcontrol_tb();
         t0 = new;
         t0.e0.vif = _if;
         t0.run();
+    end
 
-        #200 $finish;
+    always@(posedge _if.rvalid) begin
+        $stop;
     end
 
 endmodule

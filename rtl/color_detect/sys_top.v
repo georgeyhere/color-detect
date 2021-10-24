@@ -2,8 +2,8 @@
 //
 module sys_top 
     //
-	  `include "colorDetect_definitions.vh"
-	  (
+	`include "colorDetect_definitions.vh"
+	(
     input  wire       i_sysclk,    // 125 MHz board clock
     input  wire       i_rst,       // active-high board button
   
@@ -30,7 +30,7 @@ module sys_top
   
     // status
     output wire [3:0] led_error
-	  );
+	);
   
     
 // =============================================================
@@ -172,6 +172,7 @@ module sys_top
 	  cam_i (
 	  .i_cfg_clk          (i_sysclk        ),
 	  .i_rstn             (sync_rstn_PS    ),
+	  .i_flush            (pipe_flush      ),
     
     // OV7670 external inputs    
 	  .i_cam_pclk         (i_cam_pclk      ),

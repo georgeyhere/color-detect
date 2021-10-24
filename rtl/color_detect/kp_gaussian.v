@@ -36,12 +36,12 @@ module kp_gaussian
 	
 
 // stage 2: accumulate (1 cycle)
-	reg  [DATA_WIDTH+2:0] stage2_accumulator;
-	reg  [DATA_WIDTH+2:0] stage2_data;
+	reg  [DATA_WIDTH+3:0] stage2_accumulator;
+	reg  [DATA_WIDTH+3:0] stage2_data;
 	reg                   stage2_valid;
 
 // stage 3: divide by 16 (1 cycle)
-	reg  [DATA_WIDTH+2:0] stage3_data;
+	reg  [DATA_WIDTH+3:0] stage3_data;
 	reg                   stage3_valid;
 
 

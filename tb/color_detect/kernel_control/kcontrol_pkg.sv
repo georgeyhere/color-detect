@@ -10,6 +10,7 @@ package kcontrol_pkg;
     	     bit        rvalid;
 	
     	function void print(string tag="");
+    		$timeformat(-9, 1, "ns");
     	    $display("T=%t [%s] wvalid=%0d wdata=0x%0h rvalid=%0d rdata=0x%0h", 
     	                $time, tag, wvalid, wdata, rvalid, rdata);
    		endfunction 
@@ -25,6 +26,7 @@ package kcontrol_pkg;
 		mailbox        drv_mbx;
 	
 		task run();
+			$timeformat(-9, 1, "ns");
 			$display("T=%t [Driver] starting ...", $time);
 			@(posedge vif.clk) 
 	
@@ -32,16 +34,17 @@ package kcontrol_pkg;
 			*  if the DUT is ready. */
 			forever begin
 				pixel_item item = new;
-				$display("T=%t [Driver] waiting for item ...", $time);
+				// $display("T=%t [Driver] waiting for item ...", $time);
 				drv_mbx.get(item);
-				item.print("Driver");
+				//item.print("Driver     ");
 				vif.enable <= 1;
 				vif.wvalid <= item.wvalid;
 				vif.wdata  <= item.wdata;
 				//
 				@(posedge vif.clk) begin
 					while(!vif.ready) begin
-						$display("T=%t [Driver] wait until req is high", $time);
+						// $display("T=%t [Driver] wait until req is high", $time);
+						vif.wvalid <= 0;
 						@(posedge vif.clk);
 					end
 				end
@@ -64,7 +67,9 @@ package kcontrol_pkg;
 		pixel_item     item;
 	
 		task run();
+			$timeformat(-9, 1, "ns");
 			$display("T=%t [Monitor] starting ...", $time);
+			item = new;
 	
 			/* Check every posedge clk if there is a valid transaction;
 			*  If yes, capture info into an object and send it to the
@@ -76,14 +81,10 @@ package kcontrol_pkg;
 					item = new;
 					item.wvalid = vif.wvalid;
 					item.wdata  = vif.wdata;
+					item.rvalid = vif.rvalid;
+					item.rdata  = vif.rdata;
 				end
-	
-				if(vif.rvalid) begin
-					@(posedge vif.clk);
-					item.rdata = vif.rdata;
-				end
-	
-				item.print("Monitor");
+				//item.print("Monitor    ");
 				scb_mbx.put(item);
 			end
 		endtask
@@ -96,34 +97,72 @@ package kcontrol_pkg;
 		pixel_item refq[100000];
 		int w=0;
 		int r=0;
+		int c=0;
 		bit [47:0] expected;
 	
 		task run();
+			$timeformat(-9, 1, "ns");
 			forever begin
-				pixel_item item;
+				pixel_item item = new;
 				scb_mbx.get(item);
-				item.print("Scoreboard");
+				//item.print("Scoreboard ");
 	
 				// Store valid writes in consecutive addresses 
 				if(item.wvalid) begin
 					refq[w] = item;
-					$display("T=%t [Scoreboard] Store i=%0d wvalid=%0d data=0x%0h",
-					      $time, w, item.wvalid, item.wdata);
+					$display("T=%t [Scoreboard ] Store i=%0d wvalid=%0d data=0x%0h",
+					      $time, w, item.wvalid, item.wdata); 
 					w++;
 				end
 				
 				// Checking procedure
 				if(item.rvalid) begin
-					expected = {refq[r].wdata, 
-					            refq[r+1].wdata, 
-					            refq[r+2].wdata};
+					if(r<2) begin
+							if(c==0) begin
+							expected = {refq[c].wdata, 
+						                refq[c].wdata, 
+						                refq[c+1].wdata};
+						end
+						else if(c==47) begin
+							expected = {refq[c-1].wdata, 
+						                refq[c].wdata, 
+						                refq[c].wdata};
+						end
+						else begin
+							expected = {refq[c-1].wdata, 
+						                refq[c].wdata, 
+						                refq[c+1].wdata};
+						end
+					end
+					else begin
+						if(c==0) begin
+							expected = {refq[c+((r-1)*48)].wdata, 
+						                refq[c+((r-1)*48)].wdata, 
+						                refq[c+((r-1)*48)+1].wdata};
+						end
+						else if(c==47) begin
+							expected = {refq[c+((r-1)*48)-1].wdata, 
+						                refq[c+((r-1)*48)].wdata, 
+						                refq[c+((r-1)*48)].wdata};
+						end
+						else begin
+							expected = {refq[c+((r-1)*48)-1].wdata, 
+						                refq[c+((r-1)*48)].wdata, 
+						                refq[c+((r-1)*48)+1].wdata};
+						end
+					end
+
 					if(item.rdata != expected)
-						$display("T=%t [Scoreboard] ERROR! i=%0d exp=0x%0h act=0x%0h",
-							        $time, r, expected, item.rdata);
+						$display("T=%t [Scoreboard] ERROR! r=%0d c=%0d exp=0x%0h act=0x%0h",
+							        $time, r, c, expected, item.rdata);
 					else 
-						$display("T=%t [Scoreboard] PASS! i=%0d exp=0x%0h act=0x%0h",
-							        $time, r, expected, item.rdata);
-					r++;
+						$display("T=%t [Scoreboard] PASS! r=%0d c=%0d exp=0x%0h act=0x%0h",
+							        $time, r, c, expected, item.rdata);
+					if(c<47) c++;
+					else begin
+						c=0;
+						r++;
+					end    
 				end
 			end
 		endtask
@@ -186,13 +225,15 @@ package kcontrol_pkg;
 	
 		// Stimulus Generator
 		virtual task apply_stim();
+			integer i=0;
 			pixel_item item;
-	
+			$timeformat(-9, 1, "ns");
 			$display("T=%t [Test] Starting stimulus ...", $time);
-			for(int i=0; i<200; i++) begin
+			while(i<1000) begin
 				item = new;
 				item.randomize();
 				drv_mbx.put(item);
+				i=(item.wvalid) ? (i+1):i;
 			end
 		endtask
 	endclass
