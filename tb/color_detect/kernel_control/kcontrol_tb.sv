@@ -14,12 +14,12 @@ module kcontrol_tb();
     //
     dut_if _if(clk);
 
-	kp_kernel_control
-	#(.LINE_LENGTH (LINE_LENGTH),
-	  .LINE_COUNT  (LINE_COUNT),
-	  .DATA_WIDTH  (16))
-	DUT
-	(
+    kp_kernel_control
+    #(.LINE_LENGTH (LINE_LENGTH),
+      .LINE_COUNT  (LINE_COUNT),
+      .DATA_WIDTH  (16))
+    DUT
+    (
     .i_clk     (clk),
     .i_rstn    (_if.rstn),
   
@@ -31,7 +31,7 @@ module kcontrol_tb();
     .o_r1_data (r1),         // not checked
     .o_r2_data (r2),         // not checked
     .o_valid   (_if.rvalid)
-	);
+    );
 
     //
     initial begin
