@@ -11,19 +11,19 @@
 `default_nettype none
 //
 module cfg_rom 
-	(
-	input  wire        i_clk,
-	input  wire        i_rstn,
+    (
+    input  wire        i_clk,
+    input  wire        i_rstn,
 
-	input  wire [7:0]  i_addr,
-	output reg  [15:0] o_data
-	);
+    input  wire [7:0]  i_addr,
+    output reg  [15:0] o_data
+    );
 
-	always@(posedge i_clk) begin
-		if(!i_rstn) o_data <= 0;
-		else begin
-			case(i_addr)
-				0:  o_data <= 16'h12_80; //reset
+    always@(posedge i_clk) begin
+        if(!i_rstn) o_data <= 0;
+        else begin
+            case(i_addr)
+                0:  o_data <= 16'h12_80; //reset
                 1:  o_data <= 16'hFF_F0; //delay
                 2:  o_data <= 16'h12_04; // COM7,     set RGB color output
                 3:  o_data <= 16'h11_80; // CLKRC     internal PLL matches input clock
@@ -103,9 +103,9 @@ module cfg_rom
                 74: o_data <= 16'h1E_23; // MFVP, mirror image
                 75: o_data <= 16'h41_10; // COM16, denoise
                 default: o_data <= 16'hFF_FF;  //mark end of ROM
-			endcase
-		end
-	end
+            endcase
+        end
+    end
 
 
 endmodule
