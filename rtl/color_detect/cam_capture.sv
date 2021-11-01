@@ -11,49 +11,45 @@
 //
 module capture 
     (
-    input  wire        i_pclk,     // 24 MHz; sourced from OV7670 camera
-    input  wire        i_rstn,     // synchronous active low reset
-    input  wire        i_cfg_done, // cam config done flag
-    output wire        o_status,   // asserted when capturing
+    input  logic        i_pclk,     // 24 MHz; sourced from OV7670 camera
+    input  logic        i_rstn,     // synchronous active low reset
+    input  logic        i_cfg_done, // cam config done flag
+    output logic        o_status,   // asserted when capturing
 
     // OV7670 camera interface
-    input  wire        i_vsync,    // active-high, indicates start of frame
-    input  wire        i_href,     // active-high, indicates row data transmission
-    input  wire [7:0]  i_data,     // pixel data from camera
+    input  logic        i_vsync,    // active-high, indicates start of frame
+    input  logic        i_href,     // active-high, indicates row data transmission
+    input  logic [7:0]  i_data,     // pixel data from camera
     
     // FIFO write interface   
-    output reg         o_wr,       // fifo write enable
-    output reg  [15:0] o_wdata,    // fifo write data; {red, green, blue}
+    output logic        o_wr,       // fifo write enable
+    output logic [15:0] o_wdata,    // fifo write data; {red, green, blue}
 
-    output wire        o_sof       // start of frame flag
+    output logic        o_sof       // start of frame flag
     );
 
-    reg        nxt_wr;
-    reg [15:0] nxt_wdata;
-    reg [7:0]  byte1_data, nxt_byte1_data;
+    logic        nxt_wr;
+    logic [15:0] nxt_wdata;
+    logic [7:0]  byte1_data, nxt_byte1_data;
 
-    reg        pixel_half, nxt_pixel_half;
+    logic        pixel_half, nxt_pixel_half;
 
-    reg [1:0]  STATE, NEXT_STATE;
+    logic [1:0]  STATE, NEXT_STATE;
     localparam STATE_IDLE    = 0,
                STATE_ACTIVE  = 1,
                STATE_INITIAL = 2;
 
-    initial begin
-        o_wr  = 0;
-        STATE = STATE_INITIAL;
-    end
     assign o_status = (STATE == STATE_ACTIVE);
 
-    reg vsync1, vsync2;
-    wire vsync_posedge;
+    logic vsync1, vsync2;
+    logic vsync_posedge;
 
-    reg [9:0] nxt_counterX, counterX;
-    reg [9:0] nxt_counterY, counterY;
+    logic [9:0] nxt_counterX, counterX;
+    logic [9:0] nxt_counterY, counterY;
 
 // **** vsync negedge detector ****
 //
-    always@(posedge i_pclk) begin
+    always_ff@(posedge i_pclk) begin
         if(!i_rstn) begin
             {vsync1, vsync2} <= 2'b0;
         end
@@ -66,7 +62,7 @@ module capture
 
 // **** Next State Logic ****
 //
-    always@* begin
+    always_comb begin
         nxt_wr           = 0;
         nxt_wdata        = o_wdata;
         nxt_byte1_data   = byte1_data;
@@ -117,7 +113,7 @@ module capture
         endcase
     end
 
-    always@(posedge i_pclk) begin
+    always_ff@(posedge i_pclk) begin
         if(!i_rstn) begin
             o_wr         <= 0;
             o_wdata      <= 0;
