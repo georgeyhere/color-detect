@@ -18,7 +18,7 @@ module hsv_top
     output wire [$clog2(BRAM_DEPTH)-1:0] o_addr,
     output wire [15:0] o_hue,   // Hue (0-360 degrees)
     output wire [15:0] o_sat,   // Saturation (0-100%)
-    output wire [15:0] o_value, // Value (0-100%)
+    output wire [15:0] o_val,   // Value (0-100%)
     output wire        o_valid  // output valid flag
     );
 
@@ -104,7 +104,7 @@ module hsv_top
     .o_valid    (hue_valid)
     );
 
-// SATURATION, VALUE 
+// SATURATION, VALUE PIPELINES
     sat_stage0 sat0_i(
     .i_clk      (i_clk),
     .i_rstn     (i_rstn),
@@ -114,7 +114,7 @@ module hsv_top
     .i_valid    (decode_valid),
    
     .o_data     (o_sat),
-    .o_value    (o_value),
+    .o_value    (o_val),
     .o_valid    (sat_valid)
     );
 

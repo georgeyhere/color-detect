@@ -236,22 +236,40 @@ module sys_top
 //                 Color Detection:
 //---------------------------------------------------
     colorDetect_top colorDetect_i (
-    .i_clk    (i_sysclk),
-    .i_rstn   (sync_rstn_PS),
+    .i_clk          (i_sysclk),
+    .i_rstn         (sync_rstn_PS),
   
-    .i_data   (lpf_obuf_rdata),
-    .i_addr   (mem_waddr),
-    .i_valid  (mem_wr),
+    .i_red_ctrl1    ({8'd0, 8'd10}),
+    .i_red_ctrl2    ({8'd50, 8'd50, 8'd10, 8'd90}),
+
+    .i_orange_ctrl1 ({8'd10, 8'd5}),
+    .i_orange_ctrl2 ({8'd90, 8'd10, 8'd10, 8'd90}),
+
+    .i_yellow_ctrl1 ({8'd15, 8'd60}),
+    .i_yellow_ctrl2 ({8'd50, 8'd50, 8'd10, 8'd90}),
+
+    .i_green_ctrl1  ({8'd75, 8'd65}),
+    .i_green_ctrl2  ({8'd50, 8'd50, 8'd10, 8'd90}),
  
-    .o_color0 (color0),
-    .o_color1 (color1),
-    .o_color2 (color2),
-    .o_color3 (color3),
-    .o_color4 (color4),
-    .o_color5 (color5),
-    .o_color6 (color6),
-    .o_color7 (color7),
-    .o_color8 (color8)
+    .i_blue_ctrl1   ({8'd140, 8'd115}),
+    .i_blue_ctrl2   ({8'd50, 8'd50, 8'd10, 8'd90}),
+ 
+    .i_white_ctrl1  ({8'd0, 8'd255}),
+    .i_white_ctrl2  ({8'd0, 8'd10, 8'd50, 8'd50}),
+
+    .i_data         (lpf_obuf_rdata),
+    .i_addr         (mem_waddr),
+    .i_valid        (mem_wr),
+       
+    .o_color0       (color0),
+    .o_color1       (color1),
+    .o_color2       (color2),
+    .o_color3       (color3),
+    .o_color4       (color4),
+    .o_color5       (color5),
+    .o_color6       (color6),
+    .o_color7       (color7),
+    .o_color8       (color8)
     );
 
 //---------------------------------------------------
