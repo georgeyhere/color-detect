@@ -1,48 +1,48 @@
-// cam_top.v
+// cam_top.sv
 //
 // Encapsulates all camera-related modules into a single block.
 //
 module cam_top 
     #(parameter T_CFG_CLK = 8)
     (
-    input  wire        i_cfg_clk,
-    input  wire        i_rstn,
-    input  wire        i_flush,
+    input  logic        i_cfg_clk,
+    input  logic        i_rstn,
+    input  logic        i_flush,
 
     // OV7670 I/O
-    input  wire        i_cam_pclk,
-    input  wire        i_cam_vsync,    // active-high, indicates start of frame
-    input  wire        i_cam_href,     // active-high, indicates row data transmission
-    input  wire [7:0]  i_cam_data,     // pixel data from camera
+    input  logic        i_cam_pclk,
+    input  logic        i_cam_vsync,    // active-high, indicates start of frame
+    input  logic        i_cam_href,     // active-high, indicates row data transmission
+    input  logic [7:0]  i_cam_data,     // pixel data from camera
 
     // i2c bidirectional pins
-    input  wire        i_scl,
-    input  wire        i_sda,
-    output wire        o_scl,
-    output wire        o_sda,
+    input  logic        i_scl,
+    input  logic        i_sda,
+    output logic        o_scl,
+    output logic        o_sda,
 
     // Output Buffer FIFO
-    input  wire        i_obuf_rclk,
-    input  wire        i_obuf_rstn,
-    input  wire        i_obuf_rd,
-    output wire [15:0] o_obuf_data,
-    output wire        o_obuf_empty,
-    output wire        o_obuf_almostempty,
-    output wire [10:0] o_obuf_fill,
+    input  logic        i_obuf_rclk,
+    input  logic        i_obuf_rstn,
+    input  logic        i_obuf_rd,
+    output logic [15:0] o_obuf_data,
+    output logic        o_obuf_empty,
+    output logic        o_obuf_almostempty,
+    output logic [10:0] o_obuf_fill,
 
     // Configuration Control
-    input  wire        i_cfg_init, // initialize cam registers to ROM
-    output wire        o_cfg_done, // config done flag
+    input  logic        i_cfg_init, // initialize cam registers to ROM
+    output logic        o_cfg_done, // config done flag
 
     // Status Outputs
-    output wire        o_sof       // start of frame flag
+    output logic        o_sof       // start of frame flag
     );
 
 // =============================================================
 //              Parameters, Registers, and Wires
 // =============================================================
-    wire        obuf_wr;
-    wire [15:0] obuf_wdata;
+    logic        obuf_wr;
+    logic [15:0] obuf_wdata;
          
 
 //==============================================================
