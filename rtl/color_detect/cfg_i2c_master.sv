@@ -56,38 +56,37 @@
 */
 
 
-//
-`default_nettype none
+
 //
 module cfg_i2c_master#
     (
-        parameter T_CLK = 10
+    parameter T_CLK = 10
     ) 
     (
-    input  wire       i_clk,         // 100 MHz clock
-    input  wire       i_rstn,        // synchronous active low reset
+    input  logic       i_clk,         // 100 MHz clock
+    input  logic       i_rstn,        // synchronous active low reset
     
-    input  wire       i_wr,
-    input  wire       i_rd,
+    input  logic       i_wr,
+    input  logic       i_rd,
 
-    input  wire [6:0] i_slave_addr,   // 7'h42 for OV7670
-    input  wire [7:0] i_reg_addr,     // register address to read/write
-    input  wire [7:0] i_wdata,        // write data
-    output reg  [7:0] o_rdata,        // read data
+    input  logic [6:0] i_slave_addr,   // 7'h42 for OV7670
+    input  logic [7:0] i_reg_addr,     // register address to read/write
+    input  logic [7:0] i_wdata,        // write data
+    output logic [7:0] o_rdata,        // read data
 
     // Status
-    output reg        o_busy,         // asserted when a r/w in progress
-    output reg        o_rdata_valid,  // read data valid
-    output reg        o_nack_slave,   // NACK on slave address
-    output reg        o_nack_addr,    // NACK on register address
-    output reg        o_nack_data,    // NACK on data byte
+    output logic       o_busy,         // asserted when a r/w in progress
+    output logic       o_rdata_valid,  // read data valid
+    output logic       o_nack_slave,   // NACK on slave address
+    output logic       o_nack_addr,    // NACK on register address
+    output logic       o_nack_data,    // NACK on data byte
 
     // SCL and SDA pins
-    input  wire       i_scl,
-    input  wire       i_sda,
+    input  logic       i_scl,
+    input  logic       i_sda,
 
-    output reg        o_scl, // when asserted, 'releases' the pin
-    output reg        o_sda   
+    output logic       o_scl, // when asserted, 'releases' the pin
+    output logic       o_sda   
 );
 
     
@@ -104,8 +103,8 @@ module cfg_i2c_master#
 
     // timer counter
     localparam TIMER_WIDTH = $clog2(T_LOW);
-    reg [TIMER_WIDTH-1:0] timer     = 0;
-    reg [TIMER_WIDTH-1:0] nxt_timer = 0;
+    logic [TIMER_WIDTH-1:0] timer     = 0;
+    logic [TIMER_WIDTH-1:0] nxt_timer = 0;
 
 
 
@@ -120,45 +119,45 @@ module cfg_i2c_master#
                STATE_STOP       = 6,
                STATE_TIMER      = 7; 
 
-    reg [3:0] STATE = STATE_INITIAL;
-    reg [3:0] NEXT_STATE;
+    logic [3:0] STATE = STATE_INITIAL;
+    logic [3:0] NEXT_STATE;
 
-    reg [3:0] RETURN_STATE;
-    reg [3:0] NEXT_RETURN_STATE;
+    logic [3:0] RETURN_STATE;
+    logic [3:0] NEXT_RETURN_STATE;
 
 
-    reg [26:0] sda_txqueue;
-    reg [26:0] nxt_sda_txqueue;
+    logic [26:0] sda_txqueue;
+    logic [26:0] nxt_sda_txqueue;
 
-    reg [7:0]  read_sr;
-    reg [7:0]  nxt_read_sr;
+    logic [7:0]  read_sr;
+    logic [7:0]  nxt_read_sr;
 
-    reg [4:0]  bit_counter;
-    reg [4:0]  nxt_bit_counter;
+    logic [4:0]  bit_counter;
+    logic [4:0]  nxt_bit_counter;
     
-    reg        load_r;
-    reg        r_wr;
-    reg        r_rd;
-    reg [6:0]  r_slave_addr;
-    reg [7:0]  r_reg_addr;
-    reg [7:0]  r_wdata;
-     
-    reg nxt_scl_o;
-    reg nxt_sda_o;
+    logic        load_r;
+    logic        r_wr;
+    logic        r_rd;
+    logic [6:0]  r_slave_addr;
+    logic [7:0]  r_reg_addr;
+    logic [7:0]  r_wdata;
 
-    reg [7:0] nxt_rdata;
+    logic nxt_scl_o;
+    logic nxt_sda_o;
 
-    reg nxt_busy;
-    reg nxt_rdata_valid;
-    reg nxt_nack_slave;
-    reg nxt_nack_addr;
-    reg nxt_nack_data;
+    logic [7:0] nxt_rdata;
 
-    reg wr_cycle;
-    reg nxt_wr_cycle;
+    logic nxt_busy;
+    logic nxt_rdata_valid;
+    logic nxt_nack_slave;
+    logic nxt_nack_addr;
+    logic nxt_nack_data;
 
-    reg repeat_start;
-    reg nxt_repeat_start;
+    logic wr_cycle;
+    logic nxt_wr_cycle;
+
+    logic repeat_start;
+    logic nxt_repeat_start;
 
 
 
@@ -170,13 +169,13 @@ module cfg_i2c_master#
 //       adjust STATE_TIMER delay value accordingly
 //
     // shift registers initialized to idle values
-    reg [3:0] scl_sr = {4{1'b1}};
-    reg [3:0] sda_sr = {4{1'b1}};
+    logic [3:0] scl_sr = {4{1'b1}};
+    logic [3:0] sda_sr = {4{1'b1}};
 
-    reg scl_db = 1;   // debounced SCL
-    reg sda_db = 1;   // debounced SDA
+    logic scl_db = 1;   // debounced SCL
+    logic sda_db = 1;   // debounced SDA
 
-    always@(posedge i_clk or negedge i_rstn) begin
+    always_ff(posedge i_clk or negedge i_rstn) begin
         if(!i_rstn) begin
             scl_sr <= {4{1'b1}};
             sda_sr <= {4{1'b1}};
@@ -204,7 +203,7 @@ module cfg_i2c_master#
 
 // **** FSM Next State Logic ****
 //
-    always@* begin
+    always_comb begin
         nxt_scl_o         = o_scl;          // scl_db is floating by default           
         nxt_sda_o         = o_sda;          // sda_db is floating by default
          
@@ -440,7 +439,7 @@ module cfg_i2c_master#
 
 // **** FSM Registers ****
 //
-    always@(posedge i_clk or negedge i_rstn) begin
+    always_ff(posedge i_clk or negedge i_rstn) begin
         if(!i_rstn) begin
             o_rdata       <= 8'h0;
             o_busy        <= 1;
