@@ -1,18 +1,35 @@
 // module: colorBin
 //
+// The display is divided into a 3x3 grid with 9 total regions; one region
+// for each Rubik's cube sticker on a face.
+//
+// This module uses the HSV value of each pixel to determine the color
+// of each region.
+//
+// Each region can be configured as follows:
+// - Hue lower threshold  -> 0-256, 8 bit integer
+// - Hue threshold offset -> 0-256, 8 bit integer
+//    
+// - Saturation lower threshold  -> 0-100, 7 bit integer
+// - Saturation threshold offset -> 0-100, 7 bit integer
+//
+// - Value lower threshold  -> 0-100, 7 bit integer
+// - Value threshold offset -> 0-100, 7 bit integer
 //
 module colorBin
     `include "colorDetect_definitions.vh"
     (
     input  wire        i_clk,
     input  wire        i_rstn,
-
+    
+    // data in interface
     input  wire [17:0] i_addr,
     input  wire [15:0] i_hue,
     input  wire [15:0] i_sat,
     input  wire [15:0] i_value,
     input  wire        i_valid,
 
+    // color detect results
     output reg  [2:0]  o_color0,
     output reg  [2:0]  o_color1,
     output reg  [2:0]  o_color2,
@@ -28,25 +45,29 @@ module colorBin
     localparam RES_Y = 480;
     reg [9:0] counterX, counterY;
     integer i;
-//
-// [0] -> red
-// [1] -> orange
-// [2] -> yellow
-// [3] -> green
-// [4] -> blue
-// [5] -> white
-// [6] -> other
-    reg [14:0] color0 [0:6];
-    reg [14:0] color1 [0:6];
-    reg [14:0] color2 [0:6];
-    reg [14:0] color3 [0:6];
-    reg [14:0] color4 [0:6];
-    reg [14:0] color5 [0:6];
-    reg [14:0] color6 [0:6];
-    reg [14:0] color7 [0:6];
-    reg [14:0] color8 [0:6];
+    
+    /* Color Bins
+    *  - One bin for each rubik's cube sticker; 9 regions of the screen
+    *  - Each bin comprised of 6 7-bit registers
+    *  - One register for each color
+    *  color [0] -> red
+    *  color [1] -> orange
+    *  color [2] -> yellow
+    *  color [3] -> green
+    *  color [4] -> blue
+    *  color [5] -> white
+    */
+    reg [14:0] color0 [0:5]; // region 0 
+    reg [14:0] color1 [0:5]; // region 1 
+    reg [14:0] color2 [0:5]; // region 2
+    reg [14:0] color3 [0:5]; // region 3
+    reg [14:0] color4 [0:5]; // region 4
+    reg [14:0] color5 [0:5]; // region 5
+    reg [14:0] color6 [0:5]; // region 6
+    reg [14:0] color7 [0:5]; // region 7
+    reg [14:0] color8 [0:5]; // region 8
 
-    reg red, orange, yellow, green, blue, white, other;
+    reg red, orange, yellow, green, blue, white;
 
 // Coordinate Counters
     always@(posedge i_clk) begin
@@ -72,43 +93,45 @@ module colorBin
         green  = 0;
         blue   = 0;
         white  = 0;
-        other  = 0;
 
+        // check if pixel is blue
         if((i_value[15:6]>10)&&
                ((i_hue[15:6]>140)||(i_hue[15:6]<280))&&
                ( i_sat[15:6]>50)) begin
             blue = 1;
         end
 
-        else if((i_value[15:6]>10)&&
+        // check if pixel is green
+        if((i_value[15:6]>10)&&
                ((i_hue[15:6]>75)||(i_hue[15:6]<140))&&
                ( i_sat[15:6]>50)) begin
             green = 1;
         end
 
-        else if(i_sat[15:6]<10) begin
+        // check if pixel is white
+        if(i_sat[15:6]<10) begin
             white = 1;
         end
 
-        else if((i_value[15:6]>10)&&
+        // check if pixel is yellow
+        if((i_value[15:6]>10)&&
                ((i_hue[15:6]>15)||(i_hue[15:6]<75))&&
                ( i_sat[15:6]>50)) begin
             yellow = 1;
         end
 
+        // check if pixel is red
         if((i_value[15:6]>10)&&
            ((i_hue[15:6]>325)||(i_hue[15:6]<10))&&
             (i_sat[15:6]>50)) begin
             red = 1;
         end
-        else if((i_value[15:6]>10)&&
+
+        // check if pixel is orange
+        if((i_value[15:6]>10)&&
                ((i_hue[15:6]>10)||(i_hue[15:6]<15))&&
                ( i_sat[15:6]>90)) begin
             orange = 1;
-        end
-
-        else begin
-            other = 1;
         end
     end
 
