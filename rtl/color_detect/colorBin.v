@@ -438,6 +438,53 @@ module colorBin
             end
         end
     end
+//
+    always@(posedge i_clk) begin
+        if(!i_rstn) begin
+            o_color0 <= 0;
+        end
+        else if((counterX==478)&&(counterY==479)) begin
+            if( (color0[0]>=color1[1]) && (color0[0]>=color0[2]) &&
+                (color0[0]>=color1[3]) && (color0[0]>=color0[4]) &&
+                (color0[0]>=color1[5])) begin
+                o_color0 <= `DT_RED;
+            end
+
+            else if( (color0[1]>=color0[0]) && (color0[1]>=color0[2]) &&
+                     (color0[1]>=color0[3]) && (color0[1]>=color0[4]) &&
+                     (color0[1]>=color0[5])) begin
+                o_color0 <= `DT_ORNGE;
+            end
+
+            else if( (color0[2]>=color0[0]) && (color0[2]>=color0[1]) &&
+                     (color0[2]>=color0[3]) && (color0[2]>=color0[4]) &&
+                     (color0[2]>=color0[5])) begin
+                o_color0 <= `DT_YLLW;
+            end
+
+            else if( (color0[3]>=color0[0]) && (color0[3]>=color0[1]) &&
+                     (color0[3]>=color0[2]) && (color0[3]>=color0[4]) &&
+                     (color0[3]>=color0[5])) begin
+                o_color0 <= `DT_GRN;
+            end
+
+            else if( (color0[4]>=color0[0]) && (color0[4]>=color0[1]) &&
+                     (color0[4]>=color0[2]) && (color0[4]>=color0[3]) &&
+                     (color0[4]>=color0[5])) begin
+                o_color0 <= `DT_BLU;
+            end
+
+            else if( (color0[5]>=color0[0]) && (color0[5]>=color0[1]) &&
+                     (color0[5]>=color0[2]) && (color0[5]>=color0[3]) &&
+                     (color0[5]>=color0[4])) begin
+                o_color0 <= `DT_WHT;
+            end
+
+            else begin
+                o_color0 <= 0;
+            end
+        end
+    end
 
 //
     always@(posedge i_clk) begin
