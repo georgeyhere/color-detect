@@ -1,4 +1,4 @@
-// module: cfg_rom.v
+// module: cfg_rom.sv
 //
 // Contains camera configuration. 1 cycle read delay.
 // Register values from: 
@@ -8,18 +8,17 @@
 // Key takeaway is that OV7670 is configured to RGB444 output
 // data frame format:  1)  { x, x, x, x, R[0], R[1], R[2], R[3] }
 //                     2)  {G[0], G[1], G[2], G[3], B[0], B[1], B[2], B[3]}
-`default_nettype none
 //
 module cfg_rom 
     (
-    input  wire        i_clk,
-    input  wire        i_rstn,
+    input  logic        i_clk,
+    input  logic        i_rstn,
 
-    input  wire [7:0]  i_addr,
-    output reg  [15:0] o_data
+    input  logic [7:0]  i_addr,
+    output logic [15:0] o_data
     );
 
-    always@(posedge i_clk) begin
+    always_ff@(posedge i_clk) begin
         if(!i_rstn) o_data <= 0;
         else begin
             case(i_addr)

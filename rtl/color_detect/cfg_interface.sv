@@ -3,41 +3,40 @@
 // This module reads from config_rom and initiates i2c_master writes.
 // It operates in the 125 MHz clock domain.
 //
-`default_nettype none
 //
 module cfg_interface 
     #(parameter T_CLK = 8)
     (
-    input  wire i_clk,  // 125 MHz clock
-    input  wire i_rstn, 
+    input  logic i_clk,  // 125 MHz clock
+    input  logic i_rstn, 
     //
-    input  wire i_start,
-    output reg  o_done,
+    input  logic i_start,
+    output logic o_done,
 
     // i2c pins
-    input  wire i_scl,
-    input  wire i_sda,
-    output wire o_scl,
-    output wire o_sda
+    input  logic i_scl,
+    input  logic i_sda,
+    output logic o_scl,
+    output logic o_sda
     );
 
 //
-    reg         nxt_done;
+    logic        nxt_done;
 
 // ROM
-    reg  [7:0]  rom_addr, nxt_rom_addr;
-    wire [15:0] rom_data;
+    logic [7:0]  rom_addr, nxt_rom_addr;
+    logic [15:0] rom_data;
 
 // i2c master 
-    reg         wr, nxt_wr;
+    logic        wr, nxt_wr;
     
-    reg [7:0]   reg_addr, nxt_reg_addr;
-    reg [7:0]   wdata, nxt_wdata;
+    logic [7:0]  reg_addr, nxt_reg_addr;
+    logic [7:0]  wdata, nxt_wdata;
 
-    wire busy;
+    logic        busy;
 
 // FSM
-    reg [1:0] STATE, NEXT_STATE;
+    logic [1:0] STATE, NEXT_STATE;
     localparam STATE_IDLE   = 0,
                STATE_OP     = 1,
                STATE_DONE   = 2,
@@ -47,21 +46,12 @@ module cfg_interface
     localparam DELAY_VAL   = 1_000_000/T_CLK - 2; // clks for 1ms delay
     localparam TIMER_WIDTH = $clog2(DELAY_VAL);
 
-    reg [TIMER_WIDTH-1:0] timer, nxt_timer;
-
-// **** Initial Values ****
-//
-    initial begin
-        wr       = 0;
-        rom_addr = 0;
-        nxt_done = 0;
-        STATE    = STATE_IDLE;
-    end
+    logic [TIMER_WIDTH-1:0] timer, nxt_timer;
 
 
 // **** Next State Logic **** 
 // 
-    always@* begin
+    always_comb begin
         nxt_rom_addr = rom_addr;
         nxt_wr       = 0;
         nxt_reg_addr = reg_addr;
@@ -124,7 +114,7 @@ module cfg_interface
 
 // 
 //
-    always@(posedge i_clk) begin
+    always_ff@(posedge i_clk) begin
         if(!i_rstn) begin
             rom_addr <= 0;
             wr       <= 0;
