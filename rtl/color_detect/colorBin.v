@@ -94,6 +94,9 @@ module colorBin
     reg [9:0] counterX, counterY;
     integer i;
 
+    localparam MAX_VAL = 99;
+    localparam MAX_SAT = 99;
+
     // region 0 bounds
     localparam [9:0] R0_X0 = 0;
     localparam [9:0] R0_X1 = 156;
@@ -247,67 +250,67 @@ module colorBin
         white  = 0;
 
         // check if pixel is red
-        if( (i_hue >  color_h_t[0])               &&
-            (i_hue < (color_h_t[0]+color_h_o[0])) &&
-            (i_sat >  color_s_t[0])               &&
-            (i_sat < (color_s_t[0]+color_s_o[0])) &&
-            (i_val >  color_v_t[0])               && 
-            (i_val < (color_v_t[0]+color_v_o[0]))
+        if( (i_hue[15:6] >  color_h_t[0])               &&
+            (i_hue[15:6] < (color_h_t[0]+color_h_o[0])) &&
+            (i_sat[15:6] >  color_s_t[0])               &&
+            (i_sat[15:6] < MAX_SAT)                     &&
+            (i_val[15:6] >  color_v_t[0])               && 
+            (i_val[15:6] < MAX_VAL)
           ) begin
             red = 1;
         end
 
         // check if pixel is orange
-        if( (i_hue >  color_h_t[1])               &&
-            (i_hue < (color_h_t[1]+color_h_o[1])) &&
-            (i_sat >  color_s_t[1])               &&
-            (i_sat < (color_s_t[1]+color_s_o[1])) &&
-            (i_val >  color_v_t[1])               && 
-            (i_val < (color_v_t[1]+color_v_o[1]))
+        if( (i_hue[15:6] >  color_h_t[1])               &&
+            (i_hue[15:6] < (color_h_t[1]+color_h_o[1])) &&
+            (i_sat[15:6] >  color_s_t[1])               &&
+            (i_sat[15:6] < MAX_SAT)                     &&
+            (i_val[15:6] >  color_v_t[1])               && 
+            (i_val[15:6] < MAX_VAL)
           ) begin
             orange = 1;
         end
 
         // check if pixel is yellow
-        if( (i_hue >  color_h_t[2])               &&
-            (i_hue < (color_h_t[2]+color_h_o[2])) &&
-            (i_sat >  color_s_t[2])               &&
-            (i_sat < (color_s_t[2]+color_s_o[2])) &&
-            (i_val >  color_v_t[2])               && 
-            (i_val < (color_v_t[2]+color_v_o[2]))
+        if( (i_hue[15:6] >  color_h_t[2])               &&
+            (i_hue[15:6] < (color_h_t[2]+color_h_o[2])) &&
+            (i_sat[15:6] >  color_s_t[2])               &&
+            (i_sat[15:6] < MAX_SAT)                     &&
+            (i_val[15:6] >  color_v_t[2])               && 
+            (i_val[15:6] < MAX_VAL)
           ) begin
             yellow = 1;
         end
 
         // check if pixel is green
-        if( (i_hue >  color_h_t[3])               &&
-            (i_hue < (color_h_t[3]+color_h_o[3])) &&
-            (i_sat >  color_s_t[3])               &&
-            (i_sat < (color_s_t[3]+color_s_o[3])) &&
-            (i_val >  color_v_t[3])               && 
-            (i_val < (color_v_t[3]+color_v_o[3]))
+        if( (i_hue[15:6] >  color_h_t[3])               &&
+            (i_hue[15:6] < (color_h_t[3]+color_h_o[3])) &&
+            (i_sat[15:6] >  color_s_t[3])               &&
+            (i_sat[15:6] < MAX_SAT)                     &&
+            (i_val[15:6] >  color_v_t[3])               && 
+            (i_val[15:6] < MAX_VAL)
           ) begin
             green = 1;
         end
 
         // check if pixel is blue
-        if( (i_hue >  color_h_t[4])               &&
-            (i_hue < (color_h_t[4]+color_h_o[4])) &&
-            (i_sat >  color_s_t[4])               &&
-            (i_sat < (color_s_t[4]+color_s_o[4])) &&
-            (i_val >  color_v_t[4])               && 
-            (i_val < (color_v_t[4]+color_v_o[4]))
+        if( (i_hue[15:6] >  color_h_t[4])               &&
+            (i_hue[15:6] < (color_h_t[4]+color_h_o[4])) &&
+            (i_sat[15:6] >  color_s_t[4])               &&
+            (i_sat[15:6] < MAX_SAT)                     &&
+            (i_val[15:6] >  color_v_t[4])               && 
+            (i_val[15:6] < MAX_VAL)
           ) begin
             blue = 1;
         end
 
         // check if pixel is white
-        if( (i_hue >  color_h_t[5])               &&
-            (i_hue < (color_h_t[5]+color_h_o[5])) &&
-            (i_sat >  color_s_t[5])               &&
-            (i_sat < (color_s_t[5]+color_s_o[5])) &&
-            (i_val >  color_v_t[5])               && 
-            (i_val < (color_v_t[5]+color_v_o[5]))
+        if( (i_hue[15:6] >  color_h_t[5])               &&
+            (i_hue[15:6] < (color_h_t[5]+color_h_o[5])) &&
+            (i_sat[15:6] >  color_s_t[5])               &&
+            (i_sat[15:6] < MAX_SAT)                     &&
+            (i_val[15:6] >  color_v_t[5])               && 
+            (i_val[15:6] < MAX_VAL)
           ) begin
             white = 1;
         end
@@ -338,7 +341,7 @@ module colorBin
             // REGION 0 (0,0)
             if((counterX>R0_X0)&&(counterX<R0_X1)&&
                (counterY>R0_Y0)&&(counterY<R0_Y1)) begin
-                if(red)         color0[0] <= color0[0]+1;
+                if(red)    color0[0] <= color0[0]+1;
                 if(orange) color0[1] <= color0[1]+1;
                 if(yellow) color0[2] <= color0[2]+1;
                 if(green)  color0[3] <= color0[3]+1;
@@ -347,9 +350,9 @@ module colorBin
             end
 
             // REGION 1 (1,0)
-            else if((counterX>R1_X0)&&(counterX<R1_X1)&&
-                    (counterY>R1_Y0)&&(counterY<R1_Y1)) begin
-                if(red)         color1[0] <= color1[0]+1;
+            if((counterX>R1_X0)&&(counterX<R1_X1)&&
+               (counterY>R1_Y0)&&(counterY<R1_Y1)) begin
+                if(red)    color1[0] <= color1[0]+1;
                 if(orange) color1[1] <= color1[1]+1;
                 if(yellow) color1[2] <= color1[2]+1;
                 if(green)  color1[3] <= color1[3]+1;
@@ -358,9 +361,9 @@ module colorBin
             end
 
             // REGION 2 (2,0)
-            else if((counterX>R2_X0)&&(counterX<R2_X1)&&
-                    (counterY>R2_Y0)&&(counterY<R2_Y1)) begin
-                if(red)         color2[0] <= color2[0]+1;
+            if((counterX>R2_X0)&&(counterX<R2_X1)&&
+               (counterY>R2_Y0)&&(counterY<R2_Y1)) begin
+                if(red)    color2[0] <= color2[0]+1;
                 if(orange) color2[1] <= color2[1]+1;
                 if(yellow) color2[2] <= color2[2]+1;
                 if(green)  color2[3] <= color2[3]+1;
@@ -371,7 +374,7 @@ module colorBin
             // REGION 3 (0,1)
             if((counterX>R3_X0)&&(counterX<R3_X1)&&
                (counterY>R3_Y0)&&(counterY<R3_Y1)) begin
-                if(red)         color3[0] <= color3[0]+1;
+                if(red)    color3[0] <= color3[0]+1;
                 if(orange) color3[1] <= color3[1]+1;
                 if(yellow) color3[2] <= color3[2]+1;
                 if(green)  color3[3] <= color3[3]+1;
@@ -380,9 +383,9 @@ module colorBin
             end
  
             // REGION 4 (1,1)
-            else if((counterX>R4_X0)&&(counterX<R4_X1)&&
-                    (counterY>R4_Y0)&&(counterY<R4_Y1)) begin
-                if(red)         color4[0] <= color4[0]+1;
+            if((counterX>R4_X0)&&(counterX<R4_X1)&&
+               (counterY>R4_Y0)&&(counterY<R4_Y1)) begin
+                if(red)    color4[0] <= color4[0]+1;
                 if(orange) color4[1] <= color4[1]+1;
                 if(yellow) color4[2] <= color4[2]+1;
                 if(green)  color4[3] <= color4[3]+1;
@@ -391,9 +394,9 @@ module colorBin
             end
 
             // REGION 5 (2,1)
-            else if((counterX>R5_X0)&&(counterX<R5_X1)&&
-                    (counterY>R5_Y0)&&(counterY<R5_Y1)) begin
-                if(red)         color5[0] <= color5[0]+1;
+            if((counterX>R5_X0)&&(counterX<R5_X1)&&
+               (counterY>R5_Y0)&&(counterY<R5_Y1)) begin
+                if(red)    color5[0] <= color5[0]+1;
                 if(orange) color5[1] <= color5[1]+1;
                 if(yellow) color5[2] <= color5[2]+1;
                 if(green)  color5[3] <= color5[3]+1;
@@ -404,7 +407,7 @@ module colorBin
             // REGION 6 (0,2)
             if((counterX>R6_X0)&&(counterX<R6_X1)&&
                (counterY>R6_Y0)&&(counterY<R6_Y1)) begin
-                if(red)         color6[0] <= color6[0]+1;
+                if(red)    color6[0] <= color6[0]+1;
                 if(orange) color6[1] <= color6[1]+1;
                 if(yellow) color6[2] <= color6[2]+1;
                 if(green)  color6[3] <= color6[3]+1;
@@ -413,9 +416,9 @@ module colorBin
             end
 
             // REGION 7 (1,2)
-            else if((counterX>R7_X0)&&(counterX<R7_X1)&&
-                    (counterY>R7_Y0)&&(counterY<R7_Y1)) begin
-                if(red)         color7[0] <= color7[0]+1;
+            if((counterX>R7_X0)&&(counterX<R7_X1)&&
+               (counterY>R7_Y0)&&(counterY<R7_Y1)) begin
+                if(red)    color7[0] <= color7[0]+1;
                 if(orange) color7[1] <= color7[1]+1;
                 if(yellow) color7[2] <= color7[2]+1;
                 if(green)  color7[3] <= color7[3]+1;
@@ -424,9 +427,9 @@ module colorBin
             end
 
             // REGION 8 (2,2)
-            else if((counterX>R8_X0)&&(counterX<R8_X1)&&
-                    (counterY>R8_Y0)&&(counterY<R8_Y1)) begin
-                if(red)         color8[0] <= color8[0]+1;
+            if((counterX>R8_X0)&&(counterX<R8_X1)&&
+                (counterY>R8_Y0)&&(counterY<R8_Y1)) begin
+                if(red)    color8[0] <= color8[0]+1;
                 if(orange) color8[1] <= color8[1]+1;
                 if(yellow) color8[2] <= color8[2]+1;
                 if(green)  color8[3] <= color8[3]+1;
