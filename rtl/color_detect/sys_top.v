@@ -240,22 +240,22 @@ module sys_top
     .i_rstn         (sync_rstn_PS),
   
     .i_red_ctrl1    ({8'd0, 8'd10}),
-    .i_red_ctrl2    ({8'd50, 8'd50, 8'd10, 8'd90}),
+    .i_red_ctrl2    ({8'd70, 8'd100, 8'd10, 8'd100}),
 
-    .i_orange_ctrl1 ({8'd10, 8'd5}),
-    .i_orange_ctrl2 ({8'd90, 8'd10, 8'd10, 8'd90}),
+    .i_orange_ctrl1 ({8'd10, 8'd30}),
+    .i_orange_ctrl2 ({8'd90, 8'd100, 8'd10, 8'd100}),
 
-    .i_yellow_ctrl1 ({8'd15, 8'd60}),
-    .i_yellow_ctrl2 ({8'd50, 8'd50, 8'd10, 8'd90}),
+    .i_yellow_ctrl1 ({8'd30, 8'd60}),
+    .i_yellow_ctrl2 ({8'd50, 8'd100, 8'd10, 8'd100}),
 
-    .i_green_ctrl1  ({8'd75, 8'd65}),
-    .i_green_ctrl2  ({8'd50, 8'd50, 8'd10, 8'd90}),
+    .i_green_ctrl1  ({8'd65, 8'd160}),
+    .i_green_ctrl2  ({8'd50, 8'd100, 8'd10, 8'd100}),
  
-    .i_blue_ctrl1   ({8'd140, 8'd115}),
-    .i_blue_ctrl2   ({8'd50, 8'd50, 8'd10, 8'd90}),
+    .i_blue_ctrl1   ({8'd160, 8'd260}),
+    .i_blue_ctrl2   ({8'd50, 8'd100, 8'd10, 8'd100}),
  
     .i_white_ctrl1  ({8'd0, 8'd255}),
-    .i_white_ctrl2  ({8'd0, 8'd10, 8'd50, 8'd50}),
+    .i_white_ctrl2  ({8'd0, 8'd100, 8'd80, 8'd100}),
 
     .i_data         (lpf_obuf_rdata),
     .i_addr         (mem_waddr),

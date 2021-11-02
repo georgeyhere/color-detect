@@ -7,24 +7,24 @@
 // of each region.
 //
 // Each region can be configured as follows:
-// - Hue lower threshold  -> 0-256, 8 bit integer
-// - Hue threshold offset -> 0-256, 8 bit integer
+// - Hue lower threshold -> 0-256, 8 bit integer
+// - Hue upper threshold -> 0-256, 8 bit integer
 //    
-// - Saturation lower threshold  -> 0-100, 8 bit integer
-// - Saturation threshold offset -> 0-100, 8 bit integer
+// - Saturation lower threshold -> 0-100, 8 bit integer
+// - Saturation upper threshold -> 0-100, 8 bit integer
 //
-// - Value lower threshold  -> 0-100, 8 bit integer
-// - Value threshold offset -> 0-100, 8 bit integer
+// - Value lower threshold -> 0-100, 8 bit integer
+// - Value upper threshold -> 0-100, 8 bit integer
 //
 // i_<color>_ctrl1 
 //     [15:8]  -> hue lower threshold
-//     [7:0]   -> hue threshold offset
+//     [7:0]   -> hue upper threshold
 //
 // i_<color>_ctrl2
-//     [31:24] -> sat lower threshold
-//     [23:16] -> sat threshold offset
-//     [15:8]  -> value lower threshold
-//     [7:0]   -> value threshold offset
+//     [31:24] -> saturation upper threshold
+//     [23:16] -> saturation lower threshold
+//     [15:8]  -> value upper threshold
+//     [7:0]   -> value lower threshold
 //
 module colorBin
     `include "colorDetect_definitions.vh"
@@ -79,14 +79,14 @@ module colorBin
     *  color [4] -> blue
     *  color [5] -> white
     */
-    reg [7:0] color_h_t [0:5]; // hue lower thresholds
-    reg [7:0] color_h_o [0:5]; // hue threshold offsets
+    reg [7:0] color_h_l [0:5]; // hue lower thresholds
+    reg [7:0] color_h_h [0:5]; // hue upper thresholds
     //
-    reg [7:0] color_s_t [0:5]; // saturation lower thresholds
-    reg [7:0] color_s_o [0:5]; // saturation threshold offsets
+    reg [7:0] color_s_l [0:5]; // saturation lower thresholds
+    reg [7:0] color_s_h [0:5]; // saturation upper thresholds
     //
-    reg [7:0] color_v_t [0:5]; // value lower thresholds
-    reg [7:0] color_v_o [0:5]; // value threshold offsets 
+    reg [7:0] color_v_l [0:5]; // value lower thresholds
+    reg [7:0] color_v_h [0:5]; // value upper thresholds 
 
 // Screen Color Detection Regions
     localparam RES_X = 480;
@@ -98,58 +98,58 @@ module colorBin
     localparam MAX_SAT = 99;
 
     // region 0 bounds
-    localparam [9:0] R0_X0 = 0;
-    localparam [9:0] R0_X1 = 156;
-    localparam [9:0] R0_Y0 = 0;
-    localparam [9:0] R0_Y1 = 156;
+    localparam [9:0] R0_X0 = 20;
+    localparam [9:0] R0_X1 = 136;
+    localparam [9:0] R0_Y0 = 20;
+    localparam [9:0] R0_Y1 = 136;
 
     // region 1 bounds
-    localparam [9:0] R1_X0 = 164;
-    localparam [9:0] R1_X1 = 316;
-    localparam [9:0] R1_Y0 = 0;
-    localparam [9:0] R1_Y1 = 156;
+    localparam [9:0] R1_X0 = 184;
+    localparam [9:0] R1_X1 = 296;
+    localparam [9:0] R1_Y0 = 20;
+    localparam [9:0] R1_Y1 = 136;
 
     // region 2 bounds
-    localparam [9:0] R2_X0 = 324;
-    localparam [9:0] R2_X1 = 476;
-    localparam [9:0] R2_Y0 = 0;
-    localparam [9:0] R2_Y1 = 156;
+    localparam [9:0] R2_X0 = 344;
+    localparam [9:0] R2_X1 = 456;
+    localparam [9:0] R2_Y0 = 20;
+    localparam [9:0] R2_Y1 = 136;
 
     // region 3 bounds
-    localparam [9:0] R3_X0 = 0;
-    localparam [9:0] R3_X1 = 156;
-    localparam [9:0] R3_Y0 = 164;
-    localparam [9:0] R3_Y1 = 316;
+    localparam [9:0] R3_X0 = 20;
+    localparam [9:0] R3_X1 = 136;
+    localparam [9:0] R3_Y0 = 184;
+    localparam [9:0] R3_Y1 = 296;
 
     // region 4 bounds
-    localparam [9:0] R4_X0 = 164;
-    localparam [9:0] R4_X1 = 316;
-    localparam [9:0] R4_Y0 = 164;
-    localparam [9:0] R4_Y1 = 316;
+    localparam [9:0] R4_X0 = 184;
+    localparam [9:0] R4_X1 = 296;
+    localparam [9:0] R4_Y0 = 184;
+    localparam [9:0] R4_Y1 = 296;
 
     // region 5 bounds
-    localparam [9:0] R5_X0 = 324;
-    localparam [9:0] R5_X1 = 476;
-    localparam [9:0] R5_Y0 = 164;
-    localparam [9:0] R5_Y1 = 316;
+    localparam [9:0] R5_X0 = 344;
+    localparam [9:0] R5_X1 = 456;
+    localparam [9:0] R5_Y0 = 184;
+    localparam [9:0] R5_Y1 = 296;
 
     // region 6 bounds
-    localparam [9:0] R6_X0 = 0;
-    localparam [9:0] R6_X1 = 156;
-    localparam [9:0] R6_Y0 = 324;
-    localparam [9:0] R6_Y1 = 476;
+    localparam [9:0] R6_X0 = 20;
+    localparam [9:0] R6_X1 = 136;
+    localparam [9:0] R6_Y0 = 344;
+    localparam [9:0] R6_Y1 = 456;
 
     // region 7 bounds
-    localparam [9:0] R7_X0 = 164;
-    localparam [9:0] R7_X1 = 316;
-    localparam [9:0] R7_Y0 = 324;
-    localparam [9:0] R7_Y1 = 476;
+    localparam [9:0] R7_X0 = 184;
+    localparam [9:0] R7_X1 = 296;
+    localparam [9:0] R7_Y0 = 344;
+    localparam [9:0] R7_Y1 = 456;
 
     // region 8 bounds
-    localparam [9:0] R8_X0 = 324;
-    localparam [9:0] R8_X1 = 476;
-    localparam [9:0] R8_Y0 = 324;
-    localparam [9:0] R8_Y1 = 476;
+    localparam [9:0] R8_X0 = 344;
+    localparam [9:0] R8_X1 = 456;
+    localparam [9:0] R8_Y0 = 344;
+    localparam [9:0] R8_Y1 = 456;
 
 // Color Bins
 // - One bin for each rubik's cube sticker; 9 regions of the screen
@@ -171,52 +171,52 @@ module colorBin
 // Control Register combinatorial logic
     always@* begin
         // hue lower thresholds
-        color_h_t[0] = i_red_ctrl1    [15:8];
-        color_h_t[1] = i_orange_ctrl1 [15:8];
-        color_h_t[2] = i_yellow_ctrl1 [15:8];
-        color_h_t[3] = i_green_ctrl1  [15:8];
-        color_h_t[4] = i_blue_ctrl1   [15:8];
-        color_h_t[5] = i_white_ctrl1  [15:8];
+        color_h_l[0] = i_red_ctrl1    [15:8];
+        color_h_l[1] = i_orange_ctrl1 [15:8];
+        color_h_l[2] = i_yellow_ctrl1 [15:8];
+        color_h_l[3] = i_green_ctrl1  [15:8];
+        color_h_l[4] = i_blue_ctrl1   [15:8];
+        color_h_l[5] = i_white_ctrl1  [15:8];
 
-        // hue threshold offsets
-        color_h_o[0] = i_red_ctrl1    [7:0];
-        color_h_o[1] = i_orange_ctrl1 [7:0];
-        color_h_o[2] = i_yellow_ctrl1 [7:0];
-        color_h_o[3] = i_green_ctrl1  [7:0];
-        color_h_o[4] = i_blue_ctrl1   [7:0];
-        color_h_o[5] = i_white_ctrl1  [7:0];
+        // hue upper thresholds
+        color_h_h[0] = i_red_ctrl1    [7:0];
+        color_h_h[1] = i_orange_ctrl1 [7:0];
+        color_h_h[2] = i_yellow_ctrl1 [7:0];
+        color_h_h[3] = i_green_ctrl1  [7:0];
+        color_h_h[4] = i_blue_ctrl1   [7:0];
+        color_h_h[5] = i_white_ctrl1  [7:0];
 
         // saturation lower thresholds
-        color_s_t[0] = i_red_ctrl2    [31:24];
-        color_s_t[1] = i_orange_ctrl2 [31:24];
-        color_s_t[2] = i_yellow_ctrl2 [31:24];
-        color_s_t[3] = i_green_ctrl2  [31:24];
-        color_s_t[4] = i_blue_ctrl2   [31:24];
-        color_s_t[5] = i_white_ctrl2  [31:24];
+        color_s_l[0] = i_red_ctrl2    [31:24];
+        color_s_l[1] = i_orange_ctrl2 [31:24];
+        color_s_l[2] = i_yellow_ctrl2 [31:24];
+        color_s_l[3] = i_green_ctrl2  [31:24];
+        color_s_l[4] = i_blue_ctrl2   [31:24];
+        color_s_l[5] = i_white_ctrl2  [31:24];
 
-        // saturation threshold offsets
-        color_s_o[0] = i_red_ctrl2    [23:16];
-        color_s_o[1] = i_orange_ctrl2 [23:16];
-        color_s_o[2] = i_yellow_ctrl2 [23:16];
-        color_s_o[3] = i_green_ctrl2  [23:16];
-        color_s_o[4] = i_blue_ctrl2   [23:16];
-        color_s_o[5] = i_white_ctrl2  [23:16];
+        // saturation upper thresholds
+        color_s_h[0] = i_red_ctrl2    [23:16];
+        color_s_h[1] = i_orange_ctrl2 [23:16];
+        color_s_h[2] = i_yellow_ctrl2 [23:16];
+        color_s_h[3] = i_green_ctrl2  [23:16];
+        color_s_h[4] = i_blue_ctrl2   [23:16];
+        color_s_h[5] = i_white_ctrl2  [23:16];
 
         // value lower thresholds
-        color_v_t[0] = i_red_ctrl2    [15:8];
-        color_v_t[1] = i_orange_ctrl2 [15:8];
-        color_v_t[2] = i_yellow_ctrl2 [15:8];
-        color_v_t[3] = i_green_ctrl2  [15:8];
-        color_v_t[4] = i_blue_ctrl2   [15:8];
-        color_v_t[5] = i_white_ctrl2  [15:8];
+        color_v_l[0] = i_red_ctrl2    [15:8];
+        color_v_l[1] = i_orange_ctrl2 [15:8];
+        color_v_l[2] = i_yellow_ctrl2 [15:8];
+        color_v_l[3] = i_green_ctrl2  [15:8];
+        color_v_l[4] = i_blue_ctrl2   [15:8];
+        color_v_l[5] = i_white_ctrl2  [15:8];
 
-        // value threshold offsets
-        color_v_o[0] = i_red_ctrl2    [7:0];
-        color_v_o[1] = i_orange_ctrl2 [7:0];
-        color_v_o[2] = i_yellow_ctrl2 [7:0];
-        color_v_o[3] = i_green_ctrl2  [7:0];
-        color_v_o[4] = i_blue_ctrl2   [7:0];
-        color_v_o[5] = i_white_ctrl2  [7:0];
+        // value upper thresholds
+        color_v_h[0] = i_red_ctrl2    [7:0];
+        color_v_h[1] = i_orange_ctrl2 [7:0];
+        color_v_h[2] = i_yellow_ctrl2 [7:0];
+        color_v_h[3] = i_green_ctrl2  [7:0];
+        color_v_h[4] = i_blue_ctrl2   [7:0];
+        color_v_h[5] = i_white_ctrl2  [7:0];
     end
 
 // Coordinate Counters
@@ -250,67 +250,67 @@ module colorBin
         white  = 0;
 
         // check if pixel is red
-        if( (i_hue[15:6] >  color_h_t[0])               &&
-            (i_hue[15:6] < (color_h_t[0]+color_h_o[0])) &&
-            (i_sat[15:6] >  color_s_t[0])               &&
-            (i_sat[15:6] < MAX_SAT)                     &&
-            (i_val[15:6] >  color_v_t[0])               && 
-            (i_val[15:6] < MAX_VAL)
+        if( (i_hue[15:6] > color_h_l[0]) && // hue lower threshold 
+            (i_hue[15:6] < color_h_h[0]) && // hue upper threshold 
+            (i_sat[15:6] > color_s_l[0]) && // sat lower threshold
+            (i_sat[15:6] < color_s_h[0]) && // sat upper threshold
+            (i_val[15:6] > color_v_l[0]) && // val lower threshold
+            (i_val[15:6] < color_v_h[0])    // val upper threshold
           ) begin
             red = 1;
         end
 
         // check if pixel is orange
-        if( (i_hue[15:6] >  color_h_t[1])               &&
-            (i_hue[15:6] < (color_h_t[1]+color_h_o[1])) &&
-            (i_sat[15:6] >  color_s_t[1])               &&
-            (i_sat[15:6] < MAX_SAT)                     &&
-            (i_val[15:6] >  color_v_t[1])               && 
-            (i_val[15:6] < MAX_VAL)
+        if( (i_hue[15:6] > color_h_l[1]) &&  
+            (i_hue[15:6] < color_h_h[1]) &&  
+            (i_sat[15:6] > color_s_l[1]) && 
+            (i_sat[15:6] < color_s_h[1]) && 
+            (i_val[15:6] > color_v_l[1]) && 
+            (i_val[15:6] < color_v_h[1])    
           ) begin
             orange = 1;
         end
 
         // check if pixel is yellow
-        if( (i_hue[15:6] >  color_h_t[2])               &&
-            (i_hue[15:6] < (color_h_t[2]+color_h_o[2])) &&
-            (i_sat[15:6] >  color_s_t[2])               &&
-            (i_sat[15:6] < MAX_SAT)                     &&
-            (i_val[15:6] >  color_v_t[2])               && 
-            (i_val[15:6] < MAX_VAL)
+        if( (i_hue[15:6] > color_h_l[2]) &&  
+            (i_hue[15:6] < color_h_h[2]) &&  
+            (i_sat[15:6] > color_s_l[2]) && 
+            (i_sat[15:6] < color_s_h[2]) && 
+            (i_val[15:6] > color_v_l[2]) && 
+            (i_val[15:6] < color_v_h[2])    
           ) begin
             yellow = 1;
         end
 
         // check if pixel is green
-        if( (i_hue[15:6] >  color_h_t[3])               &&
-            (i_hue[15:6] < (color_h_t[3]+color_h_o[3])) &&
-            (i_sat[15:6] >  color_s_t[3])               &&
-            (i_sat[15:6] < MAX_SAT)                     &&
-            (i_val[15:6] >  color_v_t[3])               && 
-            (i_val[15:6] < MAX_VAL)
+        if( (i_hue[15:6] > color_h_l[3]) &&  
+            (i_hue[15:6] < color_h_h[3]) &&  
+            (i_sat[15:6] > color_s_l[3]) && 
+            (i_sat[15:6] < color_s_h[3]) && 
+            (i_val[15:6] > color_v_l[3]) && 
+            (i_val[15:6] < color_v_h[3])    
           ) begin
             green = 1;
         end
 
         // check if pixel is blue
-        if( (i_hue[15:6] >  color_h_t[4])               &&
-            (i_hue[15:6] < (color_h_t[4]+color_h_o[4])) &&
-            (i_sat[15:6] >  color_s_t[4])               &&
-            (i_sat[15:6] < MAX_SAT)                     &&
-            (i_val[15:6] >  color_v_t[4])               && 
-            (i_val[15:6] < MAX_VAL)
+        if( (i_hue[15:6] > color_h_l[4]) &&  
+            (i_hue[15:6] < color_h_h[4]) &&  
+            (i_sat[15:6] > color_s_l[4]) && 
+            (i_sat[15:6] < color_s_h[4]) && 
+            (i_val[15:6] > color_v_l[4]) && 
+            (i_val[15:6] < color_v_h[4])    
           ) begin
             blue = 1;
         end
 
         // check if pixel is white
-        if( (i_hue[15:6] >  color_h_t[5])               &&
-            (i_hue[15:6] < (color_h_t[5]+color_h_o[5])) &&
-            (i_sat[15:6] >  color_s_t[5])               &&
-            (i_sat[15:6] < MAX_SAT)                     &&
-            (i_val[15:6] >  color_v_t[5])               && 
-            (i_val[15:6] < MAX_VAL)
+        if( (i_hue[15:6] > color_h_l[5]) &&  
+            (i_hue[15:6] < color_h_h[5]) &&  
+            (i_sat[15:6] > color_s_l[5]) && 
+            (i_sat[15:6] < color_s_h[5]) && 
+            (i_val[15:6] > color_v_l[5]) && 
+            (i_val[15:6] < color_v_h[5])    
           ) begin
             white = 1;
         end
@@ -438,7 +438,13 @@ module colorBin
             end
         end
     end
+
 //
+// The following synchronous processes check which color bin has
+// the greatest value at the end of the frame for each region and
+// sets the color detection result accordingly.
+//
+    // REGION 0: color0
     always@(posedge i_clk) begin
         if(!i_rstn) begin
             o_color0 <= 0;
@@ -486,7 +492,7 @@ module colorBin
         end
     end
 
-//
+    // REGION 1: color1
     always@(posedge i_clk) begin
         if(!i_rstn) begin
             o_color1 <= 0;
@@ -534,7 +540,7 @@ module colorBin
         end
     end
 
-//
+    // REGION 2: color2
     always@(posedge i_clk) begin
         if(!i_rstn) begin
             o_color2 <= 0;
@@ -582,7 +588,7 @@ module colorBin
         end
     end
 
-//
+    // REGION 3: color3
     always@(posedge i_clk) begin
         if(!i_rstn) begin
             o_color3 <= 0;
@@ -630,7 +636,7 @@ module colorBin
         end
     end
 
-//
+    // REGION 4: color4
     always@(posedge i_clk) begin
         if(!i_rstn) begin
             o_color4 <= 0;
@@ -678,7 +684,7 @@ module colorBin
         end
     end
 
-//
+    // REGION 5: color5
     always@(posedge i_clk) begin
         if(!i_rstn) begin
             o_color5 <= 0;
@@ -726,7 +732,7 @@ module colorBin
         end
     end
 
-//
+    // REGION 6: color6
     always@(posedge i_clk) begin
         if(!i_rstn) begin
             o_color6 <= 0;
@@ -774,7 +780,7 @@ module colorBin
         end
     end
 
-//
+    // REGION 7: color7
     always@(posedge i_clk) begin
         if(!i_rstn) begin
             o_color7 <= 0;
@@ -822,7 +828,7 @@ module colorBin
         end
     end
 
-//
+    // REGION 8: color8
     always@(posedge i_clk) begin
         if(!i_rstn) begin
             o_color8 <= 0;
@@ -869,6 +875,5 @@ module colorBin
             end
         end
     end
-
 
 endmodule
