@@ -115,7 +115,7 @@ module kp_gaussian_top
             STATE     <= STATE_IDLE;
         end
         else begin
-            o_rd      <= nxt_rd;
+            o_rd      <= (i_flush) ? 1 : nxt_rd;
             din_valid <= nxt_din_valid;
             rdCounter <= nxt_rdCounter;
             STATE     <= NEXT_STATE;

@@ -36,10 +36,9 @@ module sys_control
     reg        btn1, btn2;
     wire       db_btn_posedge;
 
-    reg [1:0]  FLUSH_STATE;
-    localparam FLUSH_INITIAL = 0,
-               FLUSH_IDLE    = 1, 
-               FLUSH_ACTIVE  = 2;
+    reg        FLUSH_STATE;
+    localparam FLUSH_IDLE   = 0, 
+               FLUSH_ACTIVE = 1;
 
     wire       sw_gaussian_db;
     reg        sw_gaussian_q1, sw_gaussian_q2;
@@ -104,15 +103,10 @@ module sys_control
     always@(posedge i_sysclk) begin
         if(!i_rstn) begin
             o_pipe_flush <= 0;
-            FLUSH_STATE  <= FLUSH_INITIAL;
+            FLUSH_STATE  <= FLUSH_IDLE;
         end
         else begin
             case(FLUSH_STATE)
-
-                FLUSH_INITIAL: begin
-                    o_pipe_flush <= 1;
-                    FLUSH_STATE  <= (i_cfg_done && i_sof) ? FLUSH_IDLE:FLUSH_INITIAL;
-                end
 
                 FLUSH_IDLE: begin
                     o_pipe_flush <= 0;

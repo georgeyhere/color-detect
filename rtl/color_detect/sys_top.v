@@ -25,11 +25,10 @@ module sys_top
     output wire [3:0] o_TMDS_P,
     output wire [3:0] o_TMDS_N,
   
-    // controls
+    // filter enable switch
     input  wire       sw_gaussian,
-  
-    // status
-    output wire [3:0] led_error
+
+    // control register
     );
   
     
@@ -88,12 +87,6 @@ module sys_top
 // =============================================================
       assign o_cam_rstn = 1'b1; // sw reset instead
       assign o_cam_pwdn = 1'b0;  
-  
-      assign led_error[0] = gaussian_enable;
-      assign led_error[1] = lpf_status;
-      assign led_error[2] = lpf_error;
-      assign led_error[3] = pipe_flush;
-
     
 // **** Debounce Reset button ****
 // -> debounced in camera pclk domain (24MHz)
@@ -172,8 +165,7 @@ module sys_top
       cam_i (
       .i_cfg_clk          (i_sysclk        ),
       .i_rstn             (sync_rstn_PS    ),
-      .i_flush            (pipe_flush      ),
-    
+      
     // OV7670 external inputs    
       .i_cam_pclk         (i_cam_pclk      ),
       .i_cam_vsync        (i_cam_vsync     ),
@@ -246,13 +238,13 @@ module sys_top
     .i_orange_ctrl2 ({8'd90, 8'd100, 8'd10, 8'd100}),
 
     .i_yellow_ctrl1 ({8'd30, 8'd60}),
-    .i_yellow_ctrl2 ({8'd50, 8'd100, 8'd10, 8'd100}),
+    .i_yellow_ctrl2 ({8'd75, 8'd100, 8'd10, 8'd100}),
 
     .i_green_ctrl1  ({8'd65, 8'd160}),
-    .i_green_ctrl2  ({8'd50, 8'd100, 8'd10, 8'd100}),
+    .i_green_ctrl2  ({8'd75, 8'd100, 8'd10, 8'd100}),
  
     .i_blue_ctrl1   ({8'd160, 8'd260}),
-    .i_blue_ctrl2   ({8'd50, 8'd100, 8'd10, 8'd100}),
+    .i_blue_ctrl2   ({8'd40, 8'd100, 8'd10, 8'd100}),
  
     .i_white_ctrl1  ({8'd0, 8'd255}),
     .i_white_ctrl2  ({8'd0, 8'd100, 8'd80, 8'd100}),

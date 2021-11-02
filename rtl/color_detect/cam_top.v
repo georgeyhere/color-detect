@@ -7,7 +7,6 @@ module cam_top
     (
     input  wire        i_cfg_clk,
     input  wire        i_rstn,
-    input  wire        i_flush,
 
     // OV7670 I/O
     input  wire        i_cam_pclk,
@@ -99,7 +98,7 @@ module cam_top
     frontFIFO_i (
     // write interface
     .i_wclk         (i_cam_pclk       ), // 24 MHz camera pclk
-    .i_wrstn        (i_rstn&&(~i_flush)), // active-low async reset (24MHz)
+    .i_wrstn        (i_rstn           ), // active-low async reset (24MHz)
     .i_wr           (obuf_wr          ), // write enable
     .i_wdata        (obuf_wdata       ), // write data
     .o_wfull        (), 
