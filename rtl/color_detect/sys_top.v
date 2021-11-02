@@ -1,34 +1,75 @@
 `default_nettype none
 //
+// o_result
+//     [31:29] -> region 0 (0,0) color
+//     [28:26] -> region 1 (1,0) color
+//     [25:23] -> region 2 (2,0) color
+//     [22:20] -> region 3 (0,1) color
+//     [19:17] -> region 4 (1,1) color
+//     [16:14] -> region 5 (2,1) color
+//     [13:11] -> region 6 (0,2) color
+//     [10:8]  -> region 7 (1,2) color
+//     [7:5]   -> region 8 (2,2) color
+//     [4:0] PADDED
+//
+// i_<color>_ctrl1 
+//     [15:8]  -> hue lower threshold
+//     [7:0]   -> hue upper threshold
+//
+// i_<color>_ctrl2
+//     [31:24] -> saturation upper threshold
+//     [23:16] -> saturation lower threshold
+//     [15:8]  -> value upper threshold
+//     [7:0]   -> value lower threshold
+//
 module sys_top 
     //
     `include "colorDetect_definitions.vh"
     (
-    input  wire       i_sysclk,    // 125 MHz board clock
-    input  wire       i_rst,       // active-high board button
+    input  wire        i_sysclk,    // 125 MHz board clock
+    input  wire        i_rst,       // active-high board button
   
     // camera interface
-    output wire       o_cam_xclk,  // 24MHz clock to camera from DCM
-    output wire       o_cam_rstn,  // camera active low reset
-    output wire       o_cam_pwdn,  // camera active high power down 
-  
-    input  wire       i_cam_pclk,  // camera generated pixel clock
-    input  wire       i_cam_vsync, // camera vsync
-    input  wire       i_cam_href,  // camera href
-    input  wire [7:0] i_cam_data,  // camera 8-bit data in
+    output wire        o_cam_xclk,  // 24MHz clock to camera from DCM
+    output wire        o_cam_rstn,  // camera active low reset
+    output wire        o_cam_pwdn,  // camera active high power down 
+   
+    input  wire        i_cam_pclk,  // camera generated pixel clock
+    input  wire        i_cam_vsync, // camera vsync
+    input  wire        i_cam_href,  // camera href
+    input  wire [7:0]  i_cam_data,  // camera 8-bit data in
   
     // i2c interface
-    inout  wire       SCL,         // bidirectional SCL
-    inout  wire       SDA,         // bidirectional SDA
+    inout  wire        SCL,         // bidirectional SCL
+    inout  wire        SDA,         // bidirectional SDA
   
     // HDMI interface
-    output wire [3:0] o_TMDS_P,
-    output wire [3:0] o_TMDS_N,
+    output wire [3:0]  o_TMDS_P,
+    output wire [3:0]  o_TMDS_N,
   
     // filter enable switch
-    input  wire       sw_gaussian,
+    input  wire        sw_gaussian,
 
-    // control register
+    // control registers
+    input  wire [15:0] i_red_ctrl1,
+    input  wire [31:0] i_red_ctrl2,
+
+    input  wire [15:0] i_orange_ctrl1,
+    input  wire [31:0] i_orange_ctrl2,
+
+    input  wire [15:0] i_yellow_ctrl1,
+    input  wire [31:0] i_yellow_ctrl2,
+
+    input  wire [15:0] i_green_ctrl1,
+    input  wire [31:0] i_green_ctrl2,
+
+    input  wire [15:0] i_blue_ctrl1,
+    input  wire [31:0] i_blue_ctrl2,
+
+    input  wire [15:0] i_white_ctrl1,
+    input  wire [31:0] i_white_ctrl2,
+
+    output wire [31:0] o_result
     );
   
     
@@ -64,29 +105,32 @@ module sys_top
     wire        cfg_done;
 
     // Gaussian
-      wire        lpf_obuf_rd;
-      wire [15:0] lpf_obuf_rdata;
-      wire        lpf_obuf_almostempty;
-      wire        lpf_obuf_empty;
-      wire        lpf_error, lpf_status;
+    wire        lpf_obuf_rd;
+    wire [15:0] lpf_obuf_rdata;
+    wire        lpf_obuf_almostempty;
+    wire        lpf_obuf_empty;
+    wire        lpf_error, lpf_status;
 
     // BRAM
-      wire        mem_wr;
-      wire [17:0] mem_waddr;
+    wire        mem_wr;
+    wire [17:0] mem_waddr;
 
     // Color Detection
-      wire [2:0] color0, color1, color2, color3, color4, 
-                 color5, color6, color7, color8;
+    wire [2:0] color0, color1, color2, color3, color4, 
+               color5, color6, color7, color8;
 
     // Display Interface
-      wire [17:0] framebuf_raddr;
-      wire [15:0] framebuf_rdata;
+    wire [17:0] framebuf_raddr;
+    wire [15:0] framebuf_rdata;
 
 // =============================================================
 //                    Implementation:
 // =============================================================
       assign o_cam_rstn = 1'b1; // sw reset instead
       assign o_cam_pwdn = 1'b0;  
+
+      assign o_result = {color0, color1, color2, color3, color4, color5,
+                         color6, color7, color8, 5'b0};
     
 // **** Debounce Reset button ****
 // -> debounced in camera pclk domain (24MHz)
