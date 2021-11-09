@@ -11,14 +11,13 @@ __High-level Overview__
 
 __Color Detection Overview__
 - High level system design
-![](docs/images/colorDetect_top.jpg)
+![](docs/images/colorDetect_top2.jpg)
 
 __RGB to HSV Algorithm__
 - Related modules are denoted with hsv_, hue_, and sat_ prefixes.
-![](docs/images/rgbtohsv.jpg)
+![](docs/images/rgb_hsv_algo.jpg)
+![](docs/images/rgb_hsv_pipe.jpg)
 
-- Fixed-point format:
-![](docs/images/fixedpoint.jpg)
 
 __Demos__
 - These demos reflect a work in progress until no longer noted here.

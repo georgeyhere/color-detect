@@ -26,23 +26,24 @@ module sys_top
     //
     `include "colorDetect_definitions.vh"
     (
-    input  wire        i_sysclk,    // 125 MHz board clock
-    input  wire        i_rst,       // active-high board button
-  
-    // camera interface
-    output wire        o_cam_xclk,  // 24MHz clock to camera from DCM
-    output wire        o_cam_rstn,  // camera active low reset
-    output wire        o_cam_pwdn,  // camera active high power down 
+    input  wire        i_clk_125MHz, // 125 MHz board clock
+    input  wire        i_clk_25MHz,  // 25 MHz pixel clock
+    input  wire        i_clk_250MHz, // 250 MHz TMDS clock
+    input  wire        i_rst,        // active-high board button
    
-    input  wire        i_cam_pclk,  // camera generated pixel clock
-    input  wire        i_cam_vsync, // camera vsync
-    input  wire        i_cam_href,  // camera href
-    input  wire [7:0]  i_cam_data,  // camera 8-bit data in
-  
-    // i2c interface
-    inout  wire        SCL,         // bidirectional SCL
-    inout  wire        SDA,         // bidirectional SDA
-  
+    // camera interface 
+    output wire        o_cam_rstn,   // camera active low reset
+    output wire        o_cam_pwdn,   // camera active high power down 
+    
+    input  wire        i_cam_pclk,   // camera generated pixel clock
+    input  wire        i_cam_vsync,  // camera vsync
+    input  wire        i_cam_href,   // camera href
+    input  wire [7:0]  i_cam_data,   // camera 8-bit data in
+   
+    // i2c interface 
+    inout  wire        SCL,          // bidirectional SCL
+    inout  wire        SDA,          // bidirectional SDA
+   
     // HDMI interface
     output wire [3:0]  o_TMDS_P,
     output wire [3:0]  o_TMDS_N,
@@ -78,12 +79,6 @@ module sys_top
 // =============================================================
     localparam PIXEL_WIDTH       = 16;
     localparam FRAMEBUFFER_DEPTH = 230400;
-        
-    
-    // DCM
-    wire        clk_25MHz;
-    wire        clk_250MHz;
-    wire        clk_PS;
     
     // Debounce
     wire        db_rstn;
@@ -147,14 +142,14 @@ module sys_top
 // **** Async Reset Synchronizers ****
       // 125 MHz
       reg sync_rstn_PS, q_rstn_PS;
-      always@(posedge i_sysclk or negedge db_rstn) begin
+      always@(posedge i_clk_125MHz or negedge db_rstn) begin
           if(!db_rstn) {sync_rstn_PS, q_rstn_PS} <= 2'b0;
           else         {sync_rstn_PS, q_rstn_PS} <= {q_rstn_PS, 1'b1};
       end
   
       // 25 MHz
       reg sync_rstn_25, q_rstn_25;
-      always@(posedge clk_25MHz or negedge db_rstn) begin
+      always@(posedge i_clk_25MHz or negedge db_rstn) begin
           if(!db_rstn) {sync_rstn_25, q_rstn_25} <= 2'b0;
           else         {sync_rstn_25, q_rstn_25} <= {q_rstn_25, 1'b1};
       end
@@ -163,25 +158,13 @@ module sys_top
 // =============================================================
 //                    Submodule Instantiation:
 // =============================================================
-//---------------------------------------------------
-//                 Clocking Wizard:
-//---------------------------------------------------
-      clk_wiz_0 
-      dcm_i (
-      .clk_in1    (i_sysclk      ), // 125MHz board clock
-      .reset      (1'b0          ),
-      .clk_24MHz  (o_cam_xclk    ), // camera reference clock output
-      .clk_25MHz  (clk_25MHz     ), // display pixel clock
-      .clk_250MHz (clk_250MHz    ), // display TMDS clock
-      .clk_PS     (clk_PS        )  // processing system clock
-      );
 
 //---------------------------------------------------
 //                 System Control:
 //---------------------------------------------------
       sys_control 
       ctrl_i (
-      .i_sysclk          (i_sysclk        ), // 125MHz clock
+      .i_sysclk          (i_clk_125MHz    ), // 125MHz clock
       .i_rstn            (sync_rstn_PS    ), // active-low sync reset
       
       .i_sof             (sof             ),
@@ -207,7 +190,7 @@ module sys_top
       cam_top 
       #(.T_CFG_CLK(8))
       cam_i (
-      .i_cfg_clk          (i_sysclk        ),
+      .i_cfg_clk          (i_clk_125MHz    ),
       .i_rstn             (sync_rstn_PS    ),
       
     // OV7670 external inputs    
@@ -228,7 +211,7 @@ module sys_top
       .o_sof              (sof             ),
   
       // output buffer read interface
-      .i_obuf_rclk        (i_sysclk        ),
+      .i_obuf_rclk        (i_clk_125MHz    ),
       .i_obuf_rstn        (sync_rstn_PS    ),
       .i_obuf_rd          (cam_obuf_rd     ),
       .o_obuf_data        (cam_obuf_rdata  ),
@@ -247,7 +230,7 @@ module sys_top
       .OBUF_PTR_WIDTH(4))
     lpf_i 
     (
-    .i_clk              (i_sysclk),
+    .i_clk              (i_clk_125MHz),
     .i_rstn             (sync_rstn_PS),   
     .i_enable           (gaussian_enable),
     .i_flush            (pipe_flush),
@@ -272,26 +255,26 @@ module sys_top
 //                 Color Detection:
 //---------------------------------------------------
     colorDetect_top colorDetect_i (
-    .i_clk          (i_sysclk),
+    .i_clk          (i_clk_125MHz),
     .i_rstn         (sync_rstn_PS),
   
-    .i_red_ctrl1    ({8'd0, 8'd10}),
-    .i_red_ctrl2    ({8'd70, 8'd100, 8'd10, 8'd100}),
+    .i_red_ctrl1    (i_red_ctrl1),
+    .i_red_ctrl2    (i_red_ctrl2),
 
-    .i_orange_ctrl1 ({8'd10, 8'd30}),
-    .i_orange_ctrl2 ({8'd90, 8'd100, 8'd10, 8'd100}),
+    .i_orange_ctrl1 (i_orange_ctrl1),
+    .i_orange_ctrl2 (i_orange_ctrl2),
 
-    .i_yellow_ctrl1 ({8'd30, 8'd60}),
-    .i_yellow_ctrl2 ({8'd75, 8'd100, 8'd10, 8'd100}),
+    .i_yellow_ctrl1 (i_yellow_ctrl1),
+    .i_yellow_ctrl2 (i_yellow_ctrl2),
 
-    .i_green_ctrl1  ({8'd65, 8'd160}),
-    .i_green_ctrl2  ({8'd75, 8'd100, 8'd10, 8'd100}),
+    .i_green_ctrl1  (i_green_ctrl1),
+    .i_green_ctrl2  (i_green_ctrl2),
  
-    .i_blue_ctrl1   ({8'd160, 8'd260}),
-    .i_blue_ctrl2   ({8'd40, 8'd100, 8'd10, 8'd100}),
+    .i_blue_ctrl1   (i_blue_ctrl1),
+    .i_blue_ctrl2   (i_blue_ctrl2),
  
-    .i_white_ctrl1  ({8'd0, 8'd255}),
-    .i_white_ctrl2  ({8'd0, 8'd100, 8'd80, 8'd100}),
+    .i_white_ctrl1  (i_white_ctrl1),
+    .i_white_ctrl2  (i_white_ctrl2),
 
     .i_data         (lpf_obuf_rdata),
     .i_addr         (mem_waddr),
@@ -316,7 +299,7 @@ module sys_top
         .BRAM_DEPTH (FRAMEBUFFER_DEPTH) 
        )
       mem_i(
-      .i_clk         (i_sysclk               ), // 125 MHz board clock
+      .i_clk         (i_clk_125MHz           ), // 125 MHz board clock
       .i_rstn        (sync_rstn_PS           ), // active-low sync reset
       .i_flush       (pipe_flush             ),
   
@@ -330,7 +313,7 @@ module sys_top
   
   
       // frame buffer read interface
-      .i_rclk        (clk_25MHz              ),
+      .i_rclk        (i_clk_25MHz            ),
       .i_raddr       (framebuf_raddr         ),
       .o_rdata       (framebuf_rdata         )
       ); 
@@ -341,8 +324,8 @@ module sys_top
       display_interface 
       #(.FBUF_DEPTH(FRAMEBUFFER_DEPTH))
       display_i(
-    .i_p_clk       (clk_25MHz       ), // 25 MHz display clock
-    .i_tmds_clk    (clk_250MHz      ), // 250 MHz TMDS clock
+    .i_p_clk       (i_clk_25MHz     ), // 25 MHz display clock
+    .i_tmds_clk    (i_clk_250MHz    ), // 250 MHz TMDS clock
     .i_rstn        (sync_rstn_25    ), 
     
        // frame buffer read interface
