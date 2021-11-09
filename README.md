@@ -15,7 +15,7 @@ __Color Detection Overview__
 
 __RGB to HSV Algorithm__
 - Related modules are denoted with hsv_, hue_, and sat_ prefixes.
-![](docs/images/rgb_hsv_algo.jpg)
+![](docs/images/hsv_algo.jpg)
 ![](docs/images/rgb_hsv_pipe.jpg)
 
 
