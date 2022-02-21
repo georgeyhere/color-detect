@@ -1,2 +1,6 @@
 /custom_ip_workspace/ov7670_capture/*
-!/custom_ip_workspace/ov7670_capture/ov7670_capture_1.0/*
+/sw/*
+/tb/*
+/'old color detect'/*
+
+!*/custom_ip_workspace/ov7670_capture/ov7670_capture_1.0/*
