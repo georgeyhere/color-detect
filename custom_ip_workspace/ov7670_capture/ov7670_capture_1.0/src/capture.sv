@@ -27,10 +27,10 @@ module capture
     );
 
 // LOCAL LOGIC
-    logic [$clog2(X_RES)-1:0]  counterX;
-    logic [$clog2(Y_RES)-1:0]  counterY;
-    logic [7:0]                byte1_data;
-    logic                      pixel_half;
+    logic [$clog2(X_RES)-1:0] counterX;
+    logic [$clog2(Y_RES)-1:0] counterY;
+    logic [7:0]               byte1_data;
+    logic                     pixel_half;
 
 // DATA CAPTURE
     // -> capture two bytes for each pixel
@@ -54,6 +54,10 @@ module capture
                     byte1_data <= i_data;
                 end
             end
+            else begin
+                pixel_half <= 0;
+                o_tvalid   <= 0;
+            end
         end
     end
 
@@ -66,11 +70,14 @@ module capture
             counterY <= 0;
         end
         else begin
-            if(pixel_half) begin
+            // X-coordinate Counter
+            if(o_tvalid) begin
                 counterX <= (counterX == X_RES-1) ? 0:counterX+1;
-                if(counterX == X_RES-1) begin
-                    counterY <= (counterY == Y_RES-1) ? 0:counterY+1;
-                end
+            end
+
+            // Y-coordinate Counter
+            if(counterX == X_RES-1 & o_tvalid) begin
+                counterY <= (counterY == Y_RES-1) ? 0:counterY+1;
             end
         end
     end
