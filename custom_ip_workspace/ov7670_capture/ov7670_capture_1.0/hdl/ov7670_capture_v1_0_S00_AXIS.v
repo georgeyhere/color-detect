@@ -9,11 +9,16 @@
 		// Do not modify the parameters beyond this line
 
 		// AXI4Stream sink: Data Width
-		parameter integer C_S_AXIS_TDATA_WIDTH	= 32
+		parameter integer C_S_AXIS_TDATA_WIDTH	= 16
 	)
 	(
 		// Users to add ports here
-
+        // -> OV7670 Camera Interface
+        input wire       i_vsync,
+        input wire       i_pclk,
+        input wire       i_vsync,
+        input wire       i_href,
+        input wire [7:0] i_data,
 		// User ports ends
 		// Do not modify the ports beyond this line
 
@@ -161,7 +166,23 @@
 	endgenerate
 
 	// Add user logic here
-
+    capture 
+    #(.X_RES(640),
+      .Y_RES(480)
+    )
+    capture_i (
+    .i_rstn   (),
+    //
+    .i_pclk   (),
+    .i_vsync  (),
+    .i_href   (),
+    .i_data   (),
+    //
+    .o_tdata  (),
+    .o_tvalid (),
+    .o_tlast  (),
+    .o_tuser  ()
+    );
 	// User logic ends
 
 	endmodule
