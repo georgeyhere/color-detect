@@ -1,6 +1,10 @@
-/custom_ip_workspace/ov7670_capture/*
+#
 /sw/*
 /tb/*
-/'old color detect'/*
-
-!*/custom_ip_workspace/ov7670_capture/ov7670_capture_1.0/*
+/archive/*
+#
+/custom_ip_workspace/ov7670_capture/*.cache
+/custom_ip_workspace/ov7670_capture/*.hw
+/custom_ip_workspace/ov7670_capture/*.ip_user_files
+/custom_ip_workspace/ov7670_capture/*.sim
+/custom_ip_workspace/ov7670_capture/*.xpr
