@@ -24,7 +24,7 @@ module capture
     output logic        o_tvalid, // data valid
     output logic        o_tlast,  // end of line
     output logic        o_tuser,  // start of frame
-    output logic        o_tready  // UNUSED
+    output logic        o_tready  // unused
     );
 
 // LOCAL LOGIC

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="capture_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="capture_tb" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="6375000001fs"></ZoomEndTime>
+      <Cursor1Time time="1324323000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="250"></NameColumnWidth>
+      <ValueColumnWidth column_width="73"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="19" />
+   <wvobject type="divider" fp_name="divider26">
+      <obj_property name="label">System</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/capture_tb/i_rstn" type="logic">
+      <obj_property name="ElementShortName">i_rstn</obj_property>
+      <obj_property name="ObjectShortName">i_rstn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/capture_tb/i_pclk" type="logic">
+      <obj_property name="ElementShortName">i_pclk</obj_property>
+      <obj_property name="ObjectShortName">i_pclk</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider27">
+      <obj_property name="label">Camera Timing</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/capture_tb/i_vsync" type="logic">
+      <obj_property name="ElementShortName">i_vsync</obj_property>
+      <obj_property name="ObjectShortName">i_vsync</obj_property>
+   </wvobject>
+   <wvobject fp_name="/capture_tb/i_href" type="logic">
+      <obj_property name="ElementShortName">i_href</obj_property>
+      <obj_property name="ObjectShortName">i_href</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider28">
+      <obj_property name="label">Data</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/capture_tb/o_tvalid" type="logic">
+      <obj_property name="ElementShortName">o_tvalid</obj_property>
+      <obj_property name="ObjectShortName">o_tvalid</obj_property>
+      <obj_property name="CustomSignalColor">#FFFF00</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/capture_tb/DUT/pixel_half" type="logic">
+      <obj_property name="ElementShortName">pixel_half</obj_property>
+      <obj_property name="ObjectShortName">pixel_half</obj_property>
+   </wvobject>
+   <wvobject fp_name="/capture_tb/i_data" type="array">
+      <obj_property name="ElementShortName">i_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">i_data[7:0]</obj_property>
+      <obj_property name="CustomSignalColor">#DCDCDC</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/capture_tb/DUT/byte1_data" type="array">
+      <obj_property name="ElementShortName">byte1_data[7:0]</obj_property>
+      <obj_property name="ObjectShortName">byte1_data[7:0]</obj_property>
+      <obj_property name="CustomSignalColor">#008080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/capture_tb/o_tdata" type="array">
+      <obj_property name="ElementShortName">o_tdata[15:0]</obj_property>
+      <obj_property name="ObjectShortName">o_tdata[15:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FFFF00</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/capture_tb/t_testexpected" type="array">
+      <obj_property name="ElementShortName">t_testexpected[15:0]</obj_property>
+      <obj_property name="ObjectShortName">t_testexpected[15:0]</obj_property>
+      <obj_property name="CustomSignalColor">#FAAFBE</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider29">
+      <obj_property name="label">Flags</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/capture_tb/o_tlast" type="logic">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">o_tlast</obj_property>
+      <obj_property name="ObjectShortName">o_tlast</obj_property>
+      <obj_property name="label">o_tlast (end of line)</obj_property>
+   </wvobject>
+   <wvobject fp_name="/capture_tb/o_tuser" type="logic">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">o_tuser</obj_property>
+      <obj_property name="ObjectShortName">o_tuser</obj_property>
+      <obj_property name="label">o_tuser (start of frame)</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider30">
+      <obj_property name="label">Internal</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/capture_tb/DUT/counterX" type="array">
+      <obj_property name="ElementShortName">counterX[5:0]</obj_property>
+      <obj_property name="ObjectShortName">counterX[5:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/capture_tb/DUT/counterY" type="array">
+      <obj_property name="ElementShortName">counterY[5:0]</obj_property>
+      <obj_property name="ObjectShortName">counterY[5:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+</wave_config>
