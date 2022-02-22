@@ -24,7 +24,7 @@
         output wire        M_AXIS_TVALID,
         output wire        M_AXIS_TLAST,
         output wire        M_AXIS_TUSER,
-        output wire        M_AXIS_TREADY,
+        input  wire        M_AXIS_TREADY,
 
 		// User ports ends
 		// Do not modify the ports beyond this line
