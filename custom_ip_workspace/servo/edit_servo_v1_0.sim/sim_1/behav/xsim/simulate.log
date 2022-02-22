@@ -1,0 +1,25 @@
+Vivado Simulator 2020.2
+Time resolution is 1 ps
+
+Pulse Fell! Time Elapsed:                    0
+
+
+Testbench Start!
+Running Test; Desired Counter Value =         15
+Pulse High! Continuing with test...
+
+Pulse Fell! Time Elapsed:               145000
+
+Pulse Fell! Time Elapsed:           2000145000
+
+Pulse Fell! Time Elapsed:           4000145000
+
+Pulse Fell! Time Elapsed:           6000145000
+
+Pulse Fell! Time Elapsed:           8000145000
+
+Pulse Fell! Time Elapsed:          10000145000
+
+Pulse Fell! Time Elapsed:          12000145000
+
+Pulse Fell! Time Elapsed:          14000145000
