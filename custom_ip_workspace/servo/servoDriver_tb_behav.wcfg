@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="servoDriver_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="servoDriver_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="4000129242fs"></ZoomStartTime>
+      <ZoomEndTime time="4000163793fs"></ZoomEndTime>
+      <Cursor1Time time="4000135000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="250"></NameColumnWidth>
+      <ValueColumnWidth column_width="73"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="17" />
+   <wvobject fp_name="/servoDriver_tb/i_clk" type="logic">
+      <obj_property name="ElementShortName">i_clk</obj_property>
+      <obj_property name="ObjectShortName">i_clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servoDriver_tb/i_rstn" type="logic">
+      <obj_property name="ElementShortName">i_rstn</obj_property>
+      <obj_property name="ObjectShortName">i_rstn</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider10">
+      <obj_property name="label">Inputs</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servoDriver_tb/i_start" type="logic">
+      <obj_property name="ElementShortName">i_start</obj_property>
+      <obj_property name="ObjectShortName">i_start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servoDriver_tb/i_pulseWidth" type="array">
+      <obj_property name="ElementShortName">i_pulseWidth[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i_pulseWidth[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider11">
+      <obj_property name="label">Outputs</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servoDriver_tb/o_done" type="logic">
+      <obj_property name="ElementShortName">o_done</obj_property>
+      <obj_property name="ObjectShortName">o_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servoDriver_tb/o_pulse" type="logic">
+      <obj_property name="ElementShortName">o_pulse</obj_property>
+      <obj_property name="ObjectShortName">o_pulse</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider13">
+      <obj_property name="label">Internal</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servoDriver_tb/DUT/STATE" type="logic">
+      <obj_property name="ElementShortName">STATE</obj_property>
+      <obj_property name="ObjectShortName">STATE</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servoDriver_tb/DUT/pulseCounter" type="array">
+      <obj_property name="ElementShortName">pulseCounter[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pulseCounter[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servoDriver_tb/DUT/pulseTarget" type="array">
+      <obj_property name="ElementShortName">pulseTarget[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pulseTarget[31:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servoDriver_tb/DUT/pulseDone" type="logic">
+      <obj_property name="ElementShortName">pulseDone</obj_property>
+      <obj_property name="ObjectShortName">pulseDone</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servoDriver_tb/DUT/pulseCounter_rst" type="logic">
+      <obj_property name="ElementShortName">pulseCounter_rst</obj_property>
+      <obj_property name="ObjectShortName">pulseCounter_rst</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider12">
+      <obj_property name="label">Testbench</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servoDriver_tb/t_startTime" type="other">
+      <obj_property name="ElementShortName">t_startTime</obj_property>
+      <obj_property name="ObjectShortName">t_startTime</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servoDriver_tb/t_elapsedTime" type="other">
+      <obj_property name="ElementShortName">t_elapsedTime</obj_property>
+      <obj_property name="ObjectShortName">t_elapsedTime</obj_property>
+   </wvobject>
+</wave_config>

@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Webtalk v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Mon Feb 21 23:57:40 2022
+# Process ID: 25548
+# Current directory: c:/users/work/documents/repos/senior_project/custom_ip_workspace/servo/edit_servo_v1_0.sim/sim_1/behav/xsim
+# Command line: wbtcv.exe -mode batch -source c:/users/work/documents/repos/senior_project/custom_ip_workspace/servo/edit_servo_v1_0.sim/sim_1/behav/xsim/xsim.dir/servoDriver_tb_behav/webtalk/xsim_webtalk.tcl -notrace
+# Log file: c:/users/work/documents/repos/senior_project/custom_ip_workspace/servo/edit_servo_v1_0.sim/sim_1/behav/xsim/webtalk.log
+# Journal file: c:/users/work/documents/repos/senior_project/custom_ip_workspace/servo/edit_servo_v1_0.sim/sim_1/behav/xsim\webtalk.jou
+#-----------------------------------------------------------
+source c:/users/work/documents/repos/senior_project/custom_ip_workspace/servo/edit_servo_v1_0.sim/sim_1/behav/xsim/xsim.dir/servoDriver_tb_behav/webtalk/xsim_webtalk.tcl -notrace
+INFO: [Common 17-206] Exiting Webtalk at Mon Feb 21 23:57:40 2022...
